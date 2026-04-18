@@ -1,0 +1,14 @@
+# Temp files
+~$*
+*.tmp
+*.log
+.DS_Store
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Raw/draft files (opsional - hapus baris ini jika ingin tetap di-track)
+# matriks_raw.html
+# simpeg_raw.html
+# matriks_kinerja_raw.txt

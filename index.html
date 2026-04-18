@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Analisis BLU Institusional — UIN Ponorogo</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+    /* Export Button per seksi */
+    .export-section-btn {
+        float: right;
+        padding: 3px 10px;
+        font-size: 0.68rem;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: rgba(59,130,246,0.07);
+        color: var(--accent);
+        cursor: pointer;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        transition: all 0.2s;
+        margin-left: 8px;
+    }
+    .export-section-btn:hover {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
+    }
+
+    /* Map export overlay button */
+    .map-export-btn {
+        position: absolute;
+        bottom: 12px;
+        right: 12px;
+        z-index: 999;
+        padding: 6px 14px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        border-radius: 8px;
+        border: none;
+        background: rgba(15,23,42,0.88);
+        color: #3b82f6;
+        cursor: pointer;
+        font-family: 'Inter', sans-serif;
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(59,130,246,0.3);
+        transition: all 0.2s;
+    }
+    .map-export-btn:hover { background: #3b82f6; color: #fff; }
+
+    /* UIN Ponorogo pulse marker */
+    @keyframes pulse-ring {
+        0% { transform: scale(0.9); opacity: 0.9; }
+        70% { transform: scale(2.2); opacity: 0; }
+        100% { transform: scale(0.9); opacity: 0; }
+    }
+    .ponorogo-pulse::before {
+        content: '';
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%,-50%);
+        width: 36px; height: 36px;
+        border-radius: 50%;
+        background: rgba(34,197,94,0.4);
+        animation: pulse-ring 1.8s ease-out infinite;
+    }
+
+    /* Export all floating button */
+    .export-all-fab {
+        position: fixed;
+        bottom: 24px; right: 24px;
+        z-index: 9999;
+        background: linear-gradient(135deg,#3b82f6,#06b6d4);
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        padding: 10px 20px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        font-family: 'Inter',sans-serif;
+        cursor: pointer;
+        box-shadow: 0 4px 20px rgba(59,130,246,0.5);
+        transition: all 0.2s;
+    }
+    .export-all-fab:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(59,130,246,0.7); }
+
+    .map-panel { position: relative; }
+
+    .card { position: relative; }
+
+    /* Watermark timestamp di export */
+    .export-watermark {
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        text-align: right;
+        margin-top: 6px;
+        display: none;
+    }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1><span style="color:var(--accent);">BLU</span> Analytics</h1>
+        <div class="header-controls">
+            <a href="matriks.html" class="btn" style="text-decoration: none;">📑 IFAS/EFAS</a>
+            <a href="kinerja.html" class="btn" style="text-decoration: none;">📊 Kinerja RSB</a>
+            <a href="sinta.html" class="btn" style="text-decoration: none;">🔬 SINTA</a>
+            <a href="swot_blu.html" class="btn" style="text-decoration: none;">⚡ SWOT-BLU</a>
+            <a href="swot_pestle.html" class="btn" style="text-decoration: none;">📋 PESTLE</a>
+            <button class="btn" id="btnEditData">✏️ Data Manager</button>
+            <button class="btn" id="btnThemeToggle">☀️ / 🌙 Tema</button>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <!-- Peta Geografis OSM -->
+        <section class="map-panel" id="section-map">
+            <div id="map"></div>
+            <div style="position:absolute;top:10px;right:10px;z-index:1000;display:flex;gap:6px;flex-direction:column;align-items:flex-end;">
+                <button class="map-export-btn" onclick="exportMap()" style="margin:0;">📷 Export PNG</button>
+                <button onclick="resetLabelPositions()" style="background:rgba(30,41,59,0.85);border:1px solid rgba(255,255,255,0.2);color:#94a3b8;font-size:11px;padding:5px 10px;border-radius:6px;cursor:pointer;backdrop-filter:blur(6px);">↺ Reset Label</button>
+            </div>
+            <div style="position:absolute;bottom:28px;left:50%;transform:translateX(-50%);z-index:900;background:rgba(0,0,0,0.6);color:rgba(203,213,225,0.8);font-size:10px;padding:4px 10px;border-radius:20px;pointer-events:none;backdrop-filter:blur(4px);">
+                ✋ Label bisa digeser — posisi otomatis tersimpan
+            </div>
+        </section>
+
+        <!-- Matriks Analitik & Radar Chart -->
+        <section class="analytics-panel">
+
+            <div class="card" id="section-profil">
+                <h2 id="viewUniName">
+                    Pilih Kampus di Peta
+                    <button class="export-section-btn" onclick="exportCard('section-profil','profil_institusi')">📷 PNG</button>
+                </h2>
+                <div class="metric-grid">
+                    <div class="metric-box highlight">
+                        <h3>Akreditasi Institusi</h3>
+                        <div class="val" id="viewAkreditasi">-</div>
+                    </div>
+                    <div class="metric-box">
+                        <h3>Status Kelembagaan</h3>
+                        <div class="val" id="viewBlu">-</div>
+                    </div>
+                    <div class="metric-box">
+                        <h3>Rasio Dosen:Mhs</h3>
+                        <div class="val" id="viewRasio">-</div>
+                    </div>
+                    <div class="metric-box">
+                        <h3>Guru Besar</h3>
+                        <div class="val" id="viewProfessors">-</div>
+                    </div>
+                    <div class="metric-box">
+                        <h3>Rata-rata UKT</h3>
+                        <div class="val" id="viewUkt">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" id="section-radar">
+                <h2>Radar Kapasitas Institusional
+                    <button class="export-section-btn" onclick="exportCard('section-radar','radar_kapasitas')">📷 PNG</button>
+                </h2>
+                <div class="chart-container">
+                    <canvas id="radarChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card" id="section-swot">
+                <h2>Analisis SWOT Otomatis
+                    <button class="export-section-btn" onclick="exportCard('section-swot','swot_otomatis')">📷 PNG</button>
+                </h2>
+                <div id="swotContainer" style="font-size: 0.95rem; line-height: 1.5; color: var(--text-muted)">
+                    Klik salah satu kampus di peta untuk melihat kesimpulan SWOT yang dikalkulasi secara algoritmik dari
+                    data yang tersedia.
+                </div>
+            </div>
+
+            <!-- Program Studi Strategis -->
+            <div class="card" id="section-prodi">
+                <h2>Program Studi Strategis
+                    <button class="export-section-btn" onclick="exportCard('section-prodi','program_studi')">📷 PNG</button>
+                </h2>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 10px;">Klik jurusan untuk melihat detail akreditasi &amp; verifikasi PDDikti</p>
+                <ul id="viewMajorsList" style="list-style-type: none; padding-left: 0; font-size: 0.9rem; line-height: 1.6; color: var(--text-main);">
+                    <li style="color:var(--text-muted);">Pilih kampus di peta untuk melihat.</li>
+                </ul>
+            </div>
+
+            <!-- Panel SDM Institusi -->
+            <div class="card" id="sdmCard" style="display:none;">
+                <h2>Profil SDM Institusi (SIMPEG)
+                    <button class="export-section-btn" onclick="exportCard('sdmCard','profil_sdm')">📷 PNG</button>
+                </h2>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:1rem;">
+                    <div class="metric-box">
+                        <h3>Dosen Total</h3>
+                        <div class="val" id="sdmDosenTotal">-</div>
+                    </div>
+                    <div class="metric-box highlight">
+                        <h3>Bergelar Doktor</h3>
+                        <div class="val" id="sdmDosenDoktor">-</div>
+                    </div>
+                    <div class="metric-box">
+                        <h3>Tendik Total</h3>
+                        <div class="val" id="sdmTendikTotal">-</div>
+                    </div>
+                    <div class="metric-box">
+                        <h3>Tendik Bergelar S2</h3>
+                        <div class="val" id="sdmTendikS2">-</div>
+                    </div>
+                </div>
+                <h3 style="font-size:0.85rem; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase; letter-spacing:1px;">Jabatan Fungsional Dosen</h3>
+                <div id="sdmJabatanChart"></div>
+                <div style="margin-top:0.8rem; text-align:right;">
+                    <a id="sdmSintaLink" href="#" target="_blank" class="btn primary" style="text-decoration:none; font-size:0.8rem;">🔬 Lihat di SINTA</a>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- FAB Export Semua -->
+    <button class="export-all-fab" onclick="exportAll()">📥 Export Semua PNG</button>
+
+    <!-- Modal Data Manager -->
+    <div class="modal-overlay" id="dataModal">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 1.5rem;">Data Manager (Manual Edit)</h2>
+            <div class="form-group">
+                <label>Pilih Kampus:</label>
+                <select id="editUniSelect"></select>
+            </div>
+            <div class="form-group">
+                <label>Mahasiswa Aktif:</label>
+                <input type="number" id="editStudents">
+            </div>
+            <div class="form-group">
+                <label>Jumlah Dosen:</label>
+                <input type="number" id="editLecturers">
+            </div>
+            <div class="form-group">
+                <label>Jumlah Guru Besar (Profesor):</label>
+                <input type="number" id="editProfessors">
+            </div>
+            <div class="form-group">
+                <label>Akreditasi AIPT (Unggul/A/B):</label>
+                <input type="text" id="editAccreditation">
+            </div>
+            <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: flex-end;">
+                <button class="btn" id="btnCancelEdit">Batal</button>
+                <button class="btn primary" id="btnSaveEdit">Simpan Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Data Jurusan -->
+    <div class="modal-overlay" id="majorModal">
+        <div class="modal-content" style="max-width: 450px;">
+            <h2 id="mjrModalTitle" style="margin-bottom: 0.5rem; color: var(--accent);">Nama Jurusan</h2>
+            <h3 id="mjrModalUni" style="font-size: 1rem; color: var(--text-muted); margin-bottom: 2rem;">Universitas</h3>
+            <div class="metric-box highlight" style="margin-bottom: 1.5rem; text-align: center;">
+                <h3 style="margin-bottom: 5px;">Status Akreditasi Resmi</h3>
+                <div class="val" id="mjrModalAcc" style="font-size: 1.5rem;">-</div>
+            </div>
+            <div style="font-size: 0.9rem; line-height: 1.6; color: var(--text-main); margin-bottom: 2rem; background: rgba(128,128,128,0.1); padding: 1rem; border-radius: 8px;">
+                <strong>💡 Catatan Sistem:</strong><br>
+                Data ini diperoleh dari BAN-PT &amp; PDDikti. Untuk verifikasi audit akreditasi, cek rujukan aslinya.
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: space-between;">
+                <button class="btn" id="btnCloseMajorModal">Tutup Panel</button>
+                <a id="btnCheckPddikti" href="#" target="_blank" class="btn primary" style="text-decoration: none;">🔍 Verifikasi di PDDikti/BAN-PT</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+
+    <script>
+    /* ========================================================
+       EXPORT FUNCTIONS
+    ======================================================== */
+    function exportCard(id, filename) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        // Sembunyikan tombol export saat capture
+        const btns = el.querySelectorAll('.export-section-btn');
+        btns.forEach(b => b.style.visibility = 'hidden');
+        const dark = document.documentElement.getAttribute('data-theme') !== 'light';
+        html2canvas(el, {
+            scale: 2,
+            backgroundColor: dark ? '#1e293b' : '#ffffff',
+            useCORS: true,
+            logging: false
+        }).then(canvas => {
+            btns.forEach(b => b.style.visibility = '');
+            const a = document.createElement('a');
+            a.download = `${filename}_${new Date().toISOString().slice(0,10)}.png`;
+            a.href = canvas.toDataURL('image/png');
+            a.click();
+        }).catch(() => { btns.forEach(b => b.style.visibility = ''); });
+    }
+
+    function exportMap() {
+        const mapEl = document.getElementById('section-map');
+        const btn = mapEl.querySelector('.map-export-btn');
+        if (btn) btn.style.display = 'none';
+        const dark = document.documentElement.getAttribute('data-theme') !== 'light';
+        html2canvas(mapEl, {
+            scale: 2,
+            backgroundColor: dark ? '#0f172a' : '#f1f5f9',
+            useCORS: true,
+            logging: false,
+            allowTaint: true
+        }).then(canvas => {
+            if (btn) btn.style.display = '';
+            const a = document.createElement('a');
+            a.download = `peta_persaingan_PTKIN_Jawa_${new Date().toISOString().slice(0,10)}.png`;
+            a.href = canvas.toDataURL('image/png');
+            a.click();
+        }).catch(() => { if (btn) btn.style.display = ''; });
+    }
+
+    async function exportAll() {
+        const sections = [
+            { id: 'section-map',    file: 'peta_persaingan',    isMap: true },
+            { id: 'section-profil', file: 'profil_institusi' },
+            { id: 'section-radar',  file: 'radar_kapasitas' },
+            { id: 'section-swot',   file: 'swot_otomatis' },
+            { id: 'section-prodi',  file: 'program_studi' },
+            { id: 'sdmCard',        file: 'profil_sdm' },
+        ];
+        const dark = document.documentElement.getAttribute('data-theme') !== 'light';
+        for (const s of sections) {
+            const el = document.getElementById(s.id);
+            if (!el || el.style.display === 'none') continue;
+            const btns = el.querySelectorAll('.export-section-btn,.map-export-btn');
+            btns.forEach(b => b.style.visibility = 'hidden');
+            try {
+                const canvas = await html2canvas(el, {
+                    scale: 2,
+                    backgroundColor: dark ? '#1e293b' : '#ffffff',
+                    useCORS: true,
+                    allowTaint: true,
+                    logging: false
+                });
+                const a = document.createElement('a');
+                a.download = `${s.file}_${new Date().toISOString().slice(0,10)}.png`;
+                a.href = canvas.toDataURL('image/png');
+                a.click();
+                await new Promise(r => setTimeout(r, 600)); // jeda antar download
+            } catch(e) { console.warn('Export skip:', s.id); }
+            btns.forEach(b => b.style.visibility = '');
+        }
+    }
+
+    /* ========================================================
+       MAP INIT — fitBounds dari koordinat aktual kampus
+    ======================================================== */
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            if (typeof map !== 'undefined' && map && typeof universitiesData !== 'undefined') {
+                map.invalidateSize();
+                const lats = universitiesData.map(u => u.lat);
+                const lngs = universitiesData.map(u => u.lng);
+                const b = [
+                    [Math.min(...lats) - 0.3, Math.min(...lngs) - 0.5],
+                    [Math.max(...lats) + 0.3, Math.max(...lngs) + 0.5]
+                ];
+                map.fitBounds(b, { padding: [20, 20] });
+            }
+        }, 600);
+    });
+    </script>
+</body>
+
+</html>

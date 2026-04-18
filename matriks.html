@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matriks IFAS & EFAS — UIN Kiai Ageng Muhammad Besari Ponorogo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --bg:#0f172a;--surface:#1e293b;--card:rgba(30,41,59,0.96);
+  --text:#f8fafc;--muted:#94a3b8;--accent:#3b82f6;
+  --border:rgba(255,255,255,0.08);--green:#22c55e;--amber:#f59e0b;
+  --red:#ef4444;--purple:#a78bfa;--cyan:#06b6d4;
+  --input-bg:rgba(255,255,255,0.05);--input-border:rgba(255,255,255,0.12);
+}
+[data-theme="light"]{
+  --bg:#f1f5f9;--surface:#fff;--card:rgba(255,255,255,0.97);
+  --text:#0f172a;--muted:#64748b;--border:rgba(0,0,0,0.09);
+  --green:#16a34a;--amber:#d97706;--red:#dc2626;--purple:#7c3aed;--cyan:#0891b2;
+  --input-bg:rgba(0,0,0,0.03);--input-border:rgba(0,0,0,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* HEADER */
+header{display:flex;justify-content:space-between;align-items:center;
+  padding:1rem 2.5rem;background:var(--card);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+header h1{font-size:1.05rem;font-weight:700;}
+header h1 span{color:var(--accent);}
+.nav-links{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.8rem;
+  padding:0.3rem 0.7rem;border-radius:7px;border:1px solid var(--border);transition:all 0.2s;}
+.nav-links a:hover,.nav-links a.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.theme-btn{padding:0.3rem 0.8rem;border-radius:7px;border:1px solid var(--border);
+  background:transparent;color:var(--muted);cursor:pointer;font-size:0.8rem;
+  font-family:'Inter',sans-serif;transition:all 0.2s;}
+.theme-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* PAGE */
+.page{max-width:1140px;margin:0 auto;padding:2rem 1.5rem;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#060d1a 0%,#0f2442 60%,#060d1a 100%);
+  padding:2.5rem 2.5rem 2rem;border-bottom:1px solid var(--border);position:relative;text-align:center;}
+.hero::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(59,130,246,0.15) 0%,transparent 70%);}
+.hero-label{font-size:0.68rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  color:var(--accent);margin-bottom:0.6rem;position:relative;}
+.hero h2{font-family:'Merriweather',serif;font-size:clamp(1.3rem,2.5vw,1.9rem);
+  font-weight:700;color:#f8fafc;margin-bottom:0.5rem;position:relative;line-height:1.3;}
+.hero-sub{font-size:0.85rem;color:#94a3b8;max-width:620px;margin:0 auto;position:relative;}
+
+/* SUMMARY CARDS */
+.summary-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin:1.5rem 0;}
+.sum-card{background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:1rem 1.1rem;text-align:center;}
+.sum-card .lbl{font-size:0.67rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:0.3rem;}
+.sum-card .val{font-size:1.8rem;font-weight:800;transition:color 0.3s;}
+.sum-card .sub{font-size:0.7rem;color:var(--muted);margin-top:2px;}
+.sum-card.ife{border-color:var(--green);}
+.sum-card.efe{border-color:var(--accent);}
+.sum-card.pos{border-color:var(--purple);}
+.sum-card.rec{border-color:var(--amber);}
+
+/* SECTION HEADER */
+.sec-hdr{display:flex;justify-content:space-between;align-items:center;margin:2rem 0 0.8rem;}
+.sec-hdr h3{font-size:1rem;font-weight:700;}
+.sec-hdr .badge{font-size:0.7rem;padding:0.25rem 0.8rem;border-radius:20px;font-weight:700;
+  letter-spacing:0.5px;}
+.badge-green{background:rgba(34,197,94,0.12);color:var(--green);border:1px solid rgba(34,197,94,0.3);}
+.badge-red{background:rgba(239,68,68,0.12);color:var(--red);border:1px solid rgba(239,68,68,0.3);}
+.badge-blue{background:rgba(59,130,246,0.12);color:var(--accent);border:1px solid rgba(59,130,246,0.3);}
+.badge-amber{background:rgba(245,158,11,0.12);color:var(--amber);border:1px solid rgba(245,158,11,0.3);}
+
+/* TABLE */
+.tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  overflow:hidden;margin-bottom:1.5rem;position:relative;}
+.export-btn{position:absolute;top:0.7rem;right:0.7rem;
+  padding:3px 10px;font-size:0.67rem;border-radius:5px;
+  border:1px solid var(--border);background:rgba(255,255,255,0.04);
+  color:var(--muted);cursor:pointer;transition:all 0.2s;z-index:5;
+  font-family:'Inter',sans-serif;}
+.export-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+table{width:100%;border-collapse:collapse;font-size:0.82rem;}
+thead th{padding:0.75rem 0.9rem;font-size:0.68rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;color:var(--muted);border-bottom:2px solid var(--border);
+  background:rgba(255,255,255,0.02);text-align:left;}
+thead th:nth-child(2){width:38%;}
+thead th:nth-child(3),thead th:nth-child(4),thead th:nth-child(5){width:11%;text-align:center;}
+thead th:last-child{width:8%;text-align:center;}
+
+tbody tr{border-bottom:1px solid var(--border);transition:background 0.15s;}
+tbody tr:hover{background:rgba(59,130,246,0.04);}
+tbody tr:last-child{border-bottom:none;}
+td{padding:0.6rem 0.9rem;vertical-align:middle;}
+td:first-child{font-size:0.7rem;color:var(--muted);font-weight:700;width:3rem;text-align:center;}
+td.factor{font-size:0.82rem;color:var(--text);line-height:1.45;}
+td.factor small{display:block;font-size:0.72rem;color:var(--muted);margin-top:2px;}
+td.num{text-align:center;}
+
+/* EDITABLE INPUTS */
+input[type="number"]{
+  width:60px;background:var(--input-bg);border:1px solid var(--input-border);
+  color:var(--text);border-radius:6px;padding:0.3rem 0.4rem;text-align:center;
+  font-size:0.82rem;font-family:'Inter',sans-serif;transition:all 0.2s;
+}
+input[type="number"]:focus{outline:none;border-color:var(--accent);background:rgba(59,130,246,0.08);}
+input[type="range"]{
+  width:80px;accent-color:var(--accent);cursor:pointer;vertical-align:middle;
+}
+.score-cell{text-align:center;font-weight:700;font-size:0.85rem;transition:color 0.2s;}
+
+/* ROW COLORS */
+tr.cat-s .num-label{color:var(--green);}
+tr.cat-w .num-label{color:var(--red);}
+tr.cat-o .num-label{color:var(--accent);}
+tr.cat-t .num-label{color:var(--amber);}
+tr.cat-s{border-left:3px solid var(--green);}
+tr.cat-w{border-left:3px solid var(--red);}
+tr.cat-o{border-left:3px solid var(--accent);}
+tr.cat-t{border-left:3px solid var(--amber);}
+
+/* TOTAL ROW */
+tr.total-row{background:rgba(59,130,246,0.06);font-weight:700;}
+tr.total-row td{color:var(--text);font-size:0.85rem;}
+
+/* SEPARATOR ROW */
+tr.sep-row td{background:rgba(255,255,255,0.03);padding:0.35rem 0.9rem;
+  font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--muted);border-top:2px solid var(--border);}
+
+/* CHART SECTION */
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin:1.5rem 0;}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:1.2rem;position:relative;}
+.chart-card h4{font-size:0.75rem;color:var(--muted);text-transform:uppercase;
+  letter-spacing:1px;margin-bottom:1rem;}
+.chart-inner{position:relative;height:300px;}
+
+/* QUADRANT LABELS */
+.quad-desc{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:1.2rem;margin-bottom:1.5rem;}
+.quad-desc h4{font-size:0.8rem;font-weight:700;margin-bottom:0.8rem;color:var(--muted);
+  text-transform:uppercase;letter-spacing:1px;}
+.quad-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;}
+.quad-item{border-radius:10px;padding:0.8rem 1rem;border:1px solid var(--border);}
+.quad-item.q1{background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.2);}
+.quad-item.q2{background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.2);}
+.quad-item.q3{background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.2);}
+.quad-item.q4{background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.2);}
+.quad-item h5{font-size:0.78rem;font-weight:700;margin-bottom:0.3rem;}
+.quad-item p{font-size:0.76rem;color:var(--muted);line-height:1.55;}
+.quad-item.active-quad{box-shadow:0 0 0 2px var(--accent);}
+
+/* RECOMMENDATION */
+.rec-card{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:1.2rem 1.4rem;margin-bottom:1.5rem;}
+.rec-card h4{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;
+  color:var(--muted);margin-bottom:0.8rem;}
+#recText{font-size:0.88rem;line-height:1.75;transition:all 0.3s;}
+#recText strong{color:var(--accent);}
+
+/* HELP TEXT */
+.help{font-size:0.75rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;}
+.help strong{color:var(--text);}
+.help code{background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:4px;font-size:0.7rem;}
+
+.divider{height:1px;background:var(--border);margin:1.5rem 0;}
+
+@media(max-width:800px){
+  .summary-row{grid-template-columns:1fr 1fr;}
+  .chart-row,.quad-grid{grid-template-columns:1fr;}
+  .page{padding:1rem;}
+  header{flex-direction:column;gap:0.6rem;}
+  input[type="number"]{width:50px;}
+  input[type="range"]{width:60px;}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>📑 Matriks <span>IFAS &amp; EFAS</span></h1>
+  <div class="nav-links">
+    <a href="index.html">🗺️ Dashboard</a>
+    <a href="matriks.html" class="active">📑 Matriks</a>
+    <a href="sinta.html">🔬 SINTA</a>
+    <a href="swot_blu.html">⚡ SWOT-BLU</a>
+    <a href="swot_pestle.html">📋 PESTLE</a>
+    <button class="theme-btn" id="themeToggle" onclick="toggleTheme()">☀️ Tema</button>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-label">Alat Analisis Strategis Interaktif — Edit bobot &amp; rating langsung</div>
+  <h2>Internal Factor Analysis Summary (IFAS)<br>External Factor Analysis Summary (EFAS)</h2>
+  <p class="hero-sub">UIN Kiai Ageng Muhammad Besari Ponorogo · Konteks Transformasi BLU · Data April 2026</p>
+</div>
+
+<div class="page">
+
+  <!-- SUMMARY SCORECARD -->
+  <div class="summary-row">
+    <div class="sum-card ife">
+      <div class="lbl">Skor Total IFE</div>
+      <div class="val" id="ifeTotal" style="color:var(--green)">—</div>
+      <div class="sub">Internal (S + W) · Max 4.0</div>
+    </div>
+    <div class="sum-card efe">
+      <div class="lbl">Skor Total EFE</div>
+      <div class="val" id="efeTotal" style="color:var(--accent)">—</div>
+      <div class="sub">Eksternal (O + T) · Max 4.0</div>
+    </div>
+    <div class="sum-card pos">
+      <div class="lbl">Posisi Kuadran</div>
+      <div class="val" id="quadrant" style="color:var(--purple);font-size:1.3rem">—</div>
+      <div class="sub" id="quadrantLabel">Tentukan bobot &amp; rating</div>
+    </div>
+    <div class="sum-card rec">
+      <div class="lbl">Strategi Utama</div>
+      <div class="val" id="strategyCode" style="color:var(--amber);font-size:1.1rem">—</div>
+      <div class="sub" id="strategyLabel">Berdasarkan posisi matriks</div>
+    </div>
+  </div>
+
+  <p class="help">
+    <strong>Petunjuk:</strong> Sesuaikan <code>Bobot</code> (0.00–1.00, total harus = 1.00 per tabel) dan <code>Rating</code> (1–4) langsung di tabel. Skor = Bobot × Rating, dihitung otomatis secara real-time. <br>
+    <strong>Rating S/O:</strong> 4=sangat kuat, 3=kuat, 2=sedang, 1=lemah · <strong>Rating W/T:</strong> 1=sangat serius, 2=serius, 3=kurang serius, 4=tidak serius.
+  </p>
+
+  <!-- ============================================================
+       TABEL IFAS
+  ============================================================ -->
+  <div class="sec-hdr">
+    <h3>📊 Matriks IFAS — Faktor Internal</h3>
+    <span class="badge badge-green">S = Strengths · W = Weaknesses</span>
+  </div>
+
+  <div class="tbl-wrap" id="wrap-ifas">
+    <button class="export-btn" onclick="exportSection('wrap-ifas','matriks_ifas')">📷 PNG</button>
+    <table id="tblIFAS">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Faktor Internal</th>
+          <th style="text-align:center">Bobot</th>
+          <th style="text-align:center">Rating</th>
+          <th style="text-align:center">Skor</th>
+        </tr>
+      </thead>
+      <tbody id="tbodyIFAS"></tbody>
+    </table>
+  </div>
+
+  <!-- ============================================================
+       TABEL EFAS
+  ============================================================ -->
+  <div class="sec-hdr">
+    <h3>📊 Matriks EFAS — Faktor Eksternal</h3>
+    <span class="badge badge-blue">O = Opportunities · T = Threats</span>
+  </div>
+
+  <div class="tbl-wrap" id="wrap-efas">
+    <button class="export-btn" onclick="exportSection('wrap-efas','matriks_efas')">📷 PNG</button>
+    <table id="tblEFAS">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Faktor Eksternal</th>
+          <th style="text-align:center">Bobot</th>
+          <th style="text-align:center">Rating</th>
+          <th style="text-align:center">Skor</th>
+        </tr>
+      </thead>
+      <tbody id="tbodyEFAS"></tbody>
+    </table>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CHARTS -->
+  <div class="chart-row" id="wrap-charts">
+    <div class="chart-card">
+      <button class="export-btn" onclick="exportSection('wrap-charts','matriks_chart')">📷 PNG</button>
+      <h4>🔵 Posisi Strategis IE Matrix (IFE vs EFE)</h4>
+      <div class="chart-inner"><canvas id="chartIE"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h4>📊 Perbandingan Skor Sub-Faktor IFAS &amp; EFAS</h4>
+      <div class="chart-inner"><canvas id="chartBar"></canvas></div>
+    </div>
+  </div>
+
+  <!-- KUADRAN PENJELASAN -->
+  <div class="quad-desc" id="wrap-quad">
+    <button class="export-btn" onclick="exportSection('wrap-quad','matriks_kuadran')">📷 PNG</button>
+    <h4>🗂️ Peta Kuadran SWOT — Posisi &amp; Rekomendasi Strategi</h4>
+    <div class="quad-grid">
+      <div class="quad-item q1" id="q-SO">
+        <h5 style="color:var(--green)">🟢 Kuadran I — SO (Agresif)</h5>
+        <p>IFE &gt; 2.5 · EFE &gt; 2.5. Posisi paling menguntungkan. Organisasi memiliki kekuatan internal yang besar dan peluang eksternal yang signifikan. Strategi: <strong>Ekspansi agresif, diversifikasi produk/layanan, penetrasi pasar baru.</strong></p>
+      </div>
+      <div class="quad-item q2" id="q-WO">
+        <h5 style="color:var(--cyan)">🔵 Kuadran II — WO (Perbaikan)</h5>
+        <p>IFE &lt; 2.5 · EFE &gt; 2.5. Peluang eksternal besar namun kapasitas internal lemah. Strategi: <strong>Perbaikan internal, aliansi strategis, akuisisi kompetensi baru untuk memanfaatkan peluang.</strong></p>
+      </div>
+      <div class="quad-item q3" id="q-ST">
+        <h5 style="color:var(--amber)">🟡 Kuadran III — ST (Difensif)</h5>
+        <p>IFE &gt; 2.5 · EFE &lt; 2.5. Kekuatan internal ada namun lingkungan eksternal tidak berpihak. Strategi: <strong>Diversifikasi ke pasar baru, pertahankan posisi, gunakan kekuatan untuk menghindari ancaman.</strong></p>
+      </div>
+      <div class="quad-item q4" id="q-WT">
+        <h5 style="color:var(--red)">🔴 Kuadran IV — WT (Bertahan)</h5>
+        <p>IFE &lt; 2.5 · EFE &lt; 2.5. Posisi paling rentan. Kelemahan internal besar dan ancaman eksternal tinggi. Strategi: <strong>Efisiensi, restrukturisasi, fokus pada core strengths, hindari ekspansi.</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- REKOMENDASI -->
+  <div class="rec-card" id="wrap-rec">
+    <button class="export-btn" onclick="exportSection('wrap-rec','matriks_rekomendasi')">📷 PNG</button>
+    <h4>✅ Rekomendasi Strategis Berdasarkan Posisi Matriks</h4>
+    <div id="recText">Atur bobot dan rating pada tabel IFAS &amp; EFAS di atas untuk melihat rekomendasi strategis otomatis.</div>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+/* ============================================================
+   DATA IFAS & EFAS
+============================================================ */
+const IFAS_DATA = [
+  // STRENGTHS
+  { cat:'S', no:1, factor:'Satu-satunya PTKIN di Karesidenan Madiun (Ponorogo, Madiun, Magetan, Ngawi, Pacitan)', detail:'Captive market alami tanpa kompetitor PTKIN dalam radius 100 km', w:0.10, r:4 },
+  { cat:'S', no:2, factor:'Akreditasi Institusi Unggul BAN-PT 2024–2029', detail:'Standar tertinggi BAN-PT; 11 dari 28 prodi terakreditasi Unggul', w:0.09, r:4 },
+  { cat:'S', no:3, factor:'Alih status UIN Kiai Ageng Muhammad Besari (Mei 2025)', detail:'Perpres diserahkan langsung Menteri Agama — kewenangan universitas penuh', w:0.08, r:4 },
+  { cat:'S', no:4, factor:'Ma\'had Al-Jami\'ah terintegrasi dengan sistem akademik', detail:'Ekosistem nilai-pesantren kampus yang tidak dimiliki semua PTKIN', w:0.07, r:3 },
+  { cat:'S', no:5, factor:'SDM: 329 dosen (81 S3, 15 Guru Besar) & 162 tendik', detail:'SIMPEG Kemenag April 2026 — kapasitas akademik yang memadai', w:0.07, r:3 },
+  { cat:'S', no:6, factor:'Infrastruktur modern dua kampus (SBSN 2022 & PSB 2024)', detail:'Kampus II: Gedung FTIK, FEBI, FASya, FUAD, PSB, Lapangan Bola, Kantin Ma\'had; 17 jalur PNBP terpetakan', w:0.06, r:3 },
+  { cat:'S', no:7, factor:'7 unit PNBP sudah beroperasi (LPH, LP3H, LKBH, Jurnal, Legalisir, Sewa Aset, PPG)', detail:'Aset kelembagaan aktif sebagai rekam jejak PNBP mandiri — argumen kuat RSB BLU ke Kemenkeu', w:0.06, r:3 },
+  { cat:'S', no:8, factor:'SIAKAD GAPURA — layanan akademik digital penuh', detail:'KRS, bimbingan, ujian, administrasi — sudah berjalan seluruh civitas', w:0.04, r:3 },
+  { cat:'S', no:9, factor:'Program moderasi beragama dan ToT aktif', detail:'Rumah Moderasi Beragama, trainer nasional — reputasi sosial positif', w:0.03, r:3 },
+  // WEAKNESSES
+  { cat:'W', no:1, factor:'Masih berstatus Satker (bukan BLU)', detail:'Seluruh PNBP disetor ke kas negara; tidak ada fleksibilitas keuangan mandiri', w:0.10, r:1 },
+  { cat:'W', no:2, factor:'Scopus 183 dok — sitasi/dosen hanya 2,04 (di bawah rata-rata PTKIN BLU)', detail:'SINTA: 183 Scopus | 9.348 GScholar | 1.934 Garuda; UIN Jakarta: 3.617 Scopus, sitasi/dosen 18,67', w:0.08, r:2 },
+  { cat:'W', no:3, factor:'Rasio dosen:mahasiswa 1:44 — paling berat di PTKIN Jatim', detail:'Mengurangi intensitas bimbingan, membebani dosen, menghambat riset', w:0.08, r:2 },
+  { cat:'W', no:4, factor:'143 Asisten Ahli (43,5%) — jabatan fungsional rendah dominan', detail:'Perlu akselerasi kenaikan jabatan agar produktivitas riset meningkat', w:0.07, r:2 },
+  { cat:'W', no:5, factor:'Belum ada RSB, SPM, & kebijakan AI formal', detail:'Tiga dokumen wajib yang menghambat pengajuan BLU dan integritas akademik', w:0.06, r:1 },
+  { cat:'W', no:6, factor:'Brand awareness rendah di luar Karesidenan Madiun', detail:'Tidak ada unit pemasaran profesional; promosi masih konvensional', w:0.05, r:2 },
+];
+
+const EFAS_DATA = [
+  // OPPORTUNITIES
+  { cat:'O', no:1, factor:'Momentum BLU — 28 PTKIN sudah BLU, jalur regulasi sudah matang', detail:'PP 26/2015, PMK BLU, SEKOLA BLU Kemenag tersedia sebagai pendampingan', w:0.12, r:4 },
+  { cat:'O', no:2, factor:'Anggaran pendidikan APBN 2026: Rp757,8 T (rekor tertinggi)', detail:'Kemenkeu RI 2025; peluang alokasi BOPTN, KIP-K, dan hibah riset lebih besar', w:0.10, r:3 },
+  { cat:'O', no:3, factor:'APK Dikti 34% (target 60% di 2045) — pasar mahasiswa masih besar', detail:'Bonus demografi: Gen Z 74 juta jiwa (27,94% populasi) — BPS 2024', w:0.09, r:4 },
+  { cat:'O', no:4, factor:'Permendiktisaintek 39/2025: micro-credential, RPL, kurikulum fleksibel', detail:'Menggantikan Permendikbudristek 53/2023; mendorong inovasi akademik', w:0.08, r:3 },
+  { cat:'O', no:5, factor:'Status UIN 2025 izinkan pembukaan prodi non-agama (STEM, kesehatan)', detail:'Perpres UIN 2025; pasar baru yang belum ada kompetitor PTKIN ring-1', w:0.07, r:4 },
+  { cat:'O', no:6, factor:'10 potensi PNBP baru: Catering, Klinik, Ma\'had bisnis, TOEFL/TOAFL, LSP P3, Seminar, RPL, Double Degree', detail:'Permendiktisaintek 39/2025 (RPL) + aset fisik Kampus II; sumber PNBP pasca-BLU yang konkret', w:0.05, r:3 },
+  // THREATS
+  { cat:'T', no:1, factor:'Inpres 1/2025 — efisiensi Rp306,69 T termasuk BOPTN dipangkas', detail:'Kemenkeu; Tempo.co 2025; dampak langsung pada operasional kampus', w:0.12, r:2 },
+  { cat:'T', no:2, factor:'28 PTKIN BLU unggul dalam rekrutmen SDM, promosi, & ekspansi fasilitas', detail:'Gap kompetitif yang melebar setiap tahun UIN Ponorogo masih Satker', w:0.10, r:1 },
+  { cat:'T', no:3, factor:'Geopolitik Trump tariff war — hambatan mobilitas akademik internasional', detail:'ICEF 2025; pembatasan pertukaran dosen/mahasiswa dan riset lintas negara', w:0.08, r:2 },
+  { cat:'T', no:4, factor:'AI generatif tanpa kebijakan = ancaman integritas akademik masif', detail:'SKB 7 Kementerian Maret 2026; "governance gap" mayoritas PTN Indonesia', w:0.07, r:2 },
+  { cat:'T', no:5, factor:'Urbanisasi & migrasi pemuda Ponorogo mengecilkan pasar lokal', detail:'TKW, urbanisasi ke Surabaya/Jakarta; calon mahasiswa ring-1 berkurang', w:0.06, r:2 },
+  { cat:'T', no:6, factor:'Dualitas regulasi Kemenag + Kemendiktisaintek pasca-UIN 2025', detail:'Beban birokrasi ganda dalam perizinan, akreditasi, dan pengembangan prodi', w:0.07, r:2 },
+];
+
+/* ============================================================
+   RENDER TABLES
+============================================================ */
+function renderTable(tbodyId, data, prefix) {
+  const tbody = document.getElementById(tbodyId);
+  tbody.innerHTML = '';
+  let currentCat = null;
+  let no = 0;
+
+  data.forEach((item, idx) => {
+    if (item.cat !== currentCat) {
+      currentCat = item.cat;
+      no = 0;
+      const catLabels = {
+        'S': { label: 'STRENGTHS — Kekuatan Internal', col: 'var(--green)' },
+        'W': { label: 'WEAKNESSES — Kelemahan Internal', col: 'var(--red)' },
+        'O': { label: 'OPPORTUNITIES — Peluang Eksternal', col: 'var(--accent)' },
+        'T': { label: 'THREATS — Ancaman Eksternal', col: 'var(--amber)' }
+      };
+      const cl = catLabels[item.cat];
+      const sep = document.createElement('tr');
+      sep.className = 'sep-row';
+      sep.innerHTML = `<td colspan="5" style="color:${cl.col}">${cl.label}</td>`;
+      tbody.appendChild(sep);
+    }
+    no++;
+    const tr = document.createElement('tr');
+    tr.className = `cat-${item.cat.toLowerCase()}`;
+    tr.dataset.idx = idx;
+    tr.dataset.prefix = prefix;
+
+    tr.innerHTML = `
+      <td class="num-label" style="color:${getCatColor(item.cat)}">${item.cat}${no}</td>
+      <td class="factor">${item.factor}<small>${item.detail}</small></td>
+      <td class="num">
+        <input type="number" min="0.00" max="1.00" step="0.01"
+          value="${item.w.toFixed(2)}" 
+          data-field="w" data-idx="${idx}" data-prefix="${prefix}"
+          onchange="onInputChange(this)" oninput="onInputChange(this)">
+      </td>
+      <td class="num">
+        <input type="range" min="1" max="4" step="1" value="${item.r}"
+          data-field="r" data-idx="${idx}" data-prefix="${prefix}"
+          oninput="onRangeChange(this)">
+        <span id="${prefix}_r_${idx}" style="font-weight:800;font-size:0.85rem;color:${getRatingColor(item.r)};margin-left:4px">${item.r}</span>
+      </td>
+      <td class="score-cell" id="${prefix}_score_${idx}" style="color:${getScoreColor(item.w * item.r)}">
+        ${(item.w * item.r).toFixed(3)}
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // Total rows
+  renderTotalRows(tbody, data, prefix);
+}
+
+function renderTotalRows(tbody, data, prefix) {
+  const cats = prefix === 'IF' 
+    ? [{cat:'S', label:'Total Kekuatan (S)'}, {cat:'W', label:'Total Kelemahan (W)'}]
+    : [{cat:'O', label:'Total Peluang (O)'}, {cat:'T', label:'Total Ancaman (T)'}];
+
+  cats.forEach(c => {
+    const items = data.filter(d => d.cat === c.cat);
+    const totalW = items.reduce((s,d)=>s+d.w,0);
+    const totalScore = items.reduce((s,d)=>s+(d.w*d.r),0);
+    const tr = document.createElement('tr');
+    tr.className = 'total-row';
+    tr.id = `${prefix}_total_${c.cat}`;
+    tr.innerHTML = `
+      <td colspan="2" style="color:${getCatColor(c.cat)}">${c.label}</td>
+      <td class="num" id="${prefix}_tw_${c.cat}">${totalW.toFixed(2)}</td>
+      <td class="num">—</td>
+      <td class="score-cell" style="color:${getCatColor(c.cat)}" id="${prefix}_ts_${c.cat}">${totalScore.toFixed(3)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // Grand total
+  const totalScore = data.reduce((s,d)=>s+(d.w*d.r),0);
+  const totalW = data.reduce((s,d)=>s+d.w,0);
+  const tr = document.createElement('tr');
+  tr.className = 'total-row';
+  tr.style.background = 'rgba(59,130,246,0.1)';
+  tr.innerHTML = `
+    <td colspan="2" style="font-weight:800">TOTAL ${prefix === 'IF' ? 'IFAS' : 'EFAS'}</td>
+    <td class="num" id="${prefix}_totalW" style="font-weight:800">${totalW.toFixed(2)}</td>
+    <td class="num">—</td>
+    <td class="score-cell" style="font-weight:800;font-size:0.95rem;color:var(--accent)" id="${prefix}_grand">
+      ${totalScore.toFixed(3)}
+    </td>
+  `;
+  tbody.appendChild(tr);
+}
+
+function getCatColor(cat) {
+  return {S:'var(--green)',W:'var(--red)',O:'var(--accent)',T:'var(--amber)'}[cat];
+}
+function getRatingColor(r) {
+  return r >= 4 ? 'var(--green)' : r === 3 ? 'var(--cyan)' : r === 2 ? 'var(--amber)' : 'var(--red)';
+}
+function getScoreColor(s) {
+  return s >= 0.35 ? 'var(--green)' : s >= 0.20 ? 'var(--cyan)' : s >= 0.10 ? 'var(--amber)' : 'var(--red)';
+}
+
+/* ============================================================
+   INPUT HANDLERS
+============================================================ */
+function onInputChange(el) {
+  const idx = parseInt(el.dataset.idx);
+  const prefix = el.dataset.prefix;
+  const data = prefix === 'IF' ? IFAS_DATA : EFAS_DATA;
+  let val = parseFloat(el.value);
+  if (isNaN(val) || val < 0) val = 0;
+  if (val > 1) val = 1;
+  data[idx].w = val;
+  updateScoreCell(idx, prefix, data);
+  updateTotals(prefix, data);
+  updateSummary();
+  updateCharts();
+}
+
+function onRangeChange(el) {
+  const idx = parseInt(el.dataset.idx);
+  const prefix = el.dataset.prefix;
+  const data = prefix === 'IF' ? IFAS_DATA : EFAS_DATA;
+  const r = parseInt(el.value);
+  data[idx].r = r;
+  // Update label
+  const lbl = document.getElementById(`${prefix}_r_${idx}`);
+  if (lbl) { lbl.textContent = r; lbl.style.color = getRatingColor(r); }
+  updateScoreCell(idx, prefix, data);
+  updateTotals(prefix, data);
+  updateSummary();
+  updateCharts();
+}
+
+function updateScoreCell(idx, prefix, data) {
+  const sc = document.getElementById(`${prefix}_score_${idx}`);
+  if (!sc) return;
+  const score = data[idx].w * data[idx].r;
+  sc.textContent = score.toFixed(3);
+  sc.style.color = getScoreColor(score);
+}
+
+function updateTotals(prefix, data) {
+  const cats = prefix === 'IF' ? ['S','W'] : ['O','T'];
+  cats.forEach(cat => {
+    const items = data.filter(d => d.cat === cat);
+    const tw = items.reduce((s,d)=>s+d.w,0);
+    const ts = items.reduce((s,d)=>s+(d.w*d.r),0);
+    const twEl = document.getElementById(`${prefix}_tw_${cat}`);
+    const tsEl = document.getElementById(`${prefix}_ts_${cat}`);
+    if (twEl) twEl.textContent = tw.toFixed(2);
+    if (tsEl) { tsEl.textContent = ts.toFixed(3); tsEl.style.color = getCatColor(cat); }
+  });
+  const total = data.reduce((s,d)=>s+(d.w*d.r),0);
+  const totalW = data.reduce((s,d)=>s+d.w,0);
+  const gEl = document.getElementById(`${prefix}_grand`);
+  const wEl = document.getElementById(`${prefix}_totalW`);
+  if (gEl) gEl.textContent = total.toFixed(3);
+  if (wEl) wEl.textContent = totalW.toFixed(2);
+}
+
+/* ============================================================
+   SUMMARY & QUADRANT
+============================================================ */
+function updateSummary() {
+  const ife = IFAS_DATA.reduce((s,d)=>s+(d.w*d.r),0);
+  const efe = EFAS_DATA.reduce((s,d)=>s+(d.w*d.r),0);
+  const ifeS = IFAS_DATA.filter(d=>d.cat==='S').reduce((s,d)=>s+(d.w*d.r),0);
+  const ifeW = IFAS_DATA.filter(d=>d.cat==='W').reduce((s,d)=>s+(d.w*d.r),0);
+  const efeO = EFAS_DATA.filter(d=>d.cat==='O').reduce((s,d)=>s+(d.w*d.r),0);
+  const efeT = EFAS_DATA.filter(d=>d.cat==='T').reduce((s,d)=>s+(d.w*d.r),0);
+
+  document.getElementById('ifeTotal').textContent = ife.toFixed(3);
+  document.getElementById('efeTotal').textContent = efe.toFixed(3);
+
+  // Determine quadrant
+  let qKey = '', qLabel = '', strategy = '', stratLabel = '', color = '';
+  if (ife >= 2.5 && efe >= 2.5) {
+    qKey = 'I'; qLabel = 'Kuadran I — SO'; strategy = 'SO'; stratLabel = 'Agresif / Grow'; color = 'var(--green)';
+  } else if (ife < 2.5 && efe >= 2.5) {
+    qKey = 'II'; qLabel = 'Kuadran II — WO'; strategy = 'WO'; stratLabel = 'Perbaikan / Turn-around'; color = 'var(--cyan)';
+  } else if (ife >= 2.5 && efe < 2.5) {
+    qKey = 'III'; qLabel = 'Kuadran III — ST'; strategy = 'ST'; stratLabel = 'Difensif / Diversifikasi'; color = 'var(--amber)';
+  } else {
+    qKey = 'IV'; qLabel = 'Kuadran IV — WT'; strategy = 'WT'; stratLabel = 'Bertahan / Defensif'; color = 'var(--red)';
+  }
+
+  document.getElementById('quadrant').textContent = `Kuadran ${qKey}`;
+  document.getElementById('quadrant').style.color = color;
+  document.getElementById('quadrantLabel').textContent = qLabel;
+  document.getElementById('strategyCode').textContent = strategy;
+  document.getElementById('strategyCode').style.color = color;
+  document.getElementById('strategyLabel').textContent = stratLabel;
+
+  // Highlight active quadrant
+  ['SO','WO','ST','WT'].forEach(q => {
+    document.getElementById(`q-${q}`)?.classList.remove('active-quad');
+  });
+  document.getElementById(`q-${strategy}`)?.classList.add('active-quad');
+
+  // Recommendation text
+  const diff_s = (ifeS - ifeW).toFixed(3);
+  const diff_e = (efeO - efeT).toFixed(3);
+  const recMap = {
+    'SO': `<strong>Posisi Agresif (Kuadran I — SO):</strong> UIN Ponorogo memiliki keunggulan internal yang signifikan (IFE=${ife.toFixed(3)}) didukung peluang eksternal yang besar (EFE=${efe.toFixed(3)}). Selisih S−W = <strong style='color:var(--green)'>${diff_s}</strong>, selisih O−T = <strong style='color:var(--accent)'>${diff_e}</strong>.<br><br>
+    Rekomendasi: <strong>1)</strong> Percepat pengajuan BLU sebelum Desember 2026 — manfaatkan akreditasi Unggul, Perpres alih status UIN, dan <strong>17 jalur PNBP yang sudah terpetakan</strong> (7 existing + 10 potensi) sebagai argumen kuat RSB ke Kemenkeu. <strong>2)</strong> Formalisasi unit PNBP prioritas: LPH, LP3H, LSP P3, Conference Center PSB, dan program RPL/Double Degree. <strong>3)</strong> Buka 2 prodi non-agama (Informatika + Psikologi) memanfaatkan kewenangan UIN baru. <strong>4)</strong> Ekspansi zona PMB ke Jawa Timur barat &amp; Jawa Tengah timur. <strong>5)</strong> Ajukan hibah riset nasional LPDP dengan modal 81 dosen S3.`,
+
+    'WO': `<strong>Posisi Turn-around (Kuadran II — WO):</strong> Peluang eksternal besar (EFE=${efe.toFixed(3)}) namun kapasitas internal perlu ditingkatkan (IFE=${ife.toFixed(3)}). Selisih S−W = <strong style='color:var(--red)'>${diff_s}</strong>, selisih O−T = <strong style='color:var(--accent)'>${diff_e}</strong>.<br><br>
+    Rekomendasi: <strong>1)</strong> Prioritaskan perbaikan internal: susun RSB+SPM BLU, turunkan rasio dosen-mahasiswa, tingkatkan publikasi Scopus. <strong>2)</strong> Gunakan <strong>7 sumber PNBP existing</strong> (LPH, LP3H, LKBH, Sewa Aset, PPG, Legalisir, Jurnal) sebagai rekam jejak PNBP mandiri untuk memperkuat proposal BLU. <strong>3)</strong> Manfaatkan peluang hibah KIP-K dan LPDP untuk mendanai perbaikan internal. <strong>4)</strong> Konsorsium riset dengan UINSATU dan IAIN Kediri untuk kompensasi kelemahan Scopus.`,
+
+    'ST': `<strong>Posisi Difensif (Kuadran III — ST):</strong> Kekuatan internal ada (IFE=${ife.toFixed(3)}) namun lingkungan eksternal kurang berpihak (EFE=${efe.toFixed(3)}). Selisih S−W = <strong style='color:var(--green)'>${diff_s}</strong>, selisih O−T = <strong style='color:var(--amber)'>${diff_e}</strong>.<br><br>
+    Rekomendasi: <strong>1)</strong> Gunakan kekuatan (monopoli geografis, akreditasi Unggul, Ma'had, ekosistem PNBP 17 jalur) untuk bertahan dari tekanan kompetitor BLU yang lebih besar. <strong>2)</strong> Maksimalkan sumber PNBP existing dalam koridor Satker sambil menunggu BLU — catering, klinik, kantin Kampus II, dan sewa lapangan. <strong>3)</strong> Diversifikasi lewat RPL dan program hybrid sebagai segmen non-reguler baru.`,
+
+    'WT': `<strong>Posisi Bertahan (Kuadran IV — WT):</strong> Situasi paling kritis — kelemahan internal dominan (IFE=${ife.toFixed(3)}) di tengah ancaman eksternal tinggi (EFE=${efe.toFixed(3)}). Selisih S−W = <strong style='color:var(--red)'>${diff_s}</strong>, selisih O−T = <strong style='color:var(--red)'>${diff_e}</strong>.<br><br>
+    Rekomendasi: <strong>1)</strong> Fokus pada core strengths: monopoli geografis, nilai Ma'had, dan akreditasi Unggul — jangan ekspansi dahulu. <strong>2)</strong> Optimalkan PNBP existing (LPH, Sewa Aset, PPG, Legalisir) sebagai sumber kas mandiri darurat. <strong>3)</strong> Efisiensi anggaran ketat dan percepat BLU sebagai satu-satunya exit strategy dari perangkap Satker yang membatasi semua opsi strategis.`
+  };
+  document.getElementById('recText').innerHTML = recMap[strategy] || '—';
+}
+
+/* ============================================================
+   CHARTS
+============================================================ */
+let _ieChart = null, _barChart = null;
+
+function updateCharts() {
+  const ife = IFAS_DATA.reduce((s,d)=>s+(d.w*d.r),0);
+  const efe = EFAS_DATA.reduce((s,d)=>s+(d.w*d.r),0);
+  const dark = document.documentElement.getAttribute('data-theme') !== 'light';
+  const tc = dark ? '#f8fafc' : '#0f172a';
+  const mc = dark ? '#94a3b8' : '#64748b';
+  const gc = dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)';
+
+  // IE Chart
+  if (_ieChart) _ieChart.destroy();
+  _ieChart = new Chart(document.getElementById('chartIE'), {
+    type: 'scatter',
+    data: {
+      datasets: [{
+        label: 'UIN Ponorogo',
+        data: [{ x: ife, y: efe }],
+        pointRadius: 16, pointHoverRadius: 20,
+        pointBackgroundColor: '#22c55e',
+        pointBorderColor: '#fff', pointBorderWidth: 3
+      }]
+    },
+    options: {
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => `IFE: ${ctx.parsed.x.toFixed(3)} | EFE: ${ctx.parsed.y.toFixed(3)}`
+          }
+        }
+      },
+      scales: {
+        x: { min: 1, max: 4, title: { display: true, text: 'IFE Score (Internal)', color: tc, font: { size: 11 } },
+          ticks: { color: mc }, grid: { color: gc } },
+        y: { min: 1, max: 4, title: { display: true, text: 'EFE Score (Eksternal)', color: tc, font: { size: 11 } },
+          ticks: { color: mc }, grid: { color: gc } }
+      },
+      animation: { duration: 400 }
+    },
+    plugins: [{
+      id: 'ieLines',
+      afterDraw(chart) {
+        const { ctx, chartArea: { left, right, top, bottom }, scales } = chart;
+        const cx = scales.x.getPixelForValue(2.5);
+        const cy = scales.y.getPixelForValue(2.5);
+        ctx.save();
+        ctx.strokeStyle = dark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.14)';
+        ctx.setLineDash([5, 4]); ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(cx, top); ctx.lineTo(cx, bottom); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(left, cy); ctx.lineTo(right, cy); ctx.stroke();
+        ctx.setLineDash([]);
+        [{ t: 'GROW (SO)', x: (cx+right)/2, y: (top+cy)/2, c: '#22c55e' },
+         { t: 'TURN-AROUND (WO)', x: (left+cx)/2, y: (top+cy)/2, c: '#06b6d4' },
+         { t: 'DIFENSIF (ST)', x: (cx+right)/2, y: (cy+bottom)/2, c: '#f59e0b' },
+         { t: 'BERTAHAN (WT)', x: (left+cx)/2, y: (cy+bottom)/2, c: '#ef4444' }
+        ].forEach(l => {
+          ctx.font = 'bold 9px Inter,sans-serif';
+          ctx.fillStyle = l.c; ctx.textAlign = 'center'; ctx.globalAlpha = 0.5;
+          ctx.fillText(l.t, l.x, l.y);
+        });
+        // Current position label
+        const px = scales.x.getPixelForValue(ife);
+        const py = scales.y.getPixelForValue(efe);
+        ctx.globalAlpha = 1; ctx.font = 'bold 10px Inter,sans-serif';
+        ctx.fillStyle = '#22c55e'; ctx.textAlign = 'left';
+        ctx.fillText(`(${ife.toFixed(2)}, ${efe.toFixed(2)})`, px + 18, py - 8);
+        ctx.restore();
+      }
+    }]
+  });
+
+  // Bar Chart
+  const subScores = [
+    { label: 'S (Strengths)', val: IFAS_DATA.filter(d=>d.cat==='S').reduce((s,d)=>s+(d.w*d.r),0), col: 'rgba(34,197,94,0.7)' },
+    { label: 'W (Weaknesses)', val: IFAS_DATA.filter(d=>d.cat==='W').reduce((s,d)=>s+(d.w*d.r),0), col: 'rgba(239,68,68,0.7)' },
+    { label: 'O (Opportunities)', val: EFAS_DATA.filter(d=>d.cat==='O').reduce((s,d)=>s+(d.w*d.r),0), col: 'rgba(59,130,246,0.7)' },
+    { label: 'T (Threats)', val: EFAS_DATA.filter(d=>d.cat==='T').reduce((s,d)=>s+(d.w*d.r),0), col: 'rgba(245,158,11,0.7)' },
+    { label: 'TOTAL IFAS', val: IFAS_DATA.reduce((s,d)=>s+(d.w*d.r),0), col: 'rgba(34,197,94,0.4)' },
+    { label: 'TOTAL EFAS', val: EFAS_DATA.reduce((s,d)=>s+(d.w*d.r),0), col: 'rgba(59,130,246,0.4)' },
+  ];
+  if (_barChart) _barChart.destroy();
+  _barChart = new Chart(document.getElementById('chartBar'), {
+    type: 'bar',
+    data: {
+      labels: subScores.map(s => s.label),
+      datasets: [{
+        data: subScores.map(s => +s.val.toFixed(3)),
+        backgroundColor: subScores.map(s => s.col),
+        borderRadius: 6, borderSkipped: false
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      plugins: { legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` Skor: ${ctx.parsed.x.toFixed(3)}` } }
+      },
+      scales: {
+        x: { min: 0, max: 4, ticks: { color: mc, stepSize: 0.5 }, grid: { color: gc },
+          title: { display: true, text: 'Skor Tertimbang', color: tc, font: { size: 10 } }
+        },
+        y: { ticks: { color: tc, font: { size: 10 } }, grid: { display: false } }
+      },
+      animation: { duration: 400 }
+    }
+  });
+}
+
+/* ============================================================
+   THEME & EXPORT
+============================================================ */
+function toggleTheme() {
+  const d = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', d ? 'light' : 'dark');
+  document.getElementById('themeToggle').textContent = d ? '🌙 Tema' : '☀️ Tema';
+  updateCharts();
+}
+
+function exportSection(id, filename) {
+  const el = document.getElementById(id);
+  const btn = el.querySelector('.export-btn');
+  if (btn) btn.style.display = 'none';
+  const dark = document.documentElement.getAttribute('data-theme') !== 'light';
+  html2canvas(el, { scale: 2, backgroundColor: dark ? '#1e293b' : '#ffffff', useCORS: true, logging: false })
+    .then(c => {
+      if (btn) btn.style.display = '';
+      const a = document.createElement('a');
+      a.download = `${filename}_${new Date().toISOString().slice(0,10)}.png`;
+      a.href = c.toDataURL('image/png');
+      a.click();
+    }).catch(() => { if (btn) btn.style.display = ''; });
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+window.addEventListener('load', () => {
+  renderTable('tbodyIFAS', IFAS_DATA, 'IF');
+  renderTable('tbodyEFAS', EFAS_DATA, 'EF');
+  updateSummary();
+  updateCharts();
+});
+</script>
+</body>
+</html>

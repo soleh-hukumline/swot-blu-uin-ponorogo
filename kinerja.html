@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matriks Kinerja RSB — UIN Kiai Ageng Muhammad Besari Ponorogo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0f172a;--surface:#1e293b;--card:rgba(30,41,59,0.96);
+  --text:#f8fafc;--muted:#94a3b8;--accent:#3b82f6;
+  --border:rgba(255,255,255,0.08);--green:#22c55e;--amber:#f59e0b;
+  --red:#ef4444;--purple:#a78bfa;--cyan:#06b6d4;--teal:#14b8a6;
+}
+[data-theme="light"]{
+  --bg:#f1f5f9;--surface:#fff;--card:rgba(255,255,255,0.97);
+  --text:#0f172a;--muted:#64748b;--border:rgba(0,0,0,0.09);
+  --green:#16a34a;--amber:#d97706;--red:#dc2626;--purple:#7c3aed;--cyan:#0891b2;--teal:#0d9488;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* HEADER */
+header{display:flex;justify-content:space-between;align-items:center;
+  padding:1rem 2.5rem;background:var(--card);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+header h1{font-size:1.05rem;font-weight:700;}
+header h1 span{color:var(--accent);}
+.nav-links{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.8rem;
+  padding:0.3rem 0.7rem;border-radius:7px;border:1px solid var(--border);transition:all 0.2s;}
+.nav-links a:hover,.nav-links a.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.theme-btn{padding:0.3rem 0.8rem;border-radius:7px;border:1px solid var(--border);
+  background:transparent;color:var(--muted);cursor:pointer;font-size:0.8rem;
+  font-family:'Inter',sans-serif;transition:all 0.2s;}
+.theme-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#060d1a 0%,#082040 55%,#060d1a 100%);
+  padding:2.5rem 2.5rem 2rem;border-bottom:1px solid var(--border);position:relative;text-align:center;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(59,130,246,0.15) 0%,transparent 70%);}
+.hero::after{content:'RSB 2025–2029';position:absolute;font-size:8rem;font-weight:900;
+  color:rgba(255,255,255,0.015);bottom:-2rem;right:5%;font-family:'Merriweather',serif;
+  pointer-events:none;white-space:nowrap;}
+.hero-label{font-size:0.68rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  color:var(--accent);margin-bottom:0.6rem;position:relative;}
+.hero h2{font-family:'Merriweather',serif;font-size:clamp(1.3rem,2.5vw,1.9rem);
+  font-weight:700;color:#f8fafc;margin-bottom:0.5rem;position:relative;line-height:1.3;}
+.hero-sub{font-size:0.85rem;color:#94a3b8;max-width:680px;margin:0 auto 1rem;position:relative;}
+.hero-pills{display:flex;justify-content:center;gap:0.6rem;flex-wrap:wrap;position:relative;}
+.pill{font-size:0.72rem;font-weight:600;padding:0.3rem 0.8rem;border-radius:20px;
+  border:1px solid rgba(255,255,255,0.12);color:#94a3b8;background:rgba(255,255,255,0.04);}
+
+/* PAGE */
+.page{max-width:1200px;margin:0 auto;padding:1.5rem;}
+
+/* FILTER TOOLBAR */
+.toolbar{display:flex;gap:0.6rem;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;}
+.filter-btn{padding:0.35rem 0.9rem;border-radius:20px;border:1px solid var(--border);
+  background:transparent;color:var(--muted);cursor:pointer;font-size:0.78rem;
+  font-family:'Inter',sans-serif;transition:all 0.2s;font-weight:500;}
+.filter-btn:hover{border-color:var(--accent);color:var(--accent);}
+.filter-btn.active{border-color:var(--accent);background:rgba(59,130,246,0.12);color:var(--accent);font-weight:700;}
+.search-box{flex:1;min-width:200px;max-width:320px;}
+.search-box input{width:100%;background:var(--surface);border:1px solid var(--border);
+  color:var(--text);border-radius:20px;padding:0.35rem 0.9rem 0.35rem 2rem;
+  font-size:0.8rem;font-family:'Inter',sans-serif;outline:none;transition:all 0.2s;}
+.search-box input:focus{border-color:var(--accent);}
+.search-box{position:relative;}
+.search-box::before{content:'🔍';position:absolute;left:0.7rem;top:50%;transform:translateY(-50%);
+  font-size:0.75rem;pointer-events:none;}
+.export-all-btn{margin-left:auto;padding:0.35rem 1rem;border-radius:20px;
+  border:1px solid var(--accent);background:rgba(59,130,246,0.1);color:var(--accent);
+  cursor:pointer;font-size:0.78rem;font-family:'Inter',sans-serif;font-weight:600;transition:all 0.2s;}
+.export-all-btn:hover{background:var(--accent);color:#fff;}
+
+/* SUMMARY CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0.9rem;margin-bottom:1.8rem;}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:0.9rem 1rem;position:relative;overflow:hidden;transition:transform 0.2s;}
+.kpi-card:hover{transform:translateY(-2px);}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi-card.c1::before{background:linear-gradient(90deg,#3b82f6,#06b6d4);}
+.kpi-card.c2::before{background:linear-gradient(90deg,#22c55e,#14b8a6);}
+.kpi-card.c3::before{background:linear-gradient(90deg,#f59e0b,#ef4444);}
+.kpi-card.c4::before{background:linear-gradient(90deg,#a78bfa,#ec4899);}
+.kpi-card.c5::before{background:linear-gradient(90deg,#06b6d4,#3b82f6);}
+.kpi-card.c6::before{background:linear-gradient(90deg,#14b8a6,#22c55e);}
+.kpi-card .kpi-lbl{font-size:0.67rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:0.25rem;}
+.kpi-card .kpi-val{font-size:1.6rem;font-weight:800;}
+.kpi-card .kpi-sub{font-size:0.68rem;color:var(--muted);margin-top:2px;}
+
+/* SECTION HEADER */
+.sec-hdr{display:flex;justify-content:space-between;align-items:center;
+  margin:2rem 0 0.8rem;padding-bottom:0.6rem;border-bottom:2px solid var(--border);}
+.sec-hdr-left{display:flex;align-items:center;gap:0.7rem;}
+.sec-hdr h3{font-size:1rem;font-weight:700;}
+.sec-tag{font-size:0.67rem;font-weight:700;padding:0.2rem 0.7rem;border-radius:12px;letter-spacing:0.5px;}
+.sec-hdr .export-btn{padding:3px 10px;font-size:0.67rem;border-radius:5px;
+  border:1px solid var(--border);background:rgba(255,255,255,0.04);
+  color:var(--muted);cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif;}
+.sec-hdr .export-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* TABLE */
+.tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  overflow:hidden;margin-bottom:2.5rem;}
+.tbl-scroll{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:0.8rem;}
+thead th{padding:0.65rem 0.8rem;font-size:0.64rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;color:var(--muted);border-bottom:2px solid var(--border);
+  background:rgba(255,255,255,0.02);white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--border);transition:background 0.15s;}
+tbody tr:hover{background:rgba(59,130,246,0.04);}
+tbody tr:last-child{border-bottom:none;}
+tbody tr.hidden-row{display:none;}
+td{padding:0.55rem 0.8rem;vertical-align:middle;}
+
+/* SPECIFIC COLUMNS */
+.td-code{font-size:0.67rem;color:var(--muted);font-family:monospace;white-space:nowrap;}
+.td-indicator{font-size:0.8rem;color:var(--text);line-height:1.45;min-width:220px;}
+.td-indicator small{display:block;font-size:0.68rem;color:var(--muted);margin-top:2px;}
+.td-unit{font-size:0.72rem;color:var(--muted);text-align:center;white-space:nowrap;}
+.td-baseline{font-size:0.78rem;font-weight:600;text-align:center;color:var(--text);}
+.td-target{font-size:0.78rem;text-align:center;font-weight:600;}
+.td-unit-org{font-size:0.68rem;color:var(--cyan);text-align:center;}
+
+/* TARGET YEAR CELLS */
+.t-yr{text-align:center;font-weight:600;font-size:0.78rem;border-left:1px solid var(--border);}
+.t-yr.y25{color:var(--accent);}
+.t-yr.y26{color:var(--cyan);}
+.t-yr.y27{color:var(--teal);}
+.t-yr.y28{color:var(--green);}
+.t-yr.y29{color:var(--purple);}
+
+/* SP GROUP ROW */
+tr.sp-row{background:rgba(59,130,246,0.04);}
+tr.sp-row td{font-size:0.72rem;font-weight:700;color:var(--accent);
+  padding:0.55rem 0.8rem;border-top:2px solid rgba(59,130,246,0.2);}
+tr.sk-row{background:rgba(255,255,255,0.02);}
+tr.sk-row td{font-size:0.7rem;font-weight:600;color:var(--muted);
+  padding:0.4rem 0.8rem;border-top:1px dashed var(--border);}
+tr.ikt-row{background:rgba(167,139,250,0.03);}
+tr.ikt-row td.td-code{color:var(--purple);}
+
+/* BADGE */
+.badge-pill{display:inline-block;font-size:0.62rem;font-weight:700;padding:1px 7px;
+  border-radius:10px;letter-spacing:0.4px;white-space:nowrap;}
+.b-s{background:rgba(59,130,246,0.12);color:var(--accent);border:1px solid rgba(59,130,246,0.25);}
+.b-k{background:rgba(34,197,94,0.12);color:var(--green);border:1px solid rgba(34,197,94,0.25);}
+.b-t{background:rgba(167,139,250,0.12);color:var(--purple);border:1px solid rgba(167,139,250,0.25);}
+
+/* CHART ROW */
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin:1.5rem 0;}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:1.2rem;position:relative;}
+.chart-card h4{font-size:0.74rem;color:var(--muted);text-transform:uppercase;
+  letter-spacing:1px;margin-bottom:1rem;}
+.chart-inner{position:relative;height:280px;}
+
+/* PROGRESS BAR */
+.prog-row{display:grid;grid-template-columns:1fr;gap:0.7rem;margin-bottom:2rem;}
+.prog-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0.9rem 1.1rem;}
+.prog-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;}
+.prog-label{font-size:0.78rem;font-weight:600;}
+.prog-vals{font-size:0.72rem;color:var(--muted);}
+.prog-bar-wrap{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;}
+.prog-bar{height:100%;border-radius:3px;transition:width 0.8s ease;}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:1.5rem 0;}
+
+@media(max-width:900px){
+  .chart-row{grid-template-columns:1fr;}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);}
+  .page{padding:1rem;}
+  header{flex-direction:column;gap:0.6rem;}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>📊 Matriks <span>Kinerja RSB</span></h1>
+  <div class="nav-links">
+    <a href="index.html">🗺️ Dashboard</a>
+    <a href="matriks.html">📑 IFAS/EFAS</a>
+    <a href="kinerja.html" class="active">📊 Kinerja RSB</a>
+    <a href="sinta.html">🔬 SINTA</a>
+    <a href="swot_blu.html">⚡ SWOT-BLU</a>
+    <a href="swot_pestle.html">📋 PESTLE</a>
+    <button class="theme-btn" id="themeToggle" onclick="toggleTheme()">☀️ Tema</button>
+    <button class="theme-btn" onclick="exportFullPDF()" style="background:rgba(59,130,246,0.12);border-color:rgba(59,130,246,0.4);color:#3b82f6;font-weight:600;">📄 Export PDF</button>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-label">Lampiran 1a — Rencana Strategis Bisnis (RSB)</div>
+  <h2>Matriks Kinerja Institusional<br>UIN Kiai Ageng Muhammad Besari Ponorogo</h2>
+  <p class="hero-sub">Indikator Kinerja Sasaran Program (IKSP), Sasaran Kegiatan (IKSK), dan IKT untuk periode 2025–2029</p>
+  <div class="hero-pills">
+    <span class="pill">📅 Target 2025–2029</span>
+    <span class="pill">🏛️ Sumber: RSB UIN Ponorogo</span>
+    <span class="pill">📋 22 Indikator Tambahan (IKT)</span>
+    <span class="pill">🎯 7 Sasaran Program (SP)</span>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- KPI SUMMARY -->
+  <div class="kpi-grid" id="kpi-section">
+    <div class="kpi-card c1">
+      <div class="kpi-lbl">Mahasiswa (Baseline)</div>
+      <div class="kpi-val">10.182</div>
+      <div class="kpi-sub">Target 2029: +7,9% p.a.</div>
+    </div>
+    <div class="kpi-card c2">
+      <div class="kpi-lbl">Prodi Terakreditasi</div>
+      <div class="kpi-val">100%</div>
+      <div class="kpi-sub">Target: Stabil 100% (2025–2029)</div>
+    </div>
+    <div class="kpi-card c3">
+      <div class="kpi-lbl">Prodi Akreditasi Unggul</div>
+      <div class="kpi-val" id="kpi-unggul">37,9%</div>
+      <div class="kpi-sub">Target 2029: 48,2%</div>
+    </div>
+    <div class="kpi-card c4">
+      <div class="kpi-lbl">Dosen Berkualifikasi S3</div>
+      <div class="kpi-val">29,67%</div>
+      <div class="kpi-sub">Target 2029: 40%</div>
+    </div>
+    <div class="kpi-card c5">
+      <div class="kpi-lbl">Penerimaan Beasiswa</div>
+      <div class="kpi-val">12,59%</div>
+      <div class="kpi-sub">Target 2029: 12,75%</div>
+    </div>
+    <div class="kpi-card c6">
+      <div class="kpi-lbl">Nilai SAKIP</div>
+      <div class="kpi-val">90</div>
+      <div class="kpi-sub">Target stabil: 90 (2025–2029)</div>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="chart-row" id="chart-main">
+    <div class="chart-card">
+      <button class="export-btn" style="position:absolute;top:0.7rem;right:0.7rem;padding:3px 10px;font-size:0.67rem;border-radius:5px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;" onclick="exportSection('chart-main','kinerja_chart')">📷 PNG</button>
+      <h4>📈 Tren Target Kinerja Utama (2025–2029)</h4>
+      <div class="chart-inner"><canvas id="chartTrend"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h4>🍩 Distribusi Indikator per Sasaran Program</h4>
+      <div class="chart-inner"><canvas id="chartDist"></canvas></div>
+    </div>
+  </div>
+
+  <!-- PROGRESS BARS -->
+  <div class="sec-hdr" id="prog-hdr">
+    <div class="sec-hdr-left">
+      <h3>🎯 Progress Gap: Baseline → Target 2029</h3>
+    </div>
+    <button class="export-btn" onclick="exportSection('prog-section','kinerja_progress')">📷 PNG</button>
+  </div>
+  <div class="prog-row" id="prog-section"></div>
+
+  <div class="divider"></div>
+
+  <!-- FILTER TOOLBAR -->
+  <div class="toolbar">
+    <button class="filter-btn active" onclick="filterTable('all',this)">Semua</button>
+    <button class="filter-btn" style="color:var(--accent);border-color:rgba(59,130,246,0.3)" onclick="filterTable('SP',this)">SP — Sasaran Program</button>
+    <button class="filter-btn" style="color:var(--green);border-color:rgba(34,197,94,0.3)" onclick="filterTable('SK',this)">IKSK — Sasaran Kegiatan</button>
+    <button class="filter-btn" style="color:var(--purple);border-color:rgba(167,139,250,0.3)" onclick="filterTable('IKT',this)">IKT — Indikator Tambahan</button>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Cari indikator..." oninput="searchTable(this.value)">
+    </div>
+    <button class="export-all-btn" onclick="exportSection('full-table','matriks_kinerja_full')">📷 Export Tabel PNG</button>
+  </div>
+
+  <!-- MAIN TABLE -->
+  <div class="tbl-wrap" id="full-table">
+    <div class="tbl-scroll">
+      <table id="kinerjaTable">
+        <thead>
+          <tr>
+            <th>Kode</th>
+            <th>Indikator Kinerja (IKSP / IKSK / IKT)</th>
+            <th>Satuan</th>
+            <th>Baseline</th>
+            <th style="border-left:1px solid var(--border)">2025</th>
+            <th>2026</th>
+            <th>2027</th>
+            <th>2028</th>
+            <th>2029</th>
+            <th>Unit Pelaksana</th>
+          </tr>
+        </thead>
+        <tbody id="kinerjaBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+/* ============================================================
+   DATA MATRIX KINERJA
+============================================================ */
+const DATA = [
+  // SS.6 — Penyelenggaraan Pendidikan Tinggi Keagamaan
+  { type:'SS', code:'SS.6', label:'Meningkatnya penyelenggaraan pendidikan tinggi keagamaan yang berkualitas', unit:'', baseline:'', y25:'', y26:'', y27:'', y28:'', y29:'', org:'' },
+
+  // SP.6 — Partisipasi Mahasiswa
+  { type:'SP', code:'SP.6', label:'Meningkatnya partisipasi mahasiswa pada UIN Ponorogo', unit:'', baseline:'', y25:'', y26:'', y27:'', y28:'', y29:'', org:'' },
+  { type:'IKSP', code:'IKSP.6.2', label:'Persentase peningkatan jumlah mahasiswa UIN Ponorogo', unit:'%', baseline:'10.182', y25:'7', y26:'7,3', y27:'7,5', y28:'7,7', y29:'7,9', org:'Fakultas, Pascasarjana' },
+
+  // SK.2312.1 — Sarana & Prasarana
+  { type:'SK', code:'SK.2312.1', label:'Meningkatnya kualitas sarana dan prasarana UIN Ponorogo', unit:'', baseline:'', y25:'', y26:'', y27:'', y28:'', y29:'', org:'' },
+  { type:'IKSK', code:'IKSK.2132.2.1', label:'Persentase prodi yang memenuhi standar sarana prasarana', unit:'%', baseline:'NA', y25:'66', y26:'67', y27:'68', y28:'69', y29:'70', org:'Fakultas, Pascasarjana' },
+  { type:'IKSK', code:'IKSK.2132.1.2', label:'Persentase Fakultas & Pascasarjana yang menyediakan fasilitas inklusif dan berbasis gender', unit:'%', baseline:'NA', y25:'7', y26:'7,5', y27:'8', y28:'8,5', y29:'9', org:'Fakultas, Pascasarjana' },
+  { type:'IKT', code:'IKT 1', label:'Persentase sarana dan prasarana berbasis green campus', unit:'%', baseline:'NA', y25:'30', y26:'40', y27:'50', y28:'62', y29:'75', org:'Fakultas, Pascasarjana' },
+  { type:'IKT', code:'IKT 2', label:'Jumlah koleksi digital dan cetak di Perpustakaan', unit:'Angka', baseline:'27.000', y25:'27.400', y26:'27.800', y27:'28.200', y28:'29.600', y29:'30.000', org:'Perpustakaan' },
+  { type:'IKT', code:'IKT 3', label:'Persentase layanan akademik dan administrasi berbasis digital', unit:'%', baseline:'NA', y25:'10', y26:'20', y27:'30', y28:'40', y29:'50', org:'TIPD' },
+  { type:'IKT', code:'IKT 4', label:'Jumlah unit pendukung kelembagaan (Crisis Center, Business Center, dll.)', unit:'Angka', baseline:'NA', y25:'1', y26:'3', y27:'5', y28:'7', y29:'10', org:'Biro' },
+
+  // SK.2312.2 — Layanan Terjangkau
+  { type:'SK', code:'SK.2312.2', label:'Meningkatnya layanan pendidikan UIN Ponorogo yang terjangkau', unit:'', baseline:'', y25:'', y26:'', y27:'', y28:'', y29:'', org:'' },
+  { type:'IKSK', code:'IKSK.2132.2.1', label:'Persentase mahasiswa UIN Ponorogo penerima beasiswa', unit:'%', baseline:'12,59', y25:'11,88', y26:'12', y27:'12,25', y28:'12,50', y29:'12,75', org:'Kasubag Akademik' },
+  { type:'IKSK', code:'IKSK.2132.2.2', label:'Persentase peningkatan animo mahasiswa baru', unit:'%', baseline:'NA', y25:'0,96', y26:'1,71', y27:'2,80', y28:'3,63', y29:'4,90', org:'PMB' },
+  { type:'IKSK', code:'IKSK.2132.2.3', label:'Persentase mahasiswa baru di Prodi STEM terakreditasi unggul', unit:'%', baseline:'63', y25:'63,11', y26:'64,00', y27:'54,84', y28:'56,25', y29:'57,58', org:'PMB' },
+  { type:'IKT', code:'IKT 5', label:'Tingkat kepuasan civitas akademika terhadap sarana & prasarana (Skala 1–5)', unit:'Angka', baseline:'NA', y25:'3,65', y26:'3,70', y27:'3,74', y28:'3,79', y29:'3,83', org:'Fakultas, Pascasarjana' },
+  { type:'IKT', code:'IKT 6', label:'Persentase mahasiswa asing di UIN Ponorogo', unit:'%', baseline:'0,025', y25:'0,04', y26:'0,06', y27:'0,08', y28:'0,09', y29:'0,10', org:'PMB, Pusat Kerjasama LN' },
+  { type:'IKT', code:'IKT 7', label:'Jumlah mitra penyedia beasiswa', unit:'Angka', baseline:'6', y25:'6', y26:'7', y27:'8', y28:'9', y29:'10', org:'Kasubag Akademik' },
+  { type:'IKT', code:'IKT 8', label:'Jangkauan promosi PMB melalui media digital resmi UIN Ponorogo', unit:'Angka', baseline:'NA', y25:'18.000', y26:'7.500', y27:'10.000', y28:'15.000', y29:'20.000', org:'PMB' },
+  { type:'IKT', code:'IKT 9', label:'Jumlah Program Studi Baru', unit:'Angka', baseline:'NA', y25:'0', y26:'2', y27:'2', y28:'3', y29:'3', org:'Fakultas' },
+
+  // SP.7 — Penjaminan Mutu
+  { type:'SP', code:'SP.7', label:'Meningkatnya kualitas standar dan sistem penjaminan mutu', unit:'', baseline:'', y25:'', y26:'', y27:'', y28:'', y29:'', org:'' },
+  { type:'IKSP', code:'IKSP.7.2', label:'Persentase Prodi UIN Ponorogo yang terakreditasi', unit:'%', baseline:'100', y25:'100', y26:'100', y27:'100', y28:'100', y29:'100', org:'Fakultas, Pascasarjana' },
+
+  // SK.2312.3 — Akreditasi
+  { type:'SK', code:'SK.2312.3', label:'Meningkatnya kapasitas dan akselerasi akreditasi UIN Ponorogo', unit:'', baseline:'', y25:'', y26:'', y27:'', y28:'', y29:'', org:'' },
+  { type:'IKSK', code:'IKSK.2132.3.1', label:'Nilai akreditasi UIN Ponorogo', unit:'Status', baseline:'Unggul', y25:'Unggul', y26:'Unggul', y27:'Unggul', y28:'Unggul', y29:'Unggul', org:'LPM' },
+  { type:'IKSK', code:'IKSK.2132.3.2', label:'Persentase Prodi yang mendapatkan akreditasi Unggul', unit:'%', baseline:'37,9', y25:'37,9', y26:'37,9', y27:'41,37', y28:'44,8', y29:'48,2', org:'Fakultas, Pascasarjana' },
+  { type:'IKSK', code:'IKSK.2132.3.4', label:'Status Akreditasi Program Profesi Guru (PPG)', unit:'Status', baseline:'Baik Sekali', y25:'Baik Sekali', y26:'Baik Sekali', y27:'Baik Sekali', y28:'Baik Sekali', y29:'Unggul', org:'Fakultas' },
+  { type:'IKSK', code:'IKSK.2132.3.5', label:'Persentase prodi yang mendapatkan pembinaan standar mutu', unit:'%', baseline:'100', y25:'100', y26:'100', y27:'100', y28:'100', y29:'100', org:'LPM' },
+  { type:'IKT', code:'IKT 10', label:'Jumlah kelas unggulan dan prodi dengan sertifikasi internasional', unit:'Angka', baseline:'0', y25:'0', y26:'1', y27:'2', y28:'3', y29:'4', org:'LPM' },
+  { type:'IKT', code:'IKT 11', label:'Persentase mahasiswa yang lulus tepat waktu', unit:'%', baseline:'62,26', y25:'65,0', y26:'67,5', y27:'70,0', y28:'71,5', y29:'72,5', org:'Fakultas, Pascasarjana' },
+  { type:'IKT', code:'IKT 12', label:'Persentase keberhasilan studi', unit:'%', baseline:'74,62', y25:'76,0', y26:'77,5', y27:'78,5', y28:'79,5', y29:'80,0', org:'Fakultas, Pascasarjana' },
+  { type:'IKT', code:'IKT 13', label:'Persentase capaian prestasi mahasiswa bidang akademik & non-akademik (nasional & internasional)', unit:'%', baseline:'1,25', y25:'1,5', y26:'1,75', y27:'2,00', y28:'2,25', y29:'2,5', org:'Fakultas, Pascasarjana' },
+
+  // SP.8 — SDM
+  { type:'SP', code:'SP.8', label:'Meningkatnya dosen dan tenaga kependidikan UIN Ponorogo yang berkualitas', unit:'', baseline:'', y25:'', y26:'', y27:'', y28:'', y29:'', org:'' },
+  { type:'IKSP', code:'IKSP.8.2', label:'Persentase dosen dan tendik yang memperoleh sertifikasi peningkatan kompetensi', unit:'%', baseline:'40', y25:'45', y26:'51', y27:'53', y28:'56', y29:'59', org:'LPM, Biro' },
+
+  // SK.2312.4 — Kualifikasi Dosen
+  { type:'SK', code:'SK.2312.4', label:'Terpenuhinya kualifikasi dosen sesuai dengan standar minimal', unit:'', baseline:'', y25:'', y26:'', y27:'', y28:'', y29:'', org:'' },
+  { type:'IKSK', code:'IKSK.2132.4.1', label:'Persentase dosen berkualifikasi akademik S3', unit:'%', baseline:'29,67', y25:'31', y26:'32,5', y27:'35', y28:'37,5', y29:'40', org:'Biro' },
+  { type:'IKSK', code:'IKSK.2132.4.2', label:'Persentase dosen yang mempunyai pengalaman di luar kampus', unit:'%', baseline:'51,23', y25:'56', y26:'58', y27:'60', y28:'62', y29:'64,25', org:'Fakultas' },
+  { type:'IKSK', code:'IKSK.2132.4.3', label:'Persentase dosen yang menduduki jabatan lektor/lektor kepala/guru besar', unit:'%', baseline:'81,32', y25:'82', y26:'83', y27:'84', y28:'85', y29:'86', org:'Biro' },
+  { type:'IKSK', code:'IKSK.2132.4.4', label:'Persentase dosen dan tendik yang mengikuti program peningkatan kompetensi', unit:'%', baseline:'NA', y25:'46,92', y26:'55,23', y27:'61,7', y28:'68,985', y29:'76,68', org:'LPM, Biro' },
+  { type:'IKSK', code:'IKSK.2132.4.5', label:'Persentase dosen yang menjadi narasumber konferensi nasional/internasional', unit:'%', baseline:'31,67', y25:'41,375', y26:'43', y27:'45,5', y28:'47,25', y29:'49,25', org:'Fakultas, Pascasarjana' },
+  { type:'IKSK', code:'IKSK.2132.4.6', label:'Persentase pemenuhan tenaga kependidikan pada jenjang jabatan fungsional', unit:'%', baseline:'NA', y25:'40', y26:'45', y27:'50', y28:'55', y29:'60', org:'Biro' },
+  { type:'IKSK', code:'IKSK.2132.4.7', label:'Persentase tenaga kependidikan yang mendapatkan peningkatan kompetensi', unit:'%', baseline:'NA', y25:'50', y26:'60', y27:'70', y28:'80', y29:'90', org:'Biro' },
+
+  // SP.9 — Daya Saing Lulusan
+  { type:'SP', code:'SP.9', label:'Meningkatnya daya saing lulusan UIN Ponorogo', unit:'', baseline:'', y25:'', y26:'', y27:'', y28:'', y29:'', org:'' },
+  { type:'IKSP', code:'IKSP.9.1', label:'Rata-rata masa tunggu lulusan UIN Ponorogo untuk mendapatkan pekerjaan (bulan)', unit:'Angka', baseline:'7,6', y25:'7,3', y26:'7', y27:'6,7', y28:'6,4', y29:'6,1', org:'Pengembangan Karier' },
+
+  // SK.2312.5 — Kualitas Lulusan
+  { type:'SK', code:'SK.2312.5', label:'Meningkatnya kualitas lulusan UIN Ponorogo yang diterima di dunia kerja', unit:'', baseline:'', y25:'', y26:'', y27:'', y28:'', y29:'', org:'' },
+  { type:'IKSK', code:'IKSK.2132.5.1', label:'Persentase lulusan S1 dengan pengalaman 1 semester di luar kampus', unit:'%', baseline:'NA', y25:'2,5', y26:'5', y27:'7,5', y28:'9', y29:'12,5', org:'Fakultas' },
+  { type:'IKSK', code:'IKSK.2132.5.2', label:'UIN Ponorogo memiliki Pengembangan Karier dan Kewirausahaan (nilai)', unit:'Angka', baseline:'NA', y25:'50', y26:'60', y27:'70', y28:'80', y29:'90', org:'Pengembangan Karier' },
+  { type:'IKSK', code:'IKSK.2132.5.3', label:'Persentase lulusan yang langsung bekerja dalam 1 tahun setelah kelulusan', unit:'%', baseline:'NA', y25:'37', y26:'37,5', y27:'38', y28:'38,5', y29:'39', org:'Pengembangan Karier' },
+  { type:'IKSK', code:'IKSK.2132.5.4', label:'Persentase tenaga kerja lulusan bidang STEM', unit:'%', baseline:'3,80', y25:'4,45', y26:'5,26', y27:'6,06', y28:'6,62', y29:'7,92', org:'Fakultas' },
+  { type:'IKSK', code:'IKSK.2132.5.5', label:'Persentase mahasiswa yang mendapatkan sertifikasi kompetensi/profesi', unit:'%', baseline:'NA', y25:'3,47', y26:'4,33', y27:'4,73', y28:'5,13', y29:'5,87', org:'Fakultas' },
+  { type:'IKSK', code:'IKSK.2132.5.6', label:'Rasio Outbound per Inbound mahasiswa UIN Ponorogo', unit:'Angka', baseline:'NA', y25:'0,5', y26:'0,6', y27:'0,7', y28:'0,8', y29:'0,9', org:'Fakultas' },
+  { type:'IKSK', code:'IKSK.2132.5.7', label:'Persentase mahasiswa yang berkegiatan di luar program studi', unit:'%', baseline:'NA', y25:'15,3', y26:'16,5', y27:'17,75', y28:'18,75', y29:'20,125', org:'Fakultas' },
+  { type:'IKT', code:'IKT 14', label:'Persentase lulusan yang bekerja sesuai dengan bidangnya', unit:'%', baseline:'NA', y25:'46,3', y26:'48,75', y27:'51,25', y28:'53', y29:'55,5', org:'Fakultas' },
+  { type:'IKT', code:'IKT 15', label:'Tingkat kepuasan pengguna lulusan', unit:'Angka', baseline:'NA', y25:'79,5', y26:'82,25', y27:'84,5', y28:'86,25', y29:'87,5', org:'Fakultas' },
+
+  // SP.10 — Kemitraan
+  { type:'SP', code:'SP.10', label:'Meningkatnya relevansi UIN Ponorogo melalui kemitraan strategis', unit:'', baseline:'', y25:'', y26:'', y27:'', y28:'', y29:'', org:'' },
+  { type:'IKSP', code:'IKSP.10.1', label:'Persentase kerjasama aktif yang menghasilkan program peningkatan mutu', unit:'%', baseline:'48', y25:'55,75', y26:'58,75', y27:'61,25', y28:'64,5', y29:'67,5', org:'Fakultas, Pascasarjana' },
+
+  // SK.2312.6 — Kerjasama
+  { type:'SK', code:'SK.2312.6', label:'Meningkatnya kualitas pemanfaatan kerjasama', unit:'', baseline:'', y25:'', y26:'', y27:'', y28:'', y29:'', org:'' },
+  { type:'IKSK', code:'IKSK.2132.6.1', label:'Jumlah kerjasama UIN Ponorogo dengan dunia kerja/industri/pemerintah/internasional', unit:'Angka', baseline:'240', y25:'281', y26:'320', y27:'360', y28:'400', y29:'440', org:'Pusat Kerjasama LN' },
+  { type:'IKSK', code:'IKSK.2132.6.2', label:'Persentase kerjasama yang ditindaklanjuti di bidang Pendidikan', unit:'%', baseline:'NA', y25:'67,5', y26:'69,5', y27:'71,75', y28:'73,5', y29:'76,25', org:'Fakultas, Pascasarjana' },
+  { type:'IKSK', code:'IKSK.2132.6.3', label:'Persentase kerjasama yang ditindaklanjuti di bidang Penelitian & Publikasi', unit:'%', baseline:'NA', y25:'33,75', y26:'36,75', y27:'39,5', y28:'42,75', y29:'45,5', org:'Fakultas, LPPM' },
+  { type:'IKSK', code:'IKSK.2132.6.4', label:'Persentase kerjasama yang ditindaklanjuti di bidang Pengabdian Masyarakat', unit:'%', baseline:'NA', y25:'34,25', y26:'35,62', y27:'37', y28:'38,62', y29:'40,5', org:'Fakultas, LPPM' },
+  { type:'IKT', code:'IKT 16', label:'Persentase perjanjian kerja sama yang telah dimonitoring dan dievaluasi', unit:'%', baseline:'0,05', y25:'0,1', y26:'0,15', y27:'0,2', y28:'0,25', y29:'0,3', org:'Pusat Kerjasama LN' },
+
+  // SP.11 — Karakter Keagamaan
+  { type:'SP', code:'SP.11', label:'Meningkatnya kualitas karakter keagamaan mahasiswa yang ramah, inklusif dan selaras dengan nilai kebangsaan', unit:'', baseline:'', y25:'', y26:'', y27:'', y28:'', y29:'', org:'' },
+  { type:'IKSP', code:'IKSP.11.1', label:'Indeks Keberagamaan Mahasiswa UIN Ponorogo', unit:'%', baseline:'NA', y25:'80', y26:'80,5', y27:'81', y28:'81,5', y29:'82', org:'LPPM' },
+
+  // SK.2312.7 — Budaya Akademik
+  { type:'SK', code:'SK.2312.7', label:'Meningkatnya budaya akademik yang religius dan toleran', unit:'', baseline:'', y25:'', y26:'', y27:'', y28:'', y29:'', org:'' },
+  { type:'IKSK', code:'IKSK.2312.7.1', label:'Persentase mahasiswa yang mengikuti program peningkatan literasi Kitab Suci', unit:'%', baseline:'NA', y25:'100', y26:'100', y27:'100', y28:'100', y29:'100', org:"Ma'had Al-Jami'ah" },
+  { type:'IKSK', code:'IKSK.2312.7.2', label:'Persentase Prodi yang mengimplementasikan integrasi keilmuan', unit:'%', baseline:'NA', y25:'100', y26:'100', y27:'100', y28:'100', y29:'100', org:'Fakultas, Pascasarjana' },
+  { type:'IKSK', code:'IKSK.2312.7.3', label:'Persentase pusat kajian keagamaan yang mendapatkan bantuan pengembangan', unit:'%', baseline:'NA', y25:'10', y26:'30', y27:'50', y28:'70', y29:'90', org:'LPPM' },
+  { type:'IKT', code:'IKT 17', label:'Rata-rata skor kemampuan berbahasa asing mahasiswa', unit:'Angka', baseline:'NA', y25:'370', y26:'400', y27:'425', y28:'440', y29:'450', org:'UPT Bahasa' },
+
+  // SP.12 — Produktivitas & Daya Saing
+  { type:'SP', code:'SP.12', label:'Meningkatnya produktivitas dan daya saing UIN Ponorogo', unit:'', baseline:'', y25:'', y26:'', y27:'', y28:'', y29:'', org:'' },
+  { type:'IKSP', code:'IKSP.12.1', label:'Peringkat UIN Ponorogo dalam THE Impact SDGs', unit:'Angka', baseline:'NA', y25:'3.000', y26:'2.800', y27:'2.600', y28:'2.500', y29:'2.300', org:'Pusat Kerjasama LN' },
+
+  // SK.2312.8 — Kualitas Penelitian
+  { type:'SK', code:'SK.2312.8', label:'Meningkatnya kualitas pemanfaatan penelitian', unit:'', baseline:'', y25:'', y26:'', y27:'', y28:'', y29:'', org:'' },
+  { type:'IKSK', code:'IKSK.2312.8.1', label:'Persentase jurnal ilmiah bereputasi nasional minimal SINTA 3', unit:'%', baseline:'NA', y25:'24', y26:'26', y27:'28', y28:'31', y29:'34', org:'LPPM' },
+  { type:'IKSK', code:'IKSK.2312.8.2', label:'Persentase publikasi internasional UIN Ponorogo yang disitasi', unit:'%', baseline:'69,5', y25:'70', y26:'72', y27:'73', y28:'75', y29:'77', org:'LPPM, Dekan' },
+  { type:'IKSK', code:'IKSK.2312.8.3', label:'Jumlah karya tulis ilmiah berorientasi SDGs terpublikasi di jurnal internasional bereputasi', unit:'Angka', baseline:'NA', y25:'7', y26:'10', y27:'13', y28:'14', y29:'16', org:'LPPM, Dekan' },
+  { type:'IKSK', code:'IKSK.2312.8.4', label:'Rasio produktivitas publikasi ilmiah dengan jumlah dosen', unit:'%', baseline:'NA', y25:'90', y26:'100', y27:'115', y28:'120', y29:'127', org:'LPPM, Dekan' },
+  { type:'IKSK', code:'IKSK.2312.8.5', label:'Jumlah Paten Granted karya tulis ilmiah UIN Ponorogo', unit:'Angka', baseline:'NA', y25:'0', y26:'1', y27:'3', y28:'5', y29:'8', org:'LPPM, Dekan' },
+  { type:'IKSK', code:'IKSK.2312.8.6', label:'Persentase hasil riset & inovasi yang dimanfaatkan DUDI/masyarakat', unit:'%', baseline:'NA', y25:'2', y26:'3', y27:'4', y28:'5', y29:'6', org:'LPPM, Dekan' },
+  { type:'IKSK', code:'IKSK.2312.8.7', label:'Persentase peningkatan kapasitas oleh LPPM', unit:'%', baseline:'NA', y25:'50', y26:'60', y27:'70', y28:'80', y29:'90', org:'LPPM' },
+  { type:'IKT', code:'IKT 18', label:'Jumlah jurnal UIN Ponorogo bereputasi internasional', unit:'Angka', baseline:'NA', y25:'1', y26:'2', y27:'3', y28:'4', y29:'4', org:'LPPM' },
+  { type:'IKT', code:'IKT 19', label:'Jumlah penelitian yang didanai lembaga luar kampus', unit:'Angka', baseline:'2', y25:'4', y26:'5', y27:'6', y28:'7', y29:'8', org:'LPPM, Dekan' },
+  { type:'IKT', code:'IKT 20', label:'Jumlah pengabdian masyarakat yang didanai lembaga luar kampus', unit:'Angka', baseline:'NA', y25:'NA', y26:'2', y27:'3', y28:'4', y29:'5', org:'LPPM, Dekan' },
+  { type:'IKT', code:'IKT 21', label:'Jumlah artikel ilmiah di jurnal nasional terakreditasi minimal SINTA 2', unit:'Angka', baseline:'36', y25:'40', y26:'45', y27:'50', y28:'55', y29:'60', org:'LPPM, Dekan' },
+
+  // SS.7 — Tata Kelola
+  { type:'SS', code:'SS.7', label:'Meningkatnya kualitas tata kelola pemerintahan yang efektif, transparan dan akuntabel', unit:'', baseline:'', y25:'', y26:'', y27:'', y28:'', y29:'', org:'' },
+
+  // SP.13 — Tata Kelola
+  { type:'SP', code:'SP.13', label:'Meningkatnya tata kelola UIN Ponorogo yang efektif dan akuntabel', unit:'', baseline:'', y25:'', y26:'', y27:'', y28:'', y29:'', org:'' },
+  { type:'IKSP', code:'IKSP.13.2', label:'Nilai Sistem Akuntabilitas Kinerja Instansi Pemerintah (SAKIP)', unit:'Angka', baseline:'NA', y25:'90', y26:'90', y27:'90', y28:'90', y29:'90', org:'Perencanaan' },
+
+  // SK.2135.1 — Perencanaan & Anggaran
+  { type:'SK', code:'SK.2135.1', label:'Meningkatnya kualitas perencanaan dan anggaran', unit:'', baseline:'', y25:'', y26:'', y27:'', y28:'', y29:'', org:'' },
+  { type:'IKSK', code:'IKSK.2135.1.1', label:'Nilai kinerja anggaran', unit:'Angka', baseline:'91', y25:'92', y26:'93', y27:'94', y28:'95', y29:'96', org:'Perencanaan' },
+  { type:'IKSK', code:'IKSK.2135.3.2', label:'Persentase penyelesaian tindak lanjut hasil pemeriksaan', unit:'%', baseline:'NA', y25:'50', y26:'60', y27:'70', y28:'80', y29:'90', org:'Biro' },
+  { type:'IKSK', code:'IKSK.2135.4.1', label:'Indeks profesionalisme ASN', unit:'Angka', baseline:'NA', y25:'60', y26:'67', y27:'74', y28:'81', y29:'88', org:'Biro' },
+  { type:'IKT', code:'IKT 22', label:'Nilai maturitas Sistem Pengendalian Intern Pemerintah (SPIP)', unit:'Angka', baseline:'3,639', y25:'3,66', y26:'3,74', y27:'3,82', y28:'3,9', y29:'4', org:'SPI' },
+];
+
+/* PROGRESS HIGHLIGHTS */
+const PROGRESS_DATA = [
+  { label:'Prodi Akreditasi Unggul', base:37.9, target:48.2, unit:'%', color:'#22c55e' },
+  { label:'Dosen Berkualifikasi S3', base:29.67, target:40, unit:'%', color:'#3b82f6' },
+  { label:'Lulus Tepat Waktu', base:62.26, target:72.5, unit:'%', color:'#a78bfa' },
+  { label:'Masa Tunggu Kerja (↓)', base:7.6, target:6.1, unit:' bln', color:'#f59e0b', inverse:true },
+  { label:'Lulusan Kerja Sesuai Bidang', base:0, target:55.5, unit:'%', color:'#06b6d4', nobase:true },
+  { label:'Kerjasama Aktif', base:240, target:440, unit:' MoU', color:'#14b8a6' },
+  { label:'Sarana Prasarana Green Campus', base:0, target:75, unit:'%', color:'#22c55e', nobase:true },
+  { label:'Jangkauan Digital PMB (2029)', base:0, target:20000, unit:' reach', color:'#f59e0b', nobase:true },
+];
+
+/* ============================================================
+   RENDER FUNCTIONS
+============================================================ */
+function renderTable() {
+  const tbody = document.getElementById('kinerjaBody');
+  let currentSS = '';
+
+  DATA.forEach(row => {
+    const tr = document.createElement('tr');
+    tr.dataset.type = row.type;
+
+    if (row.type === 'SS') {
+      tr.className = 'ss-header';
+      tr.innerHTML = `<td colspan="10" style="background:rgba(59,130,246,0.08);color:var(--accent);
+        font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;
+        padding:0.7rem 0.8rem;border-top:2px solid rgba(59,130,246,0.25);">
+        ⭐ ${row.code} — ${row.label}</td>`;
+    } else if (row.type === 'SP') {
+      tr.className = 'sp-row';
+      tr.innerHTML = `<td colspan="10">📌 ${row.code}: ${row.label}</td>`;
+    } else if (row.type === 'SK') {
+      tr.className = 'sk-row';
+      tr.innerHTML = `<td colspan="10">└ ${row.code}: ${row.label}</td>`;
+    } else {
+      // IKSP, IKSK, IKT
+      const badgeClass = row.type === 'IKSP' ? 'b-s' : row.type === 'IKSK' ? 'b-k' : 'b-t';
+      const rowClass = row.type === 'IKT' ? 'ikt-row' : '';
+      tr.className = rowClass;
+      tr.innerHTML = `
+        <td class="td-code"><span class="badge-pill ${badgeClass}">${row.code}</span></td>
+        <td class="td-indicator">${row.label}</td>
+        <td class="td-unit">${row.unit}</td>
+        <td class="td-baseline">${row.baseline || '—'}</td>
+        <td class="t-yr y25">${row.y25 || '—'}</td>
+        <td class="t-yr y26">${row.y26 || '—'}</td>
+        <td class="t-yr y27">${row.y27 || '—'}</td>
+        <td class="t-yr y28">${row.y28 || '—'}</td>
+        <td class="t-yr y29">${row.y29 || '—'}</td>
+        <td class="td-unit-org">${row.org}</td>
+      `;
+    }
+    tbody.appendChild(tr);
+  });
+}
+
+function renderProgress() {
+  const container = document.getElementById('prog-section');
+  PROGRESS_DATA.forEach(p => {
+    const isInverse = p.inverse;
+    let pct, label;
+    if (p.nobase) {
+      pct = 30; // symbolic starting at 0
+      label = `Baseline: N/A → Target 2029: ${p.target}${p.unit}`;
+    } else if (isInverse) {
+      pct = Math.min(100, Math.max(0, ((p.base - p.target) / (p.base)) * 100));
+      label = `Dari ${p.base}${p.unit} → ${p.target}${p.unit} (penurunan positif)`;
+    } else {
+      pct = Math.min(100, Math.max(0, (p.base / p.target) * 100));
+      label = `Baseline: ${p.base}${p.unit} → Target 2029: ${p.target}${p.unit}`;
+    }
+
+    const el = document.createElement('div');
+    el.className = 'prog-item';
+    el.innerHTML = `
+      <div class="prog-meta">
+        <span class="prog-label">${p.label}</span>
+        <span class="prog-vals">${label}</span>
+      </div>
+      <div class="prog-bar-wrap">
+        <div class="prog-bar" style="width:0%;background:${p.color}" data-target="${pct}"></div>
+      </div>
+    `;
+    container.appendChild(el);
+  });
+
+  // Animate bars
+  setTimeout(() => {
+    document.querySelectorAll('.prog-bar').forEach(bar => {
+      bar.style.width = bar.dataset.target + '%';
+    });
+  }, 200);
+}
+
+/* ============================================================
+   FILTER & SEARCH
+============================================================ */
+let currentFilter = 'all';
+
+function filterTable(type, btn) {
+  currentFilter = type;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function searchTable(val) {
+  applyFilters(val.toLowerCase());
+}
+
+function applyFilters(search) {
+  if (search === undefined) search = document.getElementById('searchInput').value.toLowerCase();
+  const rows = document.querySelectorAll('#kinerjaBody tr');
+  rows.forEach(row => {
+    const type = row.dataset.type;
+    const text = row.textContent.toLowerCase();
+    let show = true;
+    if (currentFilter !== 'all') {
+      if (currentFilter === 'SP' && type !== 'IKSP') show = false;
+      if (currentFilter === 'SK' && type !== 'IKSK') show = false;
+      if (currentFilter === 'IKT' && type !== 'IKT') show = false;
+    }
+    if (search && !text.includes(search)) show = false;
+    if (!['IKSP','IKSK','IKT'].includes(type)) {
+      // always show group headers if filter is 'all' and no search
+      if (currentFilter !== 'all' || search) show = false;
+    }
+    row.classList.toggle('hidden-row', !show);
+  });
+}
+
+/* ============================================================
+   CHARTS
+============================================================ */
+let _t = null, _d = null;
+function buildCharts() {
+  const dark = document.documentElement.getAttribute('data-theme') !== 'light';
+  const tc = dark ? '#f8fafc' : '#0f172a';
+  const mc = dark ? '#94a3b8' : '#64748b';
+  const gc = dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)';
+
+  // Trend Chart — key indicators
+  if (_t) _t.destroy();
+  _t = new Chart(document.getElementById('chartTrend'), {
+    type: 'line',
+    data: {
+      labels: ['Baseline','2025','2026','2027','2028','2029'],
+      datasets: [
+        { label:'Prodi Unggul (%)', data:[37.9,37.9,37.9,41.37,44.8,48.2],
+          borderColor:'#22c55e', backgroundColor:'rgba(34,197,94,0.08)', tension:0.4, fill:true, pointRadius:4 },
+        { label:'Dosen S3 (%)', data:[29.67,31,32.5,35,37.5,40],
+          borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,0.08)', tension:0.4, fill:true, pointRadius:4 },
+        { label:'Lulus Tepat Waktu (%)', data:[62.26,65,67.5,70,71.5,72.5],
+          borderColor:'#a78bfa', backgroundColor:'rgba(167,139,250,0.08)', tension:0.4, fill:true, pointRadius:4 },
+        { label:'Jab. Lektor+ (%)', data:[81.32,82,83,84,85,86],
+          borderColor:'#f59e0b', backgroundColor:'rgba(245,158,11,0.05)', tension:0.4, pointRadius:4, borderDash:[4,3] },
+      ]
+    },
+    options: {
+      plugins: { legend: { labels: { color: tc, font: { size: 10 } } } },
+      scales: {
+        x: { ticks: { color: mc }, grid: { color: gc } },
+        y: { ticks: { color: mc }, grid: { color: gc }, title: { display: false } }
+      },
+      animation: { duration: 600 }
+    }
+  });
+
+  // Distribution Donut
+  if (_d) _d.destroy();
+  const counts = {
+    'SP/IKSP': DATA.filter(d => ['SP','IKSP'].includes(d.type)).filter(d => d.label).length,
+    'IKSK': DATA.filter(d => d.type === 'IKSK').length,
+    'IKT': DATA.filter(d => d.type === 'IKT').length,
+  };
+  _d = new Chart(document.getElementById('chartDist'), {
+    type: 'doughnut',
+    data: {
+      labels: ['SP & IKSP (Sasaran Program)', 'IKSK (Sasaran Kegiatan)', 'IKT (Indikator Tambahan)'],
+      datasets: [{
+        data: [counts['SP/IKSP'], counts['IKSK'], counts['IKT']],
+        backgroundColor: ['rgba(59,130,246,0.7)','rgba(34,197,94,0.7)','rgba(167,139,250,0.7)'],
+        borderColor: [dark?'#1e293b':'#fff'],
+        borderWidth: 2
+      }]
+    },
+    options: {
+      cutout: '65%',
+      plugins: {
+        legend: { position: 'bottom', labels: { color: tc, font: { size: 10 }, padding: 12, boxWidth: 12 } },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} indikator` } }
+      },
+      animation: { duration: 600 }
+    },
+    plugins: [{
+      id: 'center',
+      afterDraw(chart) {
+        const { ctx, chartArea: { width, height, top } } = chart;
+        const cx = chart.getDatasetMeta(0).data[0]?.x ?? (width/2);
+        const cy = chart.getDatasetMeta(0).data[0]?.y ?? (top + height/2);
+        ctx.save();
+        ctx.font = `bold 20px Inter`;
+        ctx.fillStyle = tc;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const total = counts['SP/IKSP'] + counts['IKSK'] + counts['IKT'];
+        ctx.fillText(total, cx, cy - 8);
+        ctx.font = `9px Inter`; ctx.fillStyle = mc;
+        ctx.fillText('Indikator', cx, cy + 10);
+        ctx.restore();
+      }
+    }]
+  });
+}
+
+/* ============================================================
+   THEME & EXPORT
+============================================================ */
+function toggleTheme() {
+  const d = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', d ? 'light' : 'dark');
+  document.getElementById('themeToggle').textContent = d ? '🌙 Tema' : '☀️ Tema';
+  buildCharts();
+}
+
+function exportSection(id, filename) {
+  const el = document.getElementById(id);
+  const btns = el.querySelectorAll('.export-btn,.export-all-btn');
+  btns.forEach(b => b.style.display = 'none');
+  const dark = document.documentElement.getAttribute('data-theme') !== 'light';
+  html2canvas(el, { scale: 2, backgroundColor: dark ? '#0f172a' : '#ffffff',
+    useCORS: true, allowTaint: true, logging: false })
+    .then(c => {
+      btns.forEach(b => b.style.display = '');
+      const a = document.createElement('a');
+      a.download = `${filename}_${new Date().toISOString().slice(0,10)}.png`;
+      a.href = c.toDataURL('image/png');
+      a.click();
+    }).catch(() => { btns.forEach(b => b.style.display = ''); });
+}
+
+async function exportFullPDF() {
+  const dark = document.documentElement.getAttribute('data-theme') !== 'light';
+  const bgColor = dark ? '#0f172a' : '#f1f5f9';
+
+  // Capture hanya tabel inti, bukan seluruh halaman
+  const el = document.getElementById('full-table');
+  const allBtns = document.querySelectorAll('.export-btn,.export-all-btn');
+  allBtns.forEach(b => b.style.visibility = 'hidden');
+
+  try {
+    const canvas = await html2canvas(el, {
+      scale: 2,
+      backgroundColor: bgColor,
+      useCORS: true,
+      allowTaint: true,
+      logging: false,
+      scrollX: 0,
+      scrollY: -window.scrollY
+    });
+
+    const { jsPDF } = window.jspdf;
+    // Landscape A4 agar kolom tabel tidak terpotong
+    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+    const pageW  = pdf.internal.pageSize.getWidth();   // ~297mm
+    const pageH  = pdf.internal.pageSize.getHeight();  // ~210mm
+    const margin = 8;
+    const imgW   = pageW - margin * 2;
+
+    const canvasW     = canvas.width;
+    const canvasH     = canvas.height;
+    const canvasPageH = Math.floor(canvasW * (pageH - margin * 2) / imgW);
+
+    let yOffset = 0, pageNum = 0;
+    while (yOffset < canvasH) {
+      if (pageNum > 0) pdf.addPage();
+      const sliceH = Math.min(canvasPageH, canvasH - yOffset);
+      const tmp = document.createElement('canvas');
+      tmp.width = canvasW; tmp.height = sliceH;
+      tmp.getContext('2d').drawImage(canvas, 0, yOffset, canvasW, sliceH, 0, 0, canvasW, sliceH);
+      const imgH = sliceH * imgW / canvasW;
+      pdf.addImage(tmp.toDataURL('image/jpeg', 0.93), 'JPEG', margin, margin, imgW, imgH);
+      yOffset += canvasPageH;
+      pageNum++;
+    }
+
+    pdf.save(`matriks_kinerja_rsb_${new Date().toISOString().slice(0,10)}.pdf`);
+  } finally {
+    allBtns.forEach(b => b.style.visibility = '');
+  }
+}
+
+
+/* ============================================================
+   INIT
+============================================================ */
+window.addEventListener('load', () => {
+  renderTable();
+  renderProgress();
+  buildCharts();
+});
+</script>
+</body>
+</html>

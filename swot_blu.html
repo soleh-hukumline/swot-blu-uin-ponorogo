@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analisis SWOT BLU — UIN Kiai Ageng Muhammad Besari Ponorogo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --bg:#0f172a;--surface:#1e293b;--card:rgba(30,41,59,0.95);
+  --text:#f8fafc;--muted:#94a3b8;--accent:#3b82f6;
+  --border:rgba(255,255,255,0.08);--green:#22c55e;--amber:#f59e0b;
+  --red:#ef4444;--purple:#a78bfa;--cyan:#06b6d4;
+}
+[data-theme="light"]{
+  --bg:#f1f5f9;--surface:#fff;--card:rgba(255,255,255,0.97);
+  --text:#0f172a;--muted:#64748b;--border:rgba(0,0,0,0.09);
+  --green:#16a34a;--amber:#d97706;--red:#dc2626;--purple:#7c3aed;--cyan:#0891b2;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+
+/* HEADER */
+header{display:flex;justify-content:space-between;align-items:center;
+  padding:1rem 2.5rem;background:var(--card);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+header h1{font-size:1.05rem;font-weight:700;}
+header h1 span{color:var(--accent);}
+.nav-links{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.8rem;
+  padding:0.3rem 0.7rem;border-radius:7px;border:1px solid var(--border);transition:all 0.2s;}
+.nav-links a:hover,.nav-links a.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.theme-btn{padding:0.3rem 0.8rem;border-radius:7px;border:1px solid var(--border);
+  background:transparent;color:var(--muted);cursor:pointer;font-size:0.8rem;
+  font-family:'Inter',sans-serif;transition:all 0.2s;}
+.theme-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* PAGE */
+.page{max-width:1100px;margin:0 auto;padding:2rem 1.5rem;}
+
+/* COVER */
+.cover{background:linear-gradient(135deg,#060d1a 0%,#0f2442 60%,#060d1a 100%);
+  padding:3rem 2.5rem 2.5rem;text-align:center;border-bottom:1px solid var(--border);position:relative;}
+.cover::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(59,130,246,0.15) 0%,transparent 70%);}
+.cover-label{font-size:0.7rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  color:var(--accent);margin-bottom:0.7rem;position:relative;}
+.cover h2{font-family:'Merriweather',serif;font-size:clamp(1.4rem,2.8vw,2.1rem);
+  font-weight:700;color:#f8fafc;margin-bottom:0.7rem;position:relative;line-height:1.3;}
+.cover-sub{font-size:0.88rem;color:#94a3b8;max-width:660px;margin:0 auto 1rem;position:relative;}
+.cover-meta{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;
+  font-size:0.76rem;color:#64748b;position:relative;}
+
+/* TOC */
+.toc{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:1.5rem;margin:2rem 0;}
+.toc h3{font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;
+  color:var(--muted);margin-bottom:1rem;}
+.toc ol{padding-left:1.2rem;}
+.toc ol li{font-size:0.88rem;padding:0.3rem 0;}
+.toc ol li a{color:var(--accent);text-decoration:none;}
+.toc ol li a:hover{text-decoration:underline;}
+
+/* SECTION */
+.section-block{margin:2.5rem 0 0;}
+.section-num{font-size:0.68rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  color:var(--accent);margin-bottom:0.35rem;}
+.section-block h2{font-family:'Merriweather',serif;font-size:1.4rem;font-weight:700;
+  margin-bottom:0.5rem;padding-bottom:0.6rem;border-bottom:2px solid var(--border);}
+.section-desc{font-size:0.87rem;color:var(--muted);line-height:1.85;margin-bottom:0.8rem;}
+.section-desc strong{color:var(--text);}
+.section-desc em{color:var(--cyan);font-style:normal;}
+
+/* DATA CALLOUT */
+.data-box{background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);
+  border-left:4px solid var(--accent);border-radius:8px;
+  padding:0.75rem 1rem;margin:0.6rem 0 1.1rem;font-size:0.8rem;color:var(--muted);}
+.data-box strong{color:var(--text);}
+.data-box .src{font-size:0.68rem;margin-top:0.3rem;color:#64748b;}
+
+/* SWOT BLOCK */
+.swot-block{background:var(--card);border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;margin-bottom:1.5rem;position:relative;}
+.swot-block-title{padding:0.8rem 1.1rem 0;font-size:0.72rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);}
+.export-btn{position:absolute;top:0.7rem;right:0.7rem;
+  padding:2px 9px;font-size:0.67rem;border-radius:5px;
+  border:1px solid var(--border);background:rgba(255,255,255,0.04);
+  color:var(--muted);cursor:pointer;transition:all 0.2s;z-index:5;
+  font-family:'Inter',sans-serif;}
+.export-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+.swot-grid{display:grid;grid-template-columns:1fr 1fr;}
+.swot-cell{padding:1rem 1.1rem;border:1px solid var(--border);}
+.sh{display:flex;align-items:center;gap:0.4rem;font-size:0.71rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:1.2px;margin-bottom:0.65rem;
+  padding-bottom:0.4rem;border-bottom:1px solid var(--border);}
+.sh.s{color:var(--green);}
+.sh.w{color:var(--red);}
+.sh.o{color:var(--accent);}
+.sh.t{color:var(--amber);}
+.bg-s{background:rgba(34,197,94,0.03);}
+.bg-w{background:rgba(239,68,68,0.03);}
+.bg-o{background:rgba(59,130,246,0.03);}
+.bg-t{background:rgba(245,158,11,0.03);}
+.swot-cell ul{list-style:none;padding:0;}
+.swot-cell ul li{font-size:0.8rem;color:var(--muted);padding:0.3rem 0 0.3rem 1.2rem;
+  border-bottom:1px solid var(--border);line-height:1.6;position:relative;}
+.swot-cell ul li:last-child{border-bottom:none;}
+.swot-cell ul li::before{content:'›';color:var(--accent);font-weight:700;
+  position:absolute;left:0;top:0.3rem;}
+.swot-cell ul li strong{color:var(--text);}
+
+/* STRATEGY */
+.strat-grid{display:grid;grid-template-columns:1fr 1fr;}
+.strat-cell{padding:0.9rem 1.1rem;border:1px solid var(--border);}
+.strat-cell h4{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:0.65rem;}
+.strat-cell h4.so{color:var(--green);}
+.strat-cell h4.wo{color:var(--cyan);}
+.strat-cell h4.st{color:var(--amber);}
+.strat-cell h4.wt{color:var(--red);}
+.strat-cell ol{padding-left:1.1rem;}
+.strat-cell ol li{font-size:0.79rem;color:var(--muted);padding:0.18rem 0;line-height:1.55;}
+.strat-cell ol li strong{color:var(--text);}
+
+/* CHARTS */
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:1.5rem;}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:1.2rem;position:relative;}
+.chart-card h3{font-size:0.75rem;color:var(--muted);text-transform:uppercase;
+  letter-spacing:1px;margin-bottom:1rem;}
+.chart-inner{position:relative;height:280px;}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:1.8rem 0;}
+
+/* STAT GRID */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.8rem;margin-bottom:1.2rem;}
+.stat-box{background:rgba(255,255,255,0.03);border:1px solid var(--border);
+  border-radius:10px;padding:0.9rem;text-align:center;}
+.stat-box.blue{border-color:var(--accent);background:rgba(59,130,246,0.07);}
+.stat-box.green{border-color:var(--green);background:rgba(34,197,94,0.07);}
+.stat-box.amber{border-color:var(--amber);background:rgba(245,158,11,0.07);}
+.stat-box.purple{border-color:var(--purple);background:rgba(167,139,250,0.07);}
+.stat-box.red{border-color:var(--red);background:rgba(239,68,68,0.07);}
+.stat-box .lbl{font-size:0.69rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.3rem;}
+.stat-box .val{font-size:1.5rem;font-weight:800;}
+.stat-box .note{font-size:0.68rem;color:var(--muted);margin-top:3px;}
+
+@media(max-width:700px){
+  .swot-grid,.strat-grid,.chart-row,.stat-row{grid-template-columns:1fr;}
+  .page{padding:1rem;}
+  header{flex-direction:column;gap:0.6rem;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚡ SWOT-<span>BLU</span> Institusional</h1>
+  <div class="nav-links">
+    <a href="index.html">🗺️ Dashboard</a>
+    <a href="matriks.html">📑 IFAS/EFAS</a><a href="kinerja.html">📊 Kinerja RSB</a>
+    <a href="sinta.html">🔬 SINTA</a>
+    <a href="swot_blu.html" class="active">⚡ SWOT-BLU</a>
+    <a href="swot_pestle.html">📋 PESTLE</a>
+    <button class="theme-btn" id="themeToggle" onclick="toggleTheme()">☀️ Tema</button>
+  </div>
+</header>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-label">Analisis Strategis Kelembagaan — Transformasi BLU</div>
+  <h2>Analisis SWOT Institusional<br>UIN Kiai Ageng Muhammad Besari Ponorogo</h2>
+  <p class="cover-sub">Pemetaan kekuatan, kelemahan, peluang, dan ancaman institusi dalam 7 dimensi strategis sebagai landasan transformasi menuju Badan Layanan Umum (BLU)</p>
+  <div class="cover-meta">
+    <span>📅 Data per April 2026</span>
+    <span>🏛️ Akreditasi Unggul BAN-PT 2024–2029</span>
+    <span>👥 ±14.500 Mahasiswa · 329 Dosen</span>
+    <span>📊 Sumber: SIMPEG Kemenag, SINTA, PDDikti, Media Resmi</span>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- TOC -->
+  <div class="toc">
+    <h3>📋 Daftar Analisis (7 Dimensi Strategis)</h3>
+    <ol>
+      <li><a href="#sec-pesaing">Pesaing — Posisi Kompetitif di Antara PTKIN Jawa</a></li>
+      <li><a href="#sec-pendidikan">Pendidikan dan Pembelajaran</a></li>
+      <li><a href="#sec-mahasiswa">Potensi Mahasiswa — PMB, Beasiswa, Retensi</a></li>
+      <li><a href="#sec-sdm">Sumber Daya Manusia — Dosen &amp; Tendik</a></li>
+      <li><a href="#sec-penelitian">Penelitian dan Pengabdian Masyarakat</a></li>
+      <li><a href="#sec-akses">Akses dan Kualitas Pendidikan</a></li>
+      <li><a href="#sec-infra">Infrastruktur dan Fasilitas</a></li>
+    </ol>
+  </div>
+
+  <!-- VISUALIZATION: Quadrant + Radar -->
+  <div class="chart-row" id="chart-section">
+    <div class="chart-card" id="card-quadrant">
+      <button class="export-btn" onclick="exportSection('card-quadrant','kuadran_ife_efe')">📷 PNG</button>
+      <h3>🔵 Posisi IFE–EFE: Kuadran SWOT (UIN Ponorogo vs Kompetitor)</h3>
+      <div class="chart-inner"><canvas id="chartQuadrant"></canvas></div>
+    </div>
+    <div class="chart-card" id="card-radar">
+      <button class="export-btn" onclick="exportSection('card-radar','radar_kapasitas')">📷 PNG</button>
+      <h3>📊 Radar Kapasitas 7 Dimensi Institusional</h3>
+      <div class="chart-inner"><canvas id="chartRadar"></canvas></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ================================================================
+       1. PESAING
+  ================================================================ -->
+  <div class="section-block" id="sec-pesaing">
+    <div class="section-num">Dimensi 1</div>
+    <h2>Pesaing — Posisi Kompetitif di Antara PTKIN Jawa</h2>
+  </div>
+  <p class="section-desc">
+    UIN Kiai Ageng Muhammad Besari Ponorogo merupakan <strong>satu-satunya PTKIN di Karesidenan Madiun</strong>, meliputi wilayah layanan Ponorogo, Madiun, Magetan, Ngawi, dan Pacitan (±2,5 juta penduduk). Keunggulan posisi tunggal ini memberikan captive market yang kuat secara geografis. Namun di tingkat Jawa Timur, kompetitor utama adalah 4 UIN berstatus BLU dengan skala lebih besar: <em>UINSA Surabaya</em> (24.500 mhs, BLU), <em>UIN Malang</em> (21.203 mhs, BLU), <em>UINKHAS Jember</em>, dan <em>UINSATU Tulungagung</em>. Di Jawa Tengah dan Barat hadir UIN Walisongo dan UIN SGD yang juga berstatus BLU.
+  </p>
+  <div class="data-box">
+    <strong>Data Kompetitor Kunci:</strong> UIN Ponorogo: 14.500 mhs, 329 dosen, Unggul BAN-PT, Satker. UINSA: 24.500 mhs, BLU. UIN Malang: 21.203 mhs, BLU. UINSATU: ~18.000 mhs, BLU. Rasio dosen-mahasiswa UIN Ponorogo: 1:44 (terpadat di Jawa Timur). Webometrics: UIN Ponorogo masuk daftar PTKIN yang diperhitungkan di Indonesia (ptkin.ac.id, 2025).
+    <div class="src">Sumber: PDDikti 2025; data.json internal; ptkin.ac.id; Sindonews; Wikipedia</div>
+  </div>
+
+  <div class="swot-block" id="tbl-pesaing">
+    <button class="export-btn" onclick="exportSection('tbl-pesaing','swot_pesaing')">📷 PNG</button>
+    <div class="swot-block-title">Tabel SWOT — Dimensi Pesaing</div>
+    <div class="swot-grid">
+      <div class="swot-cell bg-s">
+        <div class="sh s">💪 Kekuatan</div>
+        <ul>
+          <li><strong>Monopoli PTKIN di Karesidenan Madiun</strong> — tidak ada PTKIN lain dalam radius 100 km, menjamin basis pasar yang loyal dan stabil.</li>
+          <li>Akreditasi <strong>Unggul BAN-PT 2024–2029</strong> menyamai kualitas PTKIN BLU besar — diferensiasi kualitas yang kuat di hadapan kompetitor swasta.</li>
+          <li>Benchmarking aktif ke Universitas Brawijaya untuk <strong>implementasi regulasi terbaru</strong> (Permendiktisaintek 39/2025) — kesiapan adaptasi lebih cepat dari kompetitor PTKIN sejenis.</li>
+          <li><strong>UKT terendah</strong> di antara PTKIN Jawa Timur — keunggulan harga yang menarik segmen ekonomi menengah-bawah.</li>
+        </ul>
+      </div>
+      <div class="swot-cell bg-w">
+        <div class="sh w">📉 Kelemahan</div>
+        <ul>
+          <li>Status <strong>Satker</strong> membuat fleksibilitas pengembangan sangat terbatas dibandingkan kompetitor BLU — tidak bisa merespons pasar secara cepat.</li>
+          <li><strong>Jumlah mahasiswa 14.500</strong> jauh di bawah kompetitor utama (UINSA 24.500, UIN Malang 21.203) — ekonomi skala lebih kecil, pendapatan UKT lebih rendah.</li>
+          <li>Rasio dosen:mahasiswa <strong>1:44</strong> — paling berat di antara PTKIN Jawa Timur, berdampak pada kualitas layanan akademik dan kepuasan mahasiswa.</li>
+          <li>Webometrics dan peringkat SINTA masih <strong>jauh di bawah UIN BLU besar</strong> — mempengaruhi pilihan calon mahasiswa yang semakin melek ranking.</li>
+        </ul>
+      </div>
+      <div class="swot-cell bg-o">
+        <div class="sh o">🎯 Peluang</div>
+        <ul>
+          <li>Kompetitor PTKIN swasta di Ponorogo (UMPO, INSURI) tidak memiliki akreditasi Unggul — <strong>UIN Ponorogo unggul secara kualitas</strong> di segmen pasar lokal.</li>
+          <li>Alih status UIN 2025 membuka kewenangan <strong>membuka prodi non-agama</strong> (sains, kesehatan, teknologi) yang belum ada di kompetitor PTKIN sekitar.</li>
+          <li>APK pendidikan tinggi Jawa Timur terus tumbuh — pasar mahasiswa <strong>bertambah setiap tahun</strong> tanpa kompetitor baru PTKIN di wilayah ring-1.</li>
+          <li>Kompetitor BLU besar fokus ke kota besar — <strong>segmen rural dan semi-urban di Ponorogo-Madiun</strong> masih underserved dan bisa dioptimalkan UIN Ponorogo.</li>
+        </ul>
+      </div>
+      <div class="swot-cell bg-t">
+        <div class="sh t">⚠️ Ancaman</div>
+        <ul>
+          <li>PTKIN BLU dengan anggaran mandiri gencar melakukan <strong>promosi PMB, beasiswa, dan program unggulan</strong> yang sulit diimbangi dalam status Satker.</li>
+          <li>Universitas swasta berbasis teknologi di Jawa Timur menawarkan <strong>program vokasi link-and-match</strong> yang lebih relevan dengan pasar kerja Gen Z.</li>
+          <li>Pemeringkatan kampus yang semakin diperhatikan Gen Z — <strong>gap ranking Webometrics/SINTA</strong> antara UIN Ponorogo dan kompetitor BLU semakin lebar tiap tahun.</li>
+          <li>Rencana pembukaan PTKIN baru di Jawa Tengah/Timur berpotensi <strong>masuk ke catchment area Ponorogo</strong> di masa depan.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="strat-grid">
+      <div class="strat-cell"><h4 class="so">🤝 SO</h4><ol>
+        <li><strong>Monopoli → BLU:</strong> Gunakan posisi tunggal di Karesidenan Madiun dan akreditasi Unggul sebagai modal negosiasi anggaran ke Kemenag dan Kemenkeu untuk mempercepat BLU.</li>
+        <li><strong>Ekspansi prodi non-agama:</strong> Buka Informatika, Kesehatan Masyarakat, dan Psikologi — segmen yang tidak ada kompetitor PTKIN-nya di ring-1.</li>
+        <li><strong>Positioning "Unggul-Terjangkau":</strong> Tonjolkan kombinasi akreditasi Unggul dengan UKT termurah sebagai narasi pemasaran PMB yang dominan di Jawa Timur barat.</li>
+      </ol></div>
+      <div class="strat-cell"><h4 class="wo">🔧 WO</h4><ol>
+        <li><strong>Pangkas rasio dosen-mahasiswa:</strong> Ajukan formasi CPNS/PPPK dosen ke Kemenag untuk menambah minimal 50 dosen dalam 2 tahun — turunkan rasio dari 1:44 ke 1:35.</li>
+        <li><strong>Tingkatkan Webometrics:</strong> Perbanyak konten website akademik (jurnal, profil dosen, publikasi) dan dorong seluruh civitas akademika aktif di Google Scholar.</li>
+        <li><strong>Bangun unit pemasaran profesional:</strong> Buka Unit Humas & Pemasaran Akademik yang mengelola media sosial, iklan digital, dan roadshow PMB ke pesantren se-Jawa Timur.</li>
+      </ol></div>
+      <div class="strat-cell"><h4 class="st">🛡️ ST</h4><ol>
+        <li><strong>Proteksi pasar lokal:</strong> Perkuat kemitraan dengan pesantren dan SMA/MA di Ponorogo-Madiun melalui MoU dan program beasiswa khusus alumni pesantren.</li>
+        <li><strong>Diferensiasi nilai pesantren:</strong> Posisikan Ma'had Al-Jami'ah sebagai keunikan tak tertandingi kompetitor BLU besar yang lebih urban dan sekuler.</li>
+        <li><strong>Percepat ranking SINTA:</strong> Wajibkan dosen mendaftarkan semua publikasi di SINTA dan update Google Scholar — meningkatkan skor Webometrics secara bertahap tanpa biaya besar.</li>
+      </ol></div>
+      <div class="strat-cell"><h4 class="wt">⚡ WT</h4><ol>
+        <li><strong>Akselerasi BLU sebelum gap melebar:</strong> Setiap tahun tanpa BLU, kompetitor makin jauh di depan. Tetapkan BLU 2026 sebagai target non-negotiable dengan KPI Rektor.</li>
+        <li><strong>Kemitraan strategis dengan kompetitor:</strong> Alih-alih bersaing penuh, buat konsorsium riset dan program double degree dengan UINSATU Tulungagung untuk berbagi sumber daya.</li>
+        <li><strong>Antisipasi kompetitor baru:</strong> Perkuat akar lokal (pesantren, komunitas, pemerintah daerah) sebagai pertahanan jika PTKIN baru masuk ke catchment area Ponorogo.</li>
+      </ol></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ================================================================
+       2. PENDIDIKAN & PEMBELAJARAN
+  ================================================================ -->
+  <div class="section-block" id="sec-pendidikan">
+    <div class="section-num">Dimensi 2</div>
+    <h2>Pendidikan dan Pembelajaran</h2>
+  </div>
+  <p class="section-desc">
+    UIN Ponorogo menyelenggarakan pendidikan melalui <strong>4 Fakultas + Pascasarjana</strong>: Fakultas Tarbiyah dan Ilmu Keguruan (FTIK), Fakultas Syariah (FASya), Fakultas Ekonomi dan Bisnis Islam (FEBI), serta Fakultas Ushuluddin, Adab, dan Dakwah (FUAD). Total <strong>28 program studi</strong> (22 S1 + 5 S2 + 1 S3). Akreditasi institusi <strong>Unggul BAN-PT</strong> berlaku hingga 2029. Dari 28 prodi, <strong>11 prodi terakreditasi Unggul</strong> (10 S1 + 1 S2), 11 Baik Sekali, dan 6 Baik. Kurikulum tengah dalam proses penyelarasan dengan <strong>Permendiktisaintek No. 39/2025</strong> yang mendorong fleksibilitas berbasis micro-credential dan RPL. MBKM (Merdeka Belajar Kampus Merdeka) sudah berjalan dengan program magang, proyek desa, dan pertukaran mahasiswa.
+  </p>
+  <div class="data-box">
+    <strong>Data Kunci:</strong> Akreditasi institusi Unggul (BAN-PT 2024–2029). Total 28 prodi: <strong>11 Unggul</strong> (FTIK: PAI, PGMI, TBI, MPI, PBA, TIPS, TIPA, PIAUD; FASya: HES; FUAD: IAT; Pascasarjana S2: MPI) | 11 Baik Sekali | 6 Baik. Permendiktisaintek 39/2025 menggantikan Permendikbudristek 53/2023 — mendorong micro-credential dan RPL. Ma'had Al-Jami'ah sebagai kurikulum pendukung nilai. SIAKAD GAPURA untuk manajemen akademik digital.
+    <div class="src">Sumber: BAN-PT; PDDikti 2025; ptkin.ac.id; Permendiktisaintek 39/2025; SIAKAD GAPURA</div>
+  </div>
+
+  <div class="swot-block" id="tbl-pendidikan">
+    <button class="export-btn" onclick="exportSection('tbl-pendidikan','swot_pendidikan')">📷 PNG</button>
+    <div class="swot-block-title">Tabel SWOT — Dimensi Pendidikan &amp; Pembelajaran</div>
+    <div class="swot-grid">
+      <div class="swot-cell bg-s">
+        <div class="sh s">💪 Kekuatan</div>
+        <ul>
+          <li>Akreditasi institusi <strong>Unggul</strong> — standar tertinggi BAN-PT, menjamin kepercayaan publik terhadap kualitas pendidikan secara keseluruhan.</li>
+          <li><strong>4 prodi akreditasi Unggul</strong> (HES, Perbankan Syariah, PAI, HKI) — bukti mutu akademik di lintas bidang keilmuan.</li>
+          <li>Integrasi <strong>Ma'had Al-Jami'ah</strong> ke dalam sistem pendidikan menciptakan ekosistem pembelajaran nilai yang unik dan membedakan dari universitas umum.</li>
+          <li><strong>SIAKAD GAPURA</strong> dan sistem akademik digital sudah berjalan — fondasi e-learning yang memadai untuk pengembangan berikutnya.</li>
+        </ul>
+      </div>
+      <div class="swot-cell bg-w">
+        <div class="sh w">📉 Kelemahan</div>
+        <ul>
+          <li><strong>Belum ada kebijakan AI akademik formal</strong> — "governance gap" di tengah adopsi masif ChatGPT oleh mahasiswa, meningkatkan risiko integritas akademik.</li>
+          <li>Kurikulum <strong>belum sepenuhnya mengintegrasikan kompetensi digital</strong> (data science, coding basics, AI literacy) yang kini dibutuhkan hampir semua industri.</li>
+          <li>Prodi masih <strong>terbatas pada rumpun agama-humaniora</strong> — belum ada prodi STEM atau kesehatan meskipun status UIN 2025 sudah memberi kewenangan.</li>
+          <li><strong>SPMI (Sistem Penjaminan Mutu Internal)</strong> belum terintegrasi digital sesuai standar Permendiktisaintek 39/2025 yang baru berlaku.</li>
+        </ul>
+      </div>
+      <div class="swot-cell bg-o">
+        <div class="sh o">🎯 Peluang</div>
+        <ul>
+          <li>Permendiktisaintek 39/2025 memungkinkan <strong>kurikulum micro-credential dan RPL</strong> — peluang membuka program pendidikan pendek berbayar sebagai sumber PNBP baru.</li>
+          <li>SKB 7 Kementerian tentang AI (Maret 2026) memberikan <strong>kerangka regulasi yang jelas</strong> bagi kampus yang mengembangkan kebijakan AI — early adopter mendapat keunggulan kompetitif.</li>
+          <li>Status UIN 2025 membuka peluang <strong>pembukaan prodi non-agama</strong> (Informatika, Psikologi, Kesehatan Masyarakat) untuk diversifikasi akademik secara legal.</li>
+          <li>Program <strong>MBKM/Kampus Merdeka</strong> menyediakan sumber dana dan jaringan kemitraan industri yang dapat memperluas pengalaman belajar mahasiswa secara signifikan.</li>
+        </ul>
+      </div>
+      <div class="swot-cell bg-t">
+        <div class="sh t">⚠️ Ancaman</div>
+        <ul>
+          <li>AI generatif memudahkan <strong>plagiarisme dan kecurangan akademik</strong> tanpa terdeteksi — ancaman integritas yang menggerus nilai kelulusan jika tidak diatasi sistemik.</li>
+          <li>Standar akreditasi BAN-PT yang terus berkembang (No. 19–23/2025) <strong>menuntut adaptasi SPMI berkelanjutan</strong> yang membutuhkan SDM dan dana khusus.</li>
+          <li>PTKIN BLU besar sudah lebih dulu mengadopsi <strong>kurikulum berbasis outcome dan internasional</strong> (AUN-QA, ASIIN) — gap kompetensi lulusan berpotensi melebar.</li>
+          <li>Tuntutan industri terhadap <strong>lulusan yang melek digital dan AI</strong> semakin tinggi — kurikulum agama-humaniora yang tidak diadaptasi akan menghasilkan mismatch kompetensi.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="strat-grid">
+      <div class="strat-cell"><h4 class="so">🤝 SO</h4><ol>
+        <li><strong>Terbitkan Panduan AI Akademik:</strong> Jadikan UIN Ponorogo sebagai PTKIN pertama di Jawa Timur yang punya kebijakan AI resmi — memanfaatkan akreditasi Unggul sebagai legitimasi dan SKB 7 Kementerian sebagai kerangka.</li>
+        <li><strong>Buka 2 prodi non-agama 2026:</strong> Prioritaskan Informatika dan Psikologi — paling relevan dengan tren industri dan tidak membutuhkan infrastruktur baru yang masif.</li>
+        <li><strong>Kembangkan micro-credential berbayar:</strong> Manfaatkan Permendiktisaintek 39/2025 untuk meluncurkan program sertifikasi pendek (20–40 jam) di bidang hukum, pendidikan, dan keuangan yang menghasilkan PNBP.</li>
+      </ol></div>
+      <div class="strat-cell"><h4 class="wo">🔧 WO</h4><ol>
+        <li><strong>Integrasikan AI literacy:</strong> Masukkan modul "Literasi Digital & AI Etis" sebagai MKWI (Mata Kuliah Wajib Institusi) untuk semua prodi mulai semester 1 TA 2026/2027.</li>
+        <li><strong>Upgrade SPMI ke standar 39/2025:</strong> Bentuk Tim Task Force Mutu khusus — susun ulang seluruh dokumen SPMI dalam 12 bulan sesuai orientasi mutu global yang jadi filosofi baru regulasi.</li>
+        <li><strong>Targetkan AUN-QA prodi unggulan:</strong> Mulai persiapan akreditasi internasional AUN-QA untuk PAI dan HES — investasi 2 tahun yang meningkatkan daya saing lulusan secara drastis.</li>
+      </ol></div>
+      <div class="strat-cell"><h4 class="st">🛡️ ST</h4><ol>
+        <li><strong>Implementasikan deteksi AI:</strong> Berlangganan Turnitin AI Detection untuk semua prodi — lindungi integritas skripsi dan publikasi dosen secara sistemik.</li>
+        <li><strong>Perbarui kurikulum 2 tahunan:</strong> Tetapkan siklus review kurikulum wajib setiap 2 tahun dengan masukan industri melalui advisory board berbasis alumni dan mitra.</li>
+        <li><strong>Pantau standar BAN-PT baru:</strong> Masukkan monitoring BAN-PT No. 19-23/2025 dalam agenda bulanan tim SPMI agar tidak ada perubahan standar yang tertinggal.</li>
+      </ol></div>
+      <div class="strat-cell"><h4 class="wt">⚡ WT</h4><ol>
+        <li><strong>Redesain kurikulum berbasis outcome:</strong> Implementasikan OBE (Outcome-Based Education) penuh untuk semua prodi — lulusan didefinisikan oleh kompetensi terukur, bukan sekadar jam tatap muka.</li>
+        <li><strong>Kurikulum terintegrasi digital:</strong> Setiap prodi wajib punya 1 mata kuliah berbasis teknologi digital yang relevan (e-courts untuk Hukum, e-banking untuk PBS, EdTech untuk PAI, dan seterusnya).</li>
+        <li><strong>Mulai persiapan IAPS 5.0:</strong> Antisipasi transisi ke instrumen akreditasi generasi berikutnya dengan mendokumentasikan dampak dan output akademik secara digital sejak sekarang.</li>
+      </ol></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ================================================================
+       3. POTENSI MAHASISWA
+  ================================================================ -->
+  <div class="section-block" id="sec-mahasiswa">
+    <div class="section-num">Dimensi 3</div>
+    <h2>Potensi Mahasiswa — PMB, Beasiswa &amp; Retensi</h2>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-box blue"><div class="lbl">Total Mahasiswa</div><div class="val">±14.500</div><div class="note">Data SIAKAD 2025</div></div>
+    <div class="stat-box green"><div class="lbl">Target PMB/Tahun</div><div class="val">±3.500</div><div class="note">Mahasiswa baru per TA</div></div>
+    <div class="stat-box amber"><div class="lbl">KIP-K Aktif</div><div class="val">±1.200</div><div class="note">Est. Kemenag 2025</div></div>
+    <div class="stat-box purple"><div class="lbl">Pascasarjana</div><div class="val">±400</div><div class="note">S2 & S3 aktif</div></div>
+    <div class="stat-box red"><div class="lbl">Rasio Dosen:Mhs</div><div class="val">1:44</div><div class="note">Perlu perbaikan</div></div>
+  </div>
+
+  <p class="section-desc">
+    UIN Ponorogo merekrut mahasiswa baru melalui <strong>SPAN-PTKIN</strong> (prestasi), <strong>UM-PTKIN</strong> (ujian masuk), dan jalur mandiri. Sebagai PTKIN satu-satunya di Karesidenan Madiun, catchment area utama adalah Ponorogo, Madiun, Magetan, Ngawi, Pacitan, dan sebagian Trenggalek. Program <strong>KIP Kuliah (KIP-K)</strong> menjadi tulang punggung aksesibilitas finansial bagi mahasiswa dari keluarga kurang mampu. Dengan APK pendidikan tinggi nasional baru di <em>34%</em> dan target pemerintah <em>60% pada 2045</em>, pasar mahasiswa masih sangat besar.
+  </p>
+  <div class="data-box">
+    <strong>Data Kunci:</strong> APK Dikti nasional 2025: 32,89–34% (target 60% di 2045, Katadata). Gen Z = 27,94% populasi Indonesia (~74 juta). Fenomena NEET: jutaan pemuda 15–24 tidak dalam pendidikan/kerja. Kabupaten Ponorogo: ~879.000 jiwa di wilayah catchment. Inpres 1/2025 tidak mempengaruhi UKT/KIP-K (Menkeu Sri Mulyani, Tempo.co 2025).
+    <div class="src">Sumber: BPS 2024; Katadata 2025; Tempo.co; Kemendiktisaintek; Kemenag SPAN-PTKIN</div>
+  </div>
+
+  <div class="swot-block" id="tbl-mahasiswa">
+    <button class="export-btn" onclick="exportSection('tbl-mahasiswa','swot_mahasiswa')">📷 PNG</button>
+    <div class="swot-block-title">Tabel SWOT — Dimensi Potensi Mahasiswa</div>
+    <div class="swot-grid">
+      <div class="swot-cell bg-s">
+        <div class="sh s">💪 Kekuatan</div>
+        <ul>
+          <li><strong>Satu-satunya PTKIN di Karesidenan Madiun</strong> — captive market alami tanpa persaingan PTKIN lain dalam radius 100 km.</li>
+          <li><strong>UKT kompetitif + KIP-K</strong> aktif menjadikan kampus pilihan utama keluarga menengah-bawah — segmen terbesar di wilayah Ponorogo-Madiun.</li>
+          <li>Ma'had Al-Jami'ah dan tradisi pesantren menjadi <strong>daya tarik khas</strong> bagi keluarga yang menginginkan pendidikan tinggi berbasis nilai Islam.</li>
+          <li>Jalur penerimaan multi-skema (SPAN, UM-PTKIN, Mandiri) memberi <strong>fleksibilitas akses yang luas</strong> bagi berbagai profil calon mahasiswa.</li>
+        </ul>
+      </div>
+      <div class="swot-cell bg-w">
+        <div class="sh w">📉 Kelemahan</div>
+        <ul>
+          <li><strong>Belum ada sistem tracer study alumni</strong> yang terstandarisasi — data penempatan kerja lulusan tidak tersedia, menghambat marketing berbasis outcome kampus.</li>
+          <li>Tidak ada <strong>unit pemasaran PMB yang profesional</strong> — promosi masih bergantung pada mulut-ke-mulut dan pesantren, tidak menjangkau Gen Z di platform digital.</li>
+          <li>Rasio dosen:mahasiswa <strong>1:44</strong> paling berat — berdampak pada kualitas bimbingan akademik dan kepuasan mahasiswa selama studi.</li>
+          <li>Fasilitas pendukung mahasiswa (asrama, kantin sehat, sarana olahraga) <strong>belum sebanding dengan pertumbuhan jumlah mahasiswa</strong>.</li>
+        </ul>
+      </div>
+      <div class="swot-cell bg-o">
+        <div class="sh o">🎯 Peluang</div>
+        <ul>
+          <li>APK Dikti 34% dengan target 60% di 2045 — <strong>66% calon mahasiswa potensial belum terjangkau</strong>, pasar masih sangat besar untuk direbut.</li>
+          <li>Dominasi Gen Z dalam populasi + kesadaran pentingnya pendidikan tinggi menciptakan <strong>permintaan yang terus tumbuh</strong> di wilayah ring-1 dan sekitarnya.</li>
+          <li>Program NEET pemerintah membuka peluang <strong>program rekognisi pembelajaran lampau (RPL)</strong> untuk menyerap lulusan SMA/SMK yang tidak langsung kuliah.</li>
+          <li>Ekspansi prodi non-agama pasca-UIN 2025 akan <strong>membuka segmen mahasiswa baru</strong> yang selama ini tidak melirik PTKIN (minat sains, teknologi, kesehatan).</li>
+        </ul>
+      </div>
+      <div class="swot-cell bg-t">
+        <div class="sh t">⚠️ Ancaman</div>
+        <ul>
+          <li>Urbanisasi dan migrasi pemuda Ponorogo ke kota besar dan luar negeri (TKW) secara gradual <strong>mengecilkan pool calon mahasiswa lokal</strong>.</li>
+          <li>Gen Z membuat keputusan kuliah berdasarkan <strong>konten digital, ranking, dan prospek karier</strong> — tidak cukup hanya mengandalkan jaringan pesantren konvensional.</li>
+          <li>Tekanan ekonomi keluarga (efek Inpres efisiensi, inflasi) berpotensi menurunkan <strong>kemampuan membayar UKT</strong> meski tetap terjangkau, meningkatkan drop-out.</li>
+          <li>Kompetitor universitas swasta di Jawa Timur makin agresif dalam <strong>beasiswa, program kerja sama industri, dan pemasaran digital</strong>.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="strat-grid">
+      <div class="strat-cell"><h4 class="so">🤝 SO</h4><ol>
+        <li><strong>Ekspansi zona PMB:</strong> Perluas roadshow ke seluruh pesantren, MA/SMA, dan BK sekolah di Ponorogo, Madiun, Magetan, Ngawi, Pacitan, Trenggalek — buat program agen beasiswa khusus.</li>
+        <li><strong>Program dual-track santri-mahasiswa:</strong> Kerjasama dengan pesantren Gontor, Al-Islam Joresan, dan Walisongo Ngabar untuk program khusus santri masuk UIN Ponorogo dengan jalur beasiswa.</li>
+        <li><strong>Maksimalkan KIP-K:</strong> Tingkatkan kuota KIP-K secara aktif melalui advokasi ke Pusat Pembiayaan Pendidikan Kemenag — ini sumber mahasiswa sekaligus pendapatan yang tidak bergantung BOPTN.</li>
+      </ol></div>
+      <div class="strat-cell"><h4 class="wo">🔧 WO</h4><ol>
+        <li><strong>Implementasikan tracer study digital:</strong> Bangun sistem pelacakan alumni terpadu terintegrasi SIAKAD — data penempatan kerja lulusan jadi senjata utama marketing PMB 2027.</li>
+        <li><strong>Buka unit Pemasaran Akademik:</strong> Rekrut 2–3 staf khusus media sosial dan konten kreator untuk mengelola TikTok, YouTube, Instagram bertarget Gen Z calon mahasiswa.</li>
+        <li><strong>Program retensi mahasiswa:</strong> Buat sistem deteksi dini mahasiswa berisiko drop-out berbasis SIAKAD (IP rendah + absensi tinggi) dan intervensi bimbingan konseling cepat.</li>
+      </ol></div>
+      <div class="strat-cell"><h4 class="st">🛡️ ST</h4><ol>
+        <li><strong>Beasiswa darurat internal:</strong> Alokasikan dana kampus untuk beasiswa darurat bagi mahasiswa terdampak tekanan ekonomi keluarga — mencegah drop-out dan menjaga IP cohort.</li>
+        <li><strong>Konten digital kampus massif:</strong> Produksi video kehidupan kampus, testimoni alumni sukses, dan highlight program Ma'had secara rutin — menjangkau Gen Z di platform mereka.</li>
+        <li><strong>Program kerja sama sekolah:</strong> Buat MoU dengan minimal 50 SMA/MA di wilayah ring-1 — siswa kelas 11 mendapat informasi kampus dan jalur beasiswa lebih awal.</li>
+      </ol></div>
+      <div class="strat-cell"><h4 class="wt">⚡ WT</h4><ol>
+        <li><strong>Early warning PMB:</strong> Monitor tren pendaftar 5 tahun terakhir per kecamatan asal — identifikasi daerah yang mulai menurun dan intervensi promosi lebih intensif di sana.</li>
+        <li><strong>Program cicilan UKT:</strong> Buka skema pembayaran UKT bulanan/semester untuk meringankan beban keluarga — mengurangi drop-out akibat gagal bayar UKT.</li>
+        <li><strong>Kembangkan program RPL:</strong> Manfaatkan Permendiktisaintek 39/2025 untuk menyerap segmen NEET dengan rekognisi pengalaman kerja sebagai kredit akademik.</li>
+      </ol></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ================================================================
+       4. SDM
+  ================================================================ -->
+  <div class="section-block" id="sec-sdm">
+    <div class="section-num">Dimensi 4</div>
+    <h2>Sumber Daya Manusia — Dosen &amp; Tendik</h2>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-box blue"><div class="lbl">Total Dosen</div><div class="val">329</div><div class="note">SIMPEG Apr 2026</div></div>
+    <div class="stat-box green"><div class="lbl">Dosen Doktor (S3)</div><div class="val">81</div><div class="note">24,6% dari total dosen</div></div>
+    <div class="stat-box amber"><div class="lbl">Guru Besar</div><div class="val">15</div><div class="note">4,56% dari total dosen</div></div>
+    <div class="stat-box purple"><div class="lbl">Lektor Kepala</div><div class="val">47</div><div class="note">Fungsional tertinggi ke-2</div></div>
+    <div class="stat-box red"><div class="lbl">Total Tendik</div><div class="val">162</div><div class="note">S2: 23, S3: 1</div></div>
+  </div>
+
+  <p class="section-desc">
+    Berdasarkan data SIMPEG Kemenag April 2026, UIN Ponorogo memiliki <strong>329 dosen</strong> dengan komposisi: 81 bergelar Doktor (S3), 246 Magister (S2), 2 Sarjana (S1). Jabatan fungsional: 15 Guru Besar, 47 Lektor Kepala, 123 Lektor, 143 Asisten Ahli, 1 Tenaga Pengajar. <strong>162 tenaga kependidikan</strong> dengan komposisi: 23 S2, 1 S3, 87 S1, 33 SMA. Rasio GB terhadap total dosen (4,56%) masih di bawah standar ideal 10% untuk universitas Unggul. Sertifikasi kompetensi dosen dan tendik terus ditingkatkan melalui program Kemenag.
+  </p>
+  <div class="data-box">
+    <strong>Data SIMPEG Kemenag April 2026 (Terverifikasi):</strong> Dosen: 329 (S3: 81 | S2: 246 | S1: 2). Jabatan: GB: 15 | LK: 47 | L: 123 | AA: 143 | TP: 1. Tendik: 162 (S3: 1 | S2: 23 | S1: 87 | SMA/D: 33+18). Rasio mhs:dosen = 44:1.
+    <div class="src">Sumber: DUK-SISDM Kementerian Agama April 2026 (data resmi SIMPEG)</div>
+  </div>
+
+  <div class="swot-block" id="tbl-sdm">
+    <button class="export-btn" onclick="exportSection('tbl-sdm','swot_sdm')">📷 PNG</button>
+    <div class="swot-block-title">Tabel SWOT — Dimensi Sumber Daya Manusia</div>
+    <div class="swot-grid">
+      <div class="swot-cell bg-s">
+        <div class="sh s">💪 Kekuatan</div>
+        <ul>
+          <li><strong>81 dosen bergelar Doktor (S3)</strong> — 24,6% dari total dosen, melampaui standar minimal BAN-PT dan menjadi aset riset yang signifikan.</li>
+          <li><strong>15 Guru Besar</strong> aktif sebagai pemimpin akademik yang memperkuat wibawa institusi dalam forum nasional dan regional.</li>
+          <li><strong>329 dosen</strong> dengan latar belakang multidisiplin menopang seluruh program studi 4 fakultas secara memadai.</li>
+          <li>Pengembangan SDM berkelanjutan melalui program <strong>beasiswa S3 Kemenag (MORA Scholarship)</strong> yang aktif diikuti dosen.</li>
+        </ul>
+      </div>
+      <div class="swot-cell bg-w">
+        <div class="sh w">📉 Kelemahan</div>
+        <ul>
+          <li><strong>143 Asisten Ahli</strong> (43,5% dari total) masih dominan — terlalu banyak dosen di jenjang fungsional terendah, memperlambat kenaikan jabatan dan produktivitas riset.</li>
+          <li>Rasio GB terhadap total dosen hanya <strong>4,56%</strong> — jauh di bawah target 10% untuk kampus berambisi PTN-BH. Perlu akselerasi promosi GB secara masif.</li>
+          <li><strong>2 dosen masih S1</strong> — tidak memenuhi standar kualifikasi minimal dosen PT sesuai UU Dikti; perlu penyelesaian studi segera.</li>
+          <li>Tendik: <strong>33 berlatar SMA</strong> (20,4%) — rendahnya kualifikasi sebagian Tendik mempengaruhi kualitas layanan administratif dan teknis kampus.</li>
+        </ul>
+      </div>
+      <div class="swot-cell bg-o">
+        <div class="sh o">🎯 Peluang</div>
+        <ul>
+          <li>Program <strong>MORA Scholarship (S3 dalam dan luar negeri)</strong> masih terbuka lebar — kesempatan mempercepat penambahan dosen bergelar doktor dari 81 ke 120+ dalam 3 tahun.</li>
+          <li>Skema <strong>percepatan Guru Besar Kemenag</strong> melalui program nasional dapat dimanfaatkan untuk 10–15 Lektor Kepala yang sudah memenuhi syarat publikasi.</li>
+          <li>Rekrutmen CPNS/PPPK dosen baru melalui jalur khusus PTKIN memberikan peluang <strong>menambah dosen STEM</strong> seiring pembukaan prodi non-agama.</li>
+          <li>Program <strong>pelatihan kompetensi tendik</strong> berbasis Kemenag (manajemen, IT, keuangan) tersedia untuk meningkatkan kualifikasi SDM administratif.</li>
+        </ul>
+      </div>
+      <div class="swot-cell bg-t">
+        <div class="sh t">⚠️ Ancaman</div>
+        <ul>
+          <li>PTKIN BLU besar menawarkan <strong>remunerasi lebih tinggi dan fasilitas riset lebih baik</strong> — risiko brain drain dosen potensial (Lektor Kepala produktif) ke kompetitor.</li>
+          <li>Standar akreditasi BAN-PT 2025 (No. 19/2025) mensyaratkan <strong>persentase GB dan S3 yang semakin tinggi</strong> — gap yang melebar mengancam posisi akreditasi Unggul.</li>
+          <li>Beban mengajar tinggi akibat rasio 1:44 menyebabkan <strong>dosen kelelahan dan tidak punya waktu untuk riset</strong> — produktivitas publikasi terhambat secara struktural.</li>
+          <li>Formasi CPNS yang terbatas dari pusat <strong>memperlambat penambahan dosen baru</strong> meski kebutuhan mendesak — tergantung kebijakan Kemenag dan KemenPAN-RB.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="strat-grid">
+      <div class="strat-cell"><h4 class="so">🤝 SO</h4><ol>
+        <li><strong>Program MORA S3 agresif:</strong> Targetkan 20 dosen baru berangkat S3 per tahun melalui MORA Scholarship — dalam 4 tahun proporsi S3 naik dari 24,6% ke 35%+.</li>
+        <li><strong>Percepatan Guru Besar:</strong> Identifikasi 10–15 Lektor Kepala yang mendekati syarat GB dan beri pendampingan intensif penulisan jurnal Q1-Q2 Scopus agar bisa segera diusulkan.</li>
+        <li><strong>Rekrut dosen STEM:</strong> Manfaatkan formasi CPNS/PPPK berikutnya untuk merekrut minimal 10 dosen bergelar S3 bidang informatika, matematika, dan sains terapan.</li>
+      </ol></div>
+      <div class="strat-cell"><h4 class="wo">🔧 WO</h4><ol>
+        <li><strong>Akselerasi jabatan Asisten Ahli:</strong> Program mentoring terstruktur — setiap Asisten Ahli wajib punya roadmap naik ke Lektor dalam 2 tahun, didukung SK Rektor tentang kewajiban publikasi per semester.</li>
+        <li><strong>Upgrade kualifikasi 2 dosen S1:</strong> Danai studi S2 bagi 2 dosen berkualifikasi S1 melalui anggaran kampus atau beasiswa Kemenag — penuhi standar kualifikasi minimal UU Dikti.</li>
+        <li><strong>Pelatihan Tendik:</strong> Wajibkan seluruh tendik berlatar SMA mengikuti program D3/S1 jarak jauh berbasis UT atau skema RPL — tingkatkan kualifikasi dalam 3 tahun.</li>
+      </ol></div>
+      <div class="strat-cell"><h4 class="st">🛡️ ST</h4><ol>
+        <li><strong>Sistem retensi dosen:</strong> Buat program reward non-finansial yang kuat — jabatan akademik strategis, dukungan konferensi internasional, dan alokasi waktu riset terlindungi untuk dosen produktif.</li>
+        <li><strong>Kurangi beban mengajar:</strong> Implementasikan sistem manajemen beban mengajar berbasis ECTS — dosen dengan IP publikasi tinggi mendapat pengurangan jam mengajar agar bisa fokus pada riset.</li>
+        <li><strong>Kembangkan benefit non-APBN:</strong> Siapkan skema bonus riset dari PNBP jika BLU terwujud — insentif yang tidak bergantung pada anggaran pusat.</li>
+      </ol></div>
+      <div class="strat-cell"><h4 class="wt">⚡ WT</h4><ol>
+        <li><strong>Emergency: pangkas beban mengajar:</strong> Batasi beban mengajar maksimal 12 SKS/semester — dosen tidak boleh kelelahan mengajar dan tidak punya waktu riset. Rekrut dosen luar biasa untuk menutupi kebutuhan.</li>
+        <li><strong>Database kompetensi dosen:</strong> Buat peta kompetensi seluruh 329 dosen berbasis bidang ilmu, pengalaman riset, dan sertifikasi — dasar distribusi tugas yang lebih efisien dan adil.</li>
+        <li><strong>Susun SK remunerasi BLU-ready:</strong> Rancang sistem remunerasi lengkap (basic + tunjangan kinerja + bonus riset) yang siap diterapkan setelah BLU — agar tidak kehilangan momentum pasca-penetapan BLU.</li>
+      </ol></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ================================================================
+       5. PENELITIAN & PENGABDIAN
+  ================================================================ -->
+  <div class="section-block" id="sec-penelitian">
+    <div class="section-num">Dimensi 5</div>
+    <h2>Penelitian dan Pengabdian Masyarakat</h2>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-box blue"><div class="lbl">Dokumen Scopus</div><div class="val">183</div><div class="note">SINTA ID 8245308</div></div>
+    <div class="stat-box green"><div class="lbl">GScholar</div><div class="val">9.348</div><div class="note">Total karya di GScholar</div></div>
+    <div class="stat-box amber"><div class="lbl">Jurnal SINTA 2</div><div class="val">2</div><div class="note">Cendekia & Al-Tahrir</div></div>
+    <div class="stat-box purple"><div class="lbl">Jurnal Kelolaan</div><div class="val">10+</div><div class="note">SINTA 2–5</div></div>
+    <div class="stat-box red"><div class="lbl">Kutipan Scopus</div><div class="val">690</div><div class="note">135 dok tersitasi · 2,04/dosen</div></div>
+  </div>
+
+  <p class="section-desc">
+    Riset UIN Ponorogo dikelola LP2M (Lembaga Penelitian dan Pengabdian Masyarakat) yang mengelola hibah internal, pendampingan ke SIMLITABMAS (Kemendiktisaintek), dan penerbitan jurnal ilmiah. Dari profil SINTA (ID: 8245308), tercatat <strong>183 dokumen terindeks Scopus</strong>, 9.348 karya di Google Scholar, 1.934 di Garuda, dan 2 jurnal terakreditasi SINTA 2: <em>Cendekia</em> (Kependidikan) dan <em>Al-Tahrir</em> (Pemikiran Islam). Sitasi Scopus: 690 (135 dokumen tersitasi, rasio citasi/dosen = 2,04). Pengabdian masyarakat aktif di bidang literasi hukum, moderasi beragama, ekonomi pesantren, dan pemberdayaan desa.
+  </p>
+  <div class="data-box">
+    <strong>Data SINTA (ID: 8245308) — Terverifikasi:</strong><br>
+    <table style="width:100%;font-size:0.77rem;border-collapse:collapse;margin-top:0.4rem">
+      <tr style="border-bottom:1px solid var(--border)">
+        <th style="text-align:left;padding:3px 6px;color:var(--muted)">Metrik</th>
+        <th style="text-align:center;padding:3px 6px;color:var(--accent)">Scopus</th>
+        <th style="text-align:center;padding:3px 6px;color:var(--green)">GScholar</th>
+        <th style="text-align:center;padding:3px 6px;color:var(--amber)">Garuda</th>
+      </tr>
+      <tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:3px 6px;color:var(--muted)">Documents</td>
+        <td style="text-align:center;font-weight:700">183</td>
+        <td style="text-align:center;font-weight:700">9.348</td>
+        <td style="text-align:center;font-weight:700">1.934</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:3px 6px;color:var(--muted)">Citation</td>
+        <td style="text-align:center">690</td>
+        <td style="text-align:center">67.482</td>
+        <td style="text-align:center">10</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:3px 6px;color:var(--muted)">Cited Document</td>
+        <td style="text-align:center">135</td>
+        <td style="text-align:center">5.302</td>
+        <td style="text-align:center">9</td>
+      </tr>
+      <tr>
+        <td style="padding:3px 6px;color:var(--muted)">Sitasi/Dosen (PDDikti)</td>
+        <td style="text-align:center">2,04</td>
+        <td style="text-align:center">199,06</td>
+        <td style="text-align:center">0,03</td>
+      </tr>
+    </table>
+    Jurnal SINTA 2: Cendekia (Kependidikan), Al-Tahrir (Pemikiran Islam). Konteks: UIN Jakarta Scopus: 3.617 | UIN Malang Scopus: ~800.
+    <div class="src">Sumber: SINTA Kemdiktisaintek; sinta.kemdiktisaintek.go.id/affiliations/profile/8245308; LP2M UIN Ponorogo</div>
+  </div>
+
+  <div class="swot-block" id="tbl-penelitian">
+    <button class="export-btn" onclick="exportSection('tbl-penelitian','swot_penelitian')">📷 PNG</button>
+    <div class="swot-block-title">Tabel SWOT — Dimensi Penelitian &amp; Pengabdian Masyarakat</div>
+    <div class="swot-grid">
+      <div class="swot-cell bg-s">
+        <div class="sh s">💪 Kekuatan</div>
+        <ul>
+          <li><strong>2 jurnal terakreditasi SINTA 2</strong> (Cendekia dan Al-Tahrir) sebagai wadah publikasi internal berkualitas yang meningkatkan dampak riset.</li>
+          <li><strong>81 dosen bergelar doktor</strong> adalah modal riset yang signifikan — kapasitas akademik tersedia, perlu aktivasi dan insentif yang tepat.</li>
+          <li>LP2M aktif mengelola hibah internal dan pendampingan ke <strong>SIMLITABMAS</strong> — infrastruktur manajerial penelitian sudah berjalan.</li>
+          <li>Pengabdian masyarakat berbasis <strong>moderasi beragama, hukum, dan ekonomi pesantren</strong> yang relevan dengan kebutuhan nyata komunitas lokal Ponorogo.</li>
+        </ul>
+      </div>
+      <div class="swot-cell bg-w">
+        <div class="sh w">📉 Kelemahan</div>
+        <ul>
+          <li><strong>183 dokumen Scopus, sitasi/dosen hanya 2,04</strong> — jauh di bawah kompetitor BLU: UIN Jakarta 3.617 dok (sitasi/dosen 18,67), UIN Malang ~800 dok. Gap ini mencerminkan kapasitas riset bertaraf internasional yang masih perlu ditingkatkan secara signifikan.</li>
+          <li>Beban mengajar tinggi (rasio 1:44) membuat dosen <strong>tidak punya waktu yang cukup untuk penelitian</strong> berkualitas internasional.</li>
+          <li>Anggaran hibah penelitian internal dan eksternal <strong>terbatas oleh status Satker</strong> — tidak bisa dikelola secara fleksibel untuk memaksimalkan produktivitas riset.</li>
+          <li>Budaya riset masih belum kuat di kalangan dosen junior (<strong>143 Asisten Ahli dominan</strong>) yang lebih baru dalam perjalanan akademik mereka.</li>
+        </ul>
+      </div>
+      <div class="swot-cell bg-o">
+        <div class="sh o">🎯 Peluang</div>
+        <ul>
+          <li>Hibah riset dari <strong>LPDP, Kemendiktisaintek, dan Kemenag</strong> tersedia bagi kampus yang mengajukan proposal kuat — peluang pendanaan eksternal yang besar.</li>
+          <li>Kolaborasi riset dengan kampus lain via <strong>konsorsium PTKIN Jawa</strong> dapat melipatgandakan jumlah publikasi Scopus secara efisien tanpa tambahan dosen.</li>
+          <li>Riset terapan berbasis kekuatan existing: <strong>Ekonomi Wakaf, Hukum Keluarga Islam, Ekonomi Pesantren, Moderasi Beragama</strong> — area yang langsung terhubung dengan keilmuan 4 fakultas dan komunitas nyata di Ponorogo.</li>
+          <li>Program <strong>open access jurnal internasional</strong> yang disponsori lembaga global (DOAJ, OpenDOAR) memberi peluang meningkatkan visibilitas riset tanpa biaya besar.</li>
+        </ul>
+      </div>
+      <div class="swot-cell bg-t">
+        <div class="sh t">⚠️ Ancaman</div>
+        <ul>
+          <li>Gap Scopus yang masif dengan kompetitor (<strong>UIN Jakarta 103x lebih produktif</strong>) semakin sulit dikejar tanpa investasi riset yang fundamental dan sistemik.</li>
+          <li>Standar akreditasi BAN-PT terbaru mensyaratkan <strong>jumlah publikasi per dosen yang terus meningkat</strong> — posisi akreditasi Unggul terancam jika tidak ada perbaikan.</li>
+          <li>Pemangkasan anggaran Inpres 1/2025 berdampak pada <strong>biaya perjalanan seminar dan dana penelitian</strong> — hambatan nyata bagi produktivitas riset dosen.</li>
+          <li>Riset berbasis AI oleh kampus besar menghasilkan <strong>publikasi massal dengan kecepatan tinggi</strong> — kompetisi yang semakin tidak seimbang tanpa repositioning strategi.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="strat-grid">
+      <div class="strat-cell"><h4 class="so">🤝 SO</h4><ol>
+        <li><strong>Program Riset Unggulan 100 Scopus:</strong> Targetkan 100 dokumen Scopus dalam 3 tahun dengan road map: identifikasi 20 dosen paling produktif → beri alokasi waktu riset → fasilitasi submission ke jurnal Q2 Scopus setiap semester.</li>
+        <li><strong>Konsorsium riset PTKIN Jawa Timur:</strong> Bentuk konsorsium dengan UINSATU, IAIN Kediri, UIN Malang untuk proyek riset kolaboratif — setiap paper dihitung sebagai angka kredit masing-masing anggota.</li>
+        <li><strong>Kuatkan riset halal & ekonomi pesantren:</strong> Sinergi LP2M dengan LPH dan LP3H yang sudah aktif — jadikan data sertifikasi halal dan pelatihan auditor sebagai bahan baku riset terapan yang langsung berdampak ke masyarakat dan menghasilkan publikasi SINTA/Scopus.</li>
+      </ol></div>
+      <div class="strat-cell"><h4 class="wo">🔧 WO</h4><ol>
+        <li><strong>Insentif publikasi Scopus:</strong> Tetapkan bonus Rp5–10 juta per artikel Scopus Q1-Q2, Rp2–5 juta untuk Q3-Q4 — dari remunerasi BLU nantinya. Saat ini mulai dari dana kampus atau hibah Kemenag.</li>
+        <li><strong>Kurangi beban mengajar dosen riset:</strong> Dosen yang sedang aktif penelitian mendapat pengurangan 3 SKS mengajar — agar waktu riset terlindungi secara kebijakan.</li>
+        <li><strong>Ajukan hibah LPDP Dikti:</strong> Bentuk tim proposal riset multidisiplin yang mengajukan minimal 3 proposal hibah nasional per semester — dari Kemendiktisaintek, Kemenag, dan LPDP.</li>
+      </ol></div>
+      <div class="strat-cell"><h4 class="st">🛡️ ST</h4><ol>
+        <li><strong>Optimalkan 2 jurnal SINTA 2:</strong> Tingkatkan kualitas editorial dan target naik ke SINTA 1 dalam 2 tahun — jurnal SINTA 1 menjadi magnet paper dari kampus lain, meningkatkan sitasi UIN Ponorogo.</li>
+        <li><strong>Pengabdian berbasis riset:</strong> Integrasikan data pengabdian masyarakat sebagai bahan baku publikasi riset — satu program pengabdian menghasilkan minimal 1 artikel jurnal.</li>
+        <li><strong>Open access strategy:</strong> Daftarkan semua jurnal kelolaan ke DOAJ dan Emerging Sources Citation Index (ESCI) — meningkatkan visibility tanpa biaya signifikan.</li>
+      </ol></div>
+      <div class="strat-cell"><h4 class="wt">⚡ WT</h4><ol>
+        <li><strong>Sederhanakan ekosistem riset:</strong> Fokus pada 3–5 bidang unggulan alih-alih menyebar tipis ke semua bidang — konsentrasi sumber daya menghasilkan dampak yang jauh lebih besar per unit investasi.</li>
+        <li><strong>Manfaatkan AI untuk riset:</strong> Latih dosen menggunakan AI (Elicit, Connected Papers, Research Rabbit) untuk akselerasi tinjauan literatur — bukan menggantikan keahlian, tapi mempercepat proses riset secara dramatis.</li>
+        <li><strong>Lindungi anggaran riset dari efisiensi:</strong> Kategorikan dana hibah penelitian sebagai anggaran esensial (bukan administratif) dalam RKAKL — terlindungi dari pemangkasan Inpres 1/2025.</li>
+      </ol></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ================================================================
+       6. AKSES & KUALITAS PENDIDIKAN
+  ================================================================ -->
+  <div class="section-block" id="sec-akses">
+    <div class="section-num">Dimensi 6</div>
+    <h2>Akses dan Kualitas Pendidikan</h2>
+  </div>
+  <p class="section-desc">
+    Akses ke pendidikan tinggi UIN Ponorogo difasilitasi melalui <strong>tiga jalur penerimaan</strong> (SPAN-PTKIN, UM-PTKIN, Mandiri), program <strong>KIP Kuliah</strong> untuk mahasiswa kurang mampu, dan <strong>PSSB (Penelusuran Siswa Sangat Berprestasi)</strong>. Sebagai kampus di kota kabupaten dengan mobilitas terbatas, UIN Ponorogo menjadi <em>pilihan utama</em> masyarakat yang ingin akses pendidikan tinggi bermutu tanpa harus bermigrasi ke kota besar. Kualitas pendidikan dijamin oleh akreditasi Unggul dan SPMI yang aktif — meski masih dalam proses penyelarasan dengan standar terbaru Permendiktisaintek 39/2025.
+  </p>
+  <div class="data-box">
+    <strong>Data Akses:</strong> 3 jalur penerimaan nasional (SPAN, UM-PTKIN, Mandiri). KIP-K: est. ±1.200 penerima aktif. Ma'had Al-Jami'ah: wajib mahasiswa baru — pembinaan aqidah, bahasa Arab, dan Inggris. SIAKAD GAPURA: layanan akademik digital penuh. APK Dikti Jawa Timur terus meningkat (est. 36–38%, di atas rata-rata nasional 34%).
+    <div class="src">Sumber: PDDikti; Kemenag SPAN-PTKIN; BPS Jawa Timur; Permendiktisaintek 39/2025</div>
+  </div>
+
+  <div class="swot-block" id="tbl-akses">
+    <button class="export-btn" onclick="exportSection('tbl-akses','swot_akses')">📷 PNG</button>
+    <div class="swot-block-title">Tabel SWOT — Dimensi Akses &amp; Kualitas Pendidikan</div>
+    <div class="swot-grid">
+      <div class="swot-cell bg-s">
+        <div class="sh s">💪 Kekuatan</div>
+        <ul>
+          <li>UKT terendah di PTKIN Jawa Timur + KIP-K aktif menjamin <strong>aksesibilitas finansial</strong> bagi segmen menengah-bawah yang dominan di Ponorogo-Madiun.</li>
+          <li>Program <strong>Ma'had Al-Jami'ah wajib</strong> bagi mahasiswa baru — memastikan standar kompetensi nilai, bahasa Arab, dan bahasa Inggris yang merata sejak awal.</li>
+          <li>Akreditasi <strong>Unggul BAN-PT</strong> mengkonfirmasi kualitas pendidikan secara independen — aset kepercayaan publik yang tak ternilai.</li>
+          <li><strong>SIAKAD GAPURA</strong> memungkinkan layanan akademik digital penuh — KRS online, nilai, transkrip, dan administrasi tanpa antrian fisik.</li>
+        </ul>
+      </div>
+      <div class="swot-cell bg-w">
+        <div class="sh w">📉 Kelemahan</div>
+        <ul>
+          <li>Rasio dosen:mahasiswa <strong>1:44</strong> mengurangi intensitas bimbingan akademik per mahasiswa — kualitas mentoring dan konseling akademik tidak optimal.</li>
+          <li>Layanan kemahasiswaan (<strong>bimbingan karier, kesehatan mental, UKM</strong>) belum terstandarisasi secara penuh dan konsisten di semua fakultas.</li>
+          <li>Fasilitas pendidikan inklusif untuk <strong>mahasiswa difabel</strong> masih sangat terbatas — aksesibilitas fisik dan akademik belum memenuhi standar universal design.</li>
+          <li>Keterbatasan akses <strong>jurnal dan database ilmiah internasional</strong> (Scopus, Web of Science, JSTO) yang berlangganan berbayar — menghambat riset mahasiswa S2/S3.</li>
+        </ul>
+      </div>
+      <div class="swot-cell bg-o">
+        <div class="sh o">🎯 Peluang</div>
+        <ul>
+          <li>Permendiktisaintek 39/2025 mendorong <strong>RPL dan micro-credential</strong> — membuka akses bagi masyarakat non-tradisional yang pernah belajar informal tapi tidak punya ijazah formal.</li>
+          <li>Program <strong>KIP-K Kemendiktisaintek dan Kemenag</strong> terus diperbarui kuotanya — peluang meningkatkan jumlah mahasiswa penerima beasiswa dan memperluas inklusi sosial.</li>
+          <li>Tren <strong>pembelajaran hybrid dan daring</strong> membuka peluang menjangkau mahasiswa dari daerah terpencil yang tidak bisa hadir setiap hari ke kampus.</li>
+          <li>Pemerintah mendorong <strong>inklusi mahasiswa difabel</strong> melalui regulasi dan dana khusus — kampu yang pro-inklusi mendapat nilai lebih di akreditasi BAN-PT.</li>
+        </ul>
+      </div>
+      <div class="swot-cell bg-t">
+        <div class="sh t">⚠️ Ancaman</div>
+        <ul>
+          <li>Standar BAN-PT baru mensyaratkan <strong>indikator luaran mahasiswa yang lebih ketat</strong> (penempatan kerja, waktu tunggu, kepuasan pengguna) — area yang belum didokumentasikan dengan baik.</li>
+          <li>Persepsi publik bahwa <strong>PTKIN daerah = kualitas lebih rendah</strong> masih ada di sebagian masyarakat perkotaan — berkontribusi pada preferensi ke PTN umum meski kualitas setara.</li>
+          <li>Tekanan ekonomi keluarga berpotensi mendorong mahasiswa memilih <strong>kampus swasta lebih murah atau program vokasi pendek</strong> alih-alih 4 tahun kuliah S1.</li>
+          <li>Kompetisi dari platform edukasi online (Coursera, Skill Academy, Ruangguru) yang menawarkan <strong>micro-credential berbayar murah</strong> dan diakui industri secara langsung.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="strat-grid">
+      <div class="strat-cell"><h4 class="so">🤝 SO</h4><ol>
+        <li><strong>Perkuat program KIP-K:</strong> Bentuk unit khusus pengelolaan beasiswa yang aktif membantu mahasiswa mendaftar KIP-K dari semester 1 — tingkatkan kuota melalui advokasi ke Kemenag.</li>
+        <li><strong>Kembangkan program hybrid:</strong> Buka kelas hybrid untuk mata kuliah tertentu — menjangkau mahasiswa dari daerah jauh yang selama ini kesulitan hadir setiap hari.</li>
+        <li><strong>Ajukan program RPL:</strong> Manfaatkan Permendiktisaintek 39/2025 untuk membuka jalur RPL bagi masyarakat dengan pengalaman kerja relevan — memperluas akses sekaligus menambah mahasiswa baru.</li>
+      </ol></div>
+      <div class="strat-cell"><h4 class="wo">🔧 WO</h4><ol>
+        <li><strong>Berlangganan database ilmiah:</strong> Ajukan ke Kemendiktisaintek akses konsorsial JSTO, Scopus, dan ProQuest — tersedia subsidi untuk PTKIN yang mengajukan secara kolektif.</li>
+        <li><strong>Pusat bimbingan karier:</strong> Bangun Career Development Center dengan konselor profesional, portal lowongan alumni, dan program mentoring industri ab initio semester 1.</li>
+        <li><strong>Audit aksesibilitas difabel:</strong> Laksanakan survei infrastruktur aksesibilitas dan susun rencana peningkatan bertahap (prioritas ramp, lift, toilet difabel di gedung utama).</li>
+      </ol></div>
+      <div class="strat-cell"><h4 class="st">🛡️ ST</h4><ol>
+        <li><strong>Dokumentasikan luaran mahasiswa:</strong> Mulai hari ini, rekam data penempatan kerja, waktu tunggu, dan gaji pertama lulusan — data yang dibutuhkan BAN-PT terbaru dan senjata marketing paling kuat.</li>
+        <li><strong>Kampanye "Kualitas Setara, Biaya Terjangkau":</strong> Bangun narasi berbasis bukti bahwa akreditasi Unggul + UKT kompetitif adalah kombinasi terbaik — distribusikan ke platform digital secara masif.</li>
+        <li><strong>Kerjasama platform edukasi:</strong> Alih-alih berkompetisi dengan Coursera/Skill Academy, buat konten kursus UIN Ponorogo di platform tersebut — meningkatkan visibilitas dan lead generation PMB.</li>
+      </ol></div>
+      <div class="strat-cell"><h4 class="wt">⚡ WT</h4><ol>
+        <li><strong>Perkuat layanan konseling:</strong> Rekrut psikolog klinis kampus (minimal 1 per 200 mahasiswa) dan buka layanan konseling online — merespons krisis kesehatan mental Gen Z yang meningkat.</li>
+        <li><strong>Program percepatan studi:</strong> Aktifkan jalur percepatan kelulusan (3,5 tahun) bagi mahasiswa berprestasi — menjawab kekhawatiran biaya kuliah terlalu lama dari keluarga ekonomi terbatas.</li>
+        <li><strong>Rekognisi digital learning:</strong> Akui kredit dari kursus online bersertifikat (Coursera, EdX) sebagai pengganti beberapa mata kuliah — menarik bagi Gen Z yang sudah banyak belajar mandiri online.</li>
+      </ol></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ================================================================
+       7. INFRASTRUKTUR & FASILITAS
+  ================================================================ -->
+  <div class="section-block" id="sec-infra">
+    <div class="section-num">Dimensi 7</div>
+    <h2>Infrastruktur dan Fasilitas</h2>
+  </div>
+  <p class="section-desc">
+    UIN Ponorogo memiliki <strong>dua zona kampus</strong> dengan karakteristik berbeda. <em>Kampus I</em> (Jl. Pramuka, Ronowijayan) merupakan kampus utama dengan Ma'had, UTIPD, Lab Terpadu, dan gedung-gedung lama. <em>Kampus II</em> (Ngrupit, Jenangan) adalah kampus baru berbasis SBSN dengan bangunan modern: 4 Gedung Fakultas, Gedung Kuliah Terpadu (2022), Gedung PSB (2024–2025), Lapangan Bola, Kantin Ma'had, dan lahan terbuka hijau yang luas. Program <strong>Green Campus</strong> sudah berjalan 2 tahun dengan pengelolaan sampah mandiri. Total lahan dua kampus mencapai ribuan meter persegi dengan potensi pengembangan masih besar.
+  </p>
+  <div class="data-box">
+    <strong>Infrastruktur Terverifikasi:</strong> Kampus II: Gedung Kuliah Terpadu SBSN (2022), PSB SBSN (diresmikan 2024), Gedung FEBI, FASya, FTIK, FUAD, Lapangan Bola, Kantin Ma'had, area parkir luas. Kampus I: Ma'had Al-Jami'ah, UTIPD/SIAKAD, Lab Terpadu (bahasa, komputer, microteaching), Masjid. Green Campus: pengelolaan sampah mandiri aktif 2024–2026.
+    <div class="src">Sumber: Media resmi UIN Ponorogo; LPM Al-Millah; pernyataan Rektor Evi Muafiah 2024–2026</div>
+  </div>
+
+  <!-- PNBP POTENTIAL CARD -->
+  <div class="swot-block" id="tbl-pnbp" style="margin-bottom:1.2rem;">
+    <button class="export-btn" onclick="exportSection('tbl-pnbp','swot_pnbp_potensi')">📷 PNG</button>
+    <div class="swot-block-title">Peta Potensi PNBP — Menuju Kemandirian BLU</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+
+      <!-- Kolom Kiri: Sudah Ada -->
+      <div style="padding:1rem 1.1rem;border-right:1px solid var(--border);">
+        <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
+          color:var(--green);margin-bottom:0.8rem;display:flex;align-items:center;gap:0.5rem;">
+          ✅ Sudah Beroperasi — Sumber PNBP Existing
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.45rem;">
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.45rem 0.6rem;background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.15);border-radius:7px;">
+            <span style="font-size:0.9rem;flex-shrink:0;">🏷️</span>
+            <div>
+              <div style="font-size:0.8rem;font-weight:600;color:var(--text);">LPH — Lembaga Pemeriksa Halal</div>
+              <div style="font-size:0.7rem;color:var(--muted);">Sertifikasi halal produk UMKM & industri</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.45rem 0.6rem;background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.15);border-radius:7px;">
+            <span style="font-size:0.9rem;flex-shrink:0;">🎓</span>
+            <div>
+              <div style="font-size:0.8rem;font-weight:600;color:var(--text);">LP3H — Lembaga Pendidikan & Pelatihan Halal</div>
+              <div style="font-size:0.7rem;color:var(--muted);">Pelatihan auditor halal & konsultan halal</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.45rem 0.6rem;background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.15);border-radius:7px;">
+            <span style="font-size:0.9rem;flex-shrink:0;">⚖️</span>
+            <div>
+              <div style="font-size:0.8rem;font-weight:600;color:var(--text);">LKBH Fak. Syariah</div>
+              <div style="font-size:0.7rem;color:var(--muted);">Konsultasi & bantuan hukum masyarakat</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.45rem 0.6rem;background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.15);border-radius:7px;">
+            <span style="font-size:0.9rem;flex-shrink:0;">📰</span>
+            <div>
+              <div style="font-size:0.8rem;font-weight:600;color:var(--text);">Portal Jurnal Ilmiah UIN Ponorogo</div>
+              <div style="font-size:0.7rem;color:var(--muted);">12+ jurnal nasional-internasional; APC & langganan</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.45rem 0.6rem;background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.15);border-radius:7px;">
+            <span style="font-size:0.9rem;flex-shrink:0;">📄</span>
+            <div>
+              <div style="font-size:0.8rem;font-weight:600;color:var(--text);">Layanan Legalisir Dokumen</div>
+              <div style="font-size:0.7rem;color:var(--muted);">Legalisir ijazah, transkrip, sertifikat alumni</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.45rem 0.6rem;background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.15);border-radius:7px;">
+            <span style="font-size:0.9rem;flex-shrink:0;">🏢</span>
+            <div>
+              <div style="font-size:0.8rem;font-weight:600;color:var(--text);">Sewa Aset Kampus</div>
+              <div style="font-size:0.7rem;color:var(--muted);">Sewa gedung, aula, lapangan bola Kampus II</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.45rem 0.6rem;background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.15);border-radius:7px;">
+            <span style="font-size:0.9rem;flex-shrink:0;">🏫</span>
+            <div>
+              <div style="font-size:0.8rem;font-weight:600;color:var(--text);">PPG — Pendidikan Profesi Guru</div>
+              <div style="font-size:0.7rem;color:var(--muted);">UKT PPG & program profesi berbayar mandiri</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kolom Kanan: Potensi Baru -->
+      <div style="padding:1rem 1.1rem;">
+        <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
+          color:var(--accent);margin-bottom:0.8rem;display:flex;align-items:center;gap:0.5rem;">
+          🚀 Potensi Dikembangkan — Target Pasca-BLU
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.45rem;">
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.45rem 0.6rem;background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.15);border-radius:7px;">
+            <span style="font-size:0.9rem;flex-shrink:0;">🍽️</span>
+            <div>
+              <div style="font-size:0.8rem;font-weight:600;color:var(--text);">Unit Catering Kampus</div>
+              <div style="font-size:0.7rem;color:var(--muted);">Katering acara akademik, wisuda, seminar</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.45rem 0.6rem;background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.15);border-radius:7px;">
+            <span style="font-size:0.9rem;flex-shrink:0;">🛒</span>
+            <div>
+              <div style="font-size:0.8rem;font-weight:600;color:var(--text);">Kantin & Food Court Kampus II</div>
+              <div style="font-size:0.7rem;color:var(--muted);">Pengelolaan mandiri, bagi hasil tenant</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.45rem 0.6rem;background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.15);border-radius:7px;">
+            <span style="font-size:0.9rem;flex-shrink:0;">🕌</span>
+            <div>
+              <div style="font-size:0.8rem;font-weight:600;color:var(--text);">Unit Bisnis Ma'had Al-Jami'ah</div>
+              <div style="font-size:0.7rem;color:var(--muted);">Asrama berbayar, layanan pondok tahfidz</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.45rem 0.6rem;background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.15);border-radius:7px;">
+            <span style="font-size:0.9rem;flex-shrink:0;">🏥</span>
+            <div>
+              <div style="font-size:0.8rem;font-weight:600;color:var(--text);">Klinik Kesehatan Kampus</div>
+              <div style="font-size:0.7rem;color:var(--muted);">Layanan medis terbuka masyarakat & civitas</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.45rem 0.6rem;background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.15);border-radius:7px;">
+            <span style="font-size:0.9rem;flex-shrink:0;">🌐</span>
+            <div>
+              <div style="font-size:0.8rem;font-weight:600;color:var(--text);">Tes & Kursus TOEFL/TOAFL (UPT Bahasa)</div>
+              <div style="font-size:0.7rem;color:var(--muted);">Tes sertifikasi + pelatihan intensif berbayar</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.45rem 0.6rem;background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.15);border-radius:7px;">
+            <span style="font-size:0.9rem;flex-shrink:0;">🏆</span>
+            <div>
+              <div style="font-size:0.8rem;font-weight:600;color:var(--text);">LSP P3 — Lembaga Sertifikasi Profesi</div>
+              <div style="font-size:0.7rem;color:var(--muted);">Sertifikasi kompetensi kerja bidang hukum, keuangan, pendidikan</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.45rem 0.6rem;background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.15);border-radius:7px;">
+            <span style="font-size:0.9rem;flex-shrink:0;">🎤</span>
+            <div>
+              <div style="font-size:0.8rem;font-weight:600;color:var(--text);">Seminar & Conference Center</div>
+              <div style="font-size:0.7rem;color:var(--muted);">Gedung PSB Kampus II sebagai venue konferensi nasional</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.45rem 0.6rem;background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.15);border-radius:7px;">
+            <span style="font-size:0.9rem;flex-shrink:0;">📜</span>
+            <div>
+              <div style="font-size:0.8rem;font-weight:600;color:var(--text);">RPL — Rekognisi Pembelajaran Lampau</div>
+              <div style="font-size:0.7rem;color:var(--muted);">Permendiktisaintek 39/2025 — mahasiswa non-reguler berbayar</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.45rem 0.6rem;background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.15);border-radius:7px;">
+            <span style="font-size:0.9rem;flex-shrink:0;">🤝</span>
+            <div>
+              <div style="font-size:0.8rem;font-weight:600;color:var(--text);">Double Degree Program</div>
+              <div style="font-size:0.7rem;color:var(--muted);">Kemitraan PT luar negeri, UKT ganda, beasiswa</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary bar -->
+    <div style="padding:0.7rem 1.1rem;background:rgba(255,255,255,0.02);border-top:1px solid var(--border);
+      display:flex;gap:1.5rem;flex-wrap:wrap;">
+      <span style="font-size:0.75rem;color:var(--green);font-weight:700;">✅ 7 sumber PNBP aktif</span>
+      <span style="font-size:0.75rem;color:var(--accent);font-weight:700;">🚀 10 potensi baru prioritas BLU</span>
+      <span style="font-size:0.75rem;color:var(--muted);">Total: 17 jalur PNBP — modal kuat pengajuan BLU ke Kemenkeu</span>
+    </div>
+  </div>
+
+  <div class="swot-block" id="tbl-infra">
+    <button class="export-btn" onclick="exportSection('tbl-infra','swot_infrastruktur')">📷 PNG</button>
+    <div class="swot-block-title">Tabel SWOT — Dimensi Infrastruktur &amp; Fasilitas</div>
+    <div class="swot-grid">
+      <div class="swot-cell bg-s">
+        <div class="sh s">💪 Kekuatan</div>
+        <ul>
+          <li>Gedung <strong>PSB (Pusat Sumber Belajar) SBSN</strong> yang diresmikan 2024/2025 — fasilitas digital learning center modern yang menjadi keunggulan fisik kampus.</li>
+          <li><strong>Gedung Kuliah Terpadu SBSN 2022</strong> + 4 Gedung Fakultas (FTIK, FEBI, FASya, FUAD) di Kampus II — infrastruktur akademik berstandar modern yang mendukung kapasitas hingga 15.000+ mahasiswa.</li>
+          <li>Kampus II dengan <strong>lahan terbuka luas di Ngrupit, Jenangan</strong> — lapangan bola, kantin Ma'had, area parkir; ruang ekspansi fisik besar untuk lab STEM, asrama, dan sports center.</li>
+          <li><strong>7 unit kelembagaan PNBP sudah aktif</strong>: LPH, LP3H, LKBH Fak Syariah, Portal Jurnal (12+ jurnal), Legalisir, Sewa Aset Kampus, PPG — rekam jejak kemandirian institusional yang memperkuat proposal BLU.</li>
+          <li>Program <strong>Green Campus</strong> yang sudah berjalan 2 tahun — pengelolaan sampah mandiri 2024–2026; modal pendaftaran UI GreenMetric.</li>
+        </ul>
+      </div>
+      <div class="swot-cell bg-w">
+        <div class="sh w">📉 Kelemahan</div>
+        <ul>
+          <li><strong>Kapasitas asrama Ma'had masih terbatas</strong> — tidak mampu menampung seluruh mahasiswa baru yang diwajibkan mondok, membatasi efektivitas program Ma'had.</li>
+          <li><strong>Infrastruktur internet dan bandwidth</strong> kampus belum optimal untuk mendukung pembelajaran digital skala penuh dan smart campus yang direncanakan.</li>
+          <li>Belum ada <strong>laboratorium STEM</strong> (kimia, fisika, biologi, teknik informatika) yang dibutuhkan jika prodi non-agama dibuka pasca-UIN 2025 — investasi besar yang perlu direncanakan segera.</li>
+          <li><strong>Aksesibilitas fisik difabel</strong> (ramp, lift, toilet khusus) masih terbatas di sebagian gedung — belum memenuhi standar universal design yang makin ditekankan BAN-PT.</li>
+        </ul>
+      </div>
+      <div class="swot-cell bg-o">
+        <div class="sh o">🎯 Peluang</div>
+        <ul>
+          <li>Skema <strong>SBSN (Surat Berharga Syariah Negara)</strong> masih tersedia dan telah terbukti berhasil — peluang mengajukan gedung lab STEM, asrama baru, dan sports center melalui skema yang sama.</li>
+          <li>Program <strong>smart campus</strong> dari Kemendiktisaintek menyediakan hibah untuk upgrade infrastruktur digital (fiber optic, sensor IoT, dashboard analitik kampus).</li>
+          <li>Pendaftaran ke <strong>UI GreenMetric</strong> 2026 menggunakan program Green Campus yang sudah berjalan sebagai modal awal dokumentasi komitmen lingkungan.</li>
+          <li>Lahan kosong Kampus II berpotensi dikembangkan menjadi <strong>pusat bisnis/inkubator kampus</strong> yang menghasilkan PNBP jika status BLU terwujud.</li>
+        </ul>
+      </div>
+      <div class="swot-cell bg-t">
+        <div class="sh t">⚠️ Ancaman</div>
+        <ul>
+          <li>Pemangkasan anggaran <strong>Inpres 1/2025</strong> berdampak pada terbatasnya dana pengembangan infrastruktur dari APBN — rencana pembangunan berikutnya terancam tertunda.</li>
+          <li>Standar fasilitas pendidikan yang ditetapkan BAN-PT dan akreditasi internasional <strong>terus meningkat</strong> — infrastruktur yang saat ini "cukup" bisa menjadi "tidak memadai" dalam 3 tahun.</li>
+          <li>Risiko <strong>bencana alam (longsor, banjir) di Ponorogo</strong> terutama di Kampus II yang berada di wilayah perbukitan — mengancam keselamatan dan kerusakan aset fisik.</li>
+          <li>Pemeliharaan gedung SBSN yang memerlukan <strong>biaya operasional tinggi</strong> tanpa sumber PNBP mandiri (status Satker) menjadi beban anggaran rutin yang signifikan.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="strat-grid">
+      <div class="strat-cell"><h4 class="so">🤝 SO</h4><ol>
+        <li><strong>Ajukan SBSN gelombang 3:</strong> Manfaatkan rekam jejak sukses SBSN 2022 dan 2024/2025 untuk mengajukan paket infrastruktur berikutnya: Gedung Lab STEM terpadu, Asrama Tahfidz, dan Sports Center — minimal 1 pengajuan per 2 tahun.</li>
+        <li><strong>Daftar UI GreenMetric 2026:</strong> Dokumentasikan program pengelolaan sampah, ruang hijau, dan efisiensi energi Kampus II untuk pendaftaran UI GreenMetric — targetnya top 3 PTKIN Jawa Timur dalam 2 tahun.</li>
+        <li><strong>Ajukan hibah smart campus:</strong> Gunakan SIAKAD GAPURA dan PSB yang ada sebagai bukti kesiapan untuk mengajukan hibah peningkatan infrastruktur digital dari Kemendiktisaintek.</li>
+      </ol></div>
+      <div class="strat-cell"><h4 class="wo">🔧 WO</h4><ol>
+        <li><strong>Perkuat infrastruktur internet:</strong> Ajukan pengadaan fiber optic dan WiFi 6 kampus merata ke posisi paling prioritas dalam RKAKL 2026 — konektivitas adalah prasyarat semua program digital.</li>
+        <li><strong>Rencanakan lab STEM:</strong> Susun masterplan dan anggaran lab Informatika, Kimia Dasar, dan Biologi mulai 2026 — groundwork untuk prodi non-agama yang ditargetkan dibuka 2027.</li>
+        <li><strong>Aksesibilitas difabel:</strong> Alokasikan anggaran tahun 2026 untuk pemasangan ramp dan lift di 3 gedung utama (PSB, Rektorat, GKT) — penuhi standar BAN-PT dan regulasi Kemenag.</li>
+      </ol></div>
+      <div class="strat-cell"><h4 class="st">🛡️ ST</h4><ol>
+        <li><strong>Risk assessment bencana:</strong> Kolaborasi dengan BPBD Ponorogo untuk pemetaan risiko bencana di kedua kampus — susun SOP evakuasi, pelindungan data, dan pemulihan layanan akademik pasca-bencana.</li>
+        <li><strong>Pemeliharaan preventif:</strong> Terapkan sistem manajemen aset kampus berbasis IoT untuk monitoring kondisi gedung SBSN secara real-time — mencegah kerusakan dini dan menekan biaya perbaikan darurat.</li>
+        <li><strong>Lindungi anggaran pemeliharaan:</strong> Kategorikan biaya pemeliharaan gedung SBSN sebagai anggaran esensial dalam RKAKL — terlindungi dari pemangkasan Inpres 1/2025.</li>
+      </ol></div>
+      <div class="strat-cell"><h4 class="wt">⚡ WT</h4><ol>
+        <li><strong>PPP/kemitraan swasta:</strong> Jajaki opsi Public-Private Partnership untuk pengembangan fasilitas komersial (kantin kampus, mini market, co-working) di lahan Kampus II — menghasilkan PNBP tanpa bergantung APBN.</li>
+        <li><strong>Prioritas infrastruktur berbasis dampak:</strong> Dalam keterbatasan anggaran Satker, fokus pada infrastruktur yang langsung meningkatkan nilai akreditasi dan kepuasan mahasiswa — bukan seremoni atau ornamental.</li>
+        <li><strong>Susun Asuransi Aset Kampus:</strong> Pastikan seluruh gedung SBSN diasuransikan dengan cakupan bencana alam — proteksi finansial dari risiko kerusakan infrastruktur bernilai miliaran.</li>
+      </ol></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- SINTESIS -->
+  <div class="section-block">
+    <div class="section-num">Penutup</div>
+    <h2>Sintesis Strategis — Transformasi Menuju BLU</h2>
+  </div>
+  <p class="section-desc">
+    Dari analisis 7 dimensi strategis ini, UIN Kiai Ageng Muhammad Besari Ponorogo berada pada posisi yang secara keseluruhan kuat namun membutuhkan akselerasi di bidang-bidang kritis. Modal utama institusi adalah: <strong>monopoli geografis di Karesidenan Madiun, akreditasi Unggul BAN-PT 2024–2029, infrastruktur fisik SBSN yang modern, fondasi nilai Ma'had yang unik, dan ekosistem PNBP yang ternyata sudah cukup kaya dengan 17 jalur potensial</strong>. Tantangan terbesar ada di: <strong>rendahnya publikasi Scopus, rasio dosen terlalu berat, status Satker yang membatasi fleksibilitas keuangan, dan minimnya kapasitas digital riset dan pemasaran</strong>.
+  </p>
+  <div class="data-box" style="border-left-color:var(--green);background:rgba(34,197,94,0.05);margin-bottom:0.8rem;">
+    <strong>💰 Modal PNBP Institusi — Temuan Baru:</strong><br>
+    UIN Ponorogo memiliki <strong>7 sumber PNBP yang sudah beroperasi</strong> (LPH, LP3H, LKBH Fak Syariah, Jurnal Ilmiah, Legalisir, Sewa Aset Kampus, PPG) dan <strong>10 potensi baru yang siap dikembangkan pasca-BLU</strong> (Catering, Kantin, Ma'had unit bisnis, Klinik, Tes/Kursus TOEFL–TOAFL, LSP P3, Conference Center PSB, RPL, Double Degree). Total 17 jalur PNBP ini adalah argumen kuat dalam dokumen RSB yang diajukan ke Kemenkeu — menunjukkan kapasitas mandiri institusi yang riil.
+    <div class="src">Dipetakan dari aset dan unit bisnis eksisting UIN Ponorogo, April 2026</div>
+  </div>
+  <div class="data-box" style="border-left-color:var(--green);background:rgba(34,197,94,0.05);">
+    <strong>🎯 Prioritas Strategis 2026 (dari 7 Dimensi + Peta PNBP):</strong><br>
+    1. <strong>BLU sebelum Desember 2026</strong> — kunci semua dimensi; susun RSB+SPM Q3 2026<br>
+    2. <strong>Aktivasi 17 Jalur PNBP</strong> — formalisasi LPH, LP3H, LSP P3, dan unit bisnis Ma'had sebagai PNBP terstruktur<br>
+    3. <strong>100 dokumen Scopus</strong> dalam 3 tahun — KPI riset utama; insentif per publikasi<br>
+    4. <strong>2 prodi non-agama</strong> dibuka 2026–2027 (Informatika & Psikologi) — ekspansi kompetitif<br>
+    5. <strong>Sistem tracer study alumni</strong> — aset marketing Gen Z dan syarat akreditasi<br>
+    6. <strong>Kebijakan AI formal</strong> — proteksi integritas akademik sesuai SKB 7 Kementerian<br>
+    7. <strong>SBSN Lab STEM + Conference Center PSB</strong> — infrastruktur jangka panjang<br>
+    8. <strong>UI GreenMetric 2026</strong> — daftarkan dan targetkan top 5 PTKIN Jawa Timur
+    <div class="src">Berdasarkan analisis SWOT 7 Dimensi Institusional + Peta Potensi PNBP, April 2026</div>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+/* THEME */
+function toggleTheme(){
+  const h=document.documentElement;
+  const d=h.getAttribute('data-theme')==='dark';
+  h.setAttribute('data-theme',d?'light':'dark');
+  document.getElementById('themeToggle').textContent=d?'🌙 Tema':'☀️ Tema';
+  buildCharts();
+}
+
+/* EXPORT PNG */
+function exportSection(id,filename){
+  const el=document.getElementById(id);
+  const btn=el.querySelector('.export-btn');
+  if(btn)btn.style.display='none';
+  const dark=document.documentElement.getAttribute('data-theme')!=='light';
+  html2canvas(el,{scale:2,backgroundColor:dark?'#1e293b':'#ffffff',useCORS:true,logging:false})
+  .then(c=>{
+    if(btn)btn.style.display='';
+    const a=document.createElement('a');
+    a.download=`${filename}_${new Date().toISOString().slice(0,10)}.png`;
+    a.href=c.toDataURL('image/png');
+    a.click();
+  }).catch(()=>{if(btn)btn.style.display='';});
+}
+
+/* CHARTS */
+let _qChart=null,_rChart=null;
+function buildCharts(){
+  const dark=document.documentElement.getAttribute('data-theme')!=='light';
+  const tc=dark?'#f8fafc':'#0f172a';
+  const mc=dark?'#94a3b8':'#64748b';
+  const gc=dark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.08)';
+
+  // Quadrant Chart
+  const pts=[
+    {label:'UIN Ponorogo',x:3.02,y:2.79,r:16,col:'#22c55e',own:true},
+    {label:'UINSA',x:3.8,y:3.6,r:11,col:'#ef4444'},
+    {label:'UIN Malang',x:3.7,y:3.4,r:11,col:'#f59e0b'},
+    {label:'UIN SUKA',x:3.6,y:3.2,r:10,col:'#f59e0b'},
+    {label:'UIN Walisongo',x:3.2,y:2.9,r:9,col:'#94a3b8'},
+    {label:'UINSATU',x:2.9,y:2.7,r:9,col:'#94a3b8'},
+    {label:'UIN Cirebon',x:2.7,y:2.5,r:7,col:'#64748b'},
+  ];
+  if(_qChart)_qChart.destroy();
+  _qChart=new Chart(document.getElementById('chartQuadrant'),{
+    type:'scatter',
+    data:{datasets:pts.map(p=>({
+      label:p.label,data:[{x:p.x,y:p.y}],
+      pointRadius:p.r,pointHoverRadius:p.r+3,
+      pointBackgroundColor:p.col,
+      pointBorderColor:p.own?'#fff':p.col,
+      pointBorderWidth:p.own?3:1
+    }))},
+    options:{
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:ctx=>`${pts[ctx.datasetIndex].label}: IFE=${ctx.parsed.x}, EFE=${ctx.parsed.y}`}}
+      },
+      scales:{
+        x:{min:1,max:4.5,title:{display:true,text:'IFE Score (Internal)',color:tc,font:{size:11}},
+          ticks:{color:mc},grid:{color:gc}},
+        y:{min:1,max:4.5,title:{display:true,text:'EFE Score (Eksternal)',color:tc,font:{size:11}},
+          ticks:{color:mc},grid:{color:gc}}
+      },animation:{duration:500}
+    },
+    plugins:[{id:'qLines',afterDraw(chart){
+      const{ctx,chartArea:{left,right,top,bottom},scales}=chart;
+      const cx=scales.x.getPixelForValue(2.5),cy=scales.y.getPixelForValue(2.5);
+      ctx.save();
+      ctx.strokeStyle=dark?'rgba(255,255,255,0.15)':'rgba(0,0,0,0.12)';
+      ctx.setLineDash([5,4]);ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.moveTo(cx,top);ctx.lineTo(cx,bottom);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(left,cy);ctx.lineTo(right,cy);ctx.stroke();
+      ctx.setLineDash([]);
+      [{t:'I: GROW',x:(cx+right)/2,y:(top+cy)/2,c:'#22c55e'},
+       {t:'II: HOLD',x:(left+cx)/2,y:(top+cy)/2,c:'#f59e0b'},
+       {t:'III: HARVEST',x:(left+cx)/2,y:(cy+bottom)/2,c:'#ef4444'},
+       {t:'IV: DIVEST',x:(cx+right)/2,y:(cy+bottom)/2,c:'#94a3b8'}
+      ].forEach(l=>{
+        ctx.font='bold 10px Inter,sans-serif';ctx.fillStyle=l.c;
+        ctx.textAlign='center';ctx.globalAlpha=0.45;
+        ctx.fillText(l.t,l.x,l.y);
+      });
+      ctx.globalAlpha=1;ctx.font='9px Inter,sans-serif';ctx.textAlign='left';
+      chart.data.datasets.forEach((ds,i)=>{
+        const p=pts[i];
+        const px=scales.x.getPixelForValue(p.x),py=scales.y.getPixelForValue(p.y);
+        ctx.fillStyle=p.own?'#22c55e':tc;
+        ctx.fillText(p.label,px+p.r+4,py+4);
+      });
+      ctx.restore();
+    }}]
+  });
+
+  // Radar Chart
+  if(_rChart)_rChart.destroy();
+  _rChart=new Chart(document.getElementById('chartRadar'),{
+    type:'radar',
+    data:{
+      labels:['Pesaing','Pendidikan','Mhs Potensi','SDM','Penelitian','Akses Kualitas','Infrastruktur'],
+      datasets:[
+        {label:'UIN Ponorogo',
+         data:[62,78,70,55,30,72,75],
+         borderColor:'#22c55e',backgroundColor:'rgba(34,197,94,0.13)',
+         pointBackgroundColor:'#22c55e',pointBorderColor:'#fff',pointBorderWidth:2,borderWidth:2.5},
+        {label:'Rata-rata Kompetitor BLU',
+         data:[80,80,75,70,68,78,80],
+         borderColor:'rgba(148,163,184,0.55)',backgroundColor:'rgba(148,163,184,0.07)',
+         pointBackgroundColor:'rgba(148,163,184,0.55)',borderWidth:1.5,borderDash:[4,3]}
+      ]
+    },
+    options:{
+      plugins:{legend:{labels:{color:tc,font:{size:11}}}},
+      scales:{r:{min:0,max:100,
+        ticks:{stepSize:20,color:mc,backdropColor:'transparent',font:{size:9}},
+        grid:{color:gc},angleLines:{color:gc},
+        pointLabels:{color:tc,font:{size:10,weight:'600'}}
+      }},
+      animation:{duration:500}
+    }
+  });
+}
+window.addEventListener('load',buildCharts);
+</script>
+</body>
+</html>
