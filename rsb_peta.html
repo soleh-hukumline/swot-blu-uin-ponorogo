@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Peta RSB & Potensi Bisnis BLU — UIN Kiai Ageng Muhammad Besari Ponorogo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f172a;--surface:#1e293b;--card:rgba(30,41,59,0.95);
+  --text:#f8fafc;--muted:#94a3b8;--accent:#3b82f6;
+  --border:rgba(255,255,255,0.08);--green:#22c55e;--amber:#f59e0b;
+  --red:#ef4444;--purple:#a78bfa;--cyan:#06b6d4;--orange:#f97316;
+  --opt:#22c55e;--new:#3b82f6;--future:#a78bfa;
+}
+[data-theme="light"]{
+  --bg:#f1f5f9;--surface:#fff;--card:rgba(255,255,255,0.97);
+  --text:#0f172a;--muted:#64748b;--border:rgba(0,0,0,0.09);
+  --green:#16a34a;--amber:#d97706;--red:#dc2626;--purple:#7c3aed;
+  --cyan:#0891b2;--orange:#ea580c;--accent:#2563eb;
+  --opt:#16a34a;--new:#2563eb;--future:#7c3aed;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+
+/* HEADER */
+header{display:flex;justify-content:space-between;align-items:center;
+  padding:1rem 2.5rem;background:var(--card);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+header h1{font-size:1.05rem;font-weight:700;}
+header h1 span{color:var(--accent);}
+.nav-links{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.8rem;
+  padding:0.3rem 0.7rem;border-radius:7px;border:1px solid var(--border);transition:all 0.2s;}
+.nav-links a:hover,.nav-links a.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.theme-btn{padding:0.3rem 0.8rem;border-radius:7px;border:1px solid var(--border);
+  background:transparent;color:var(--muted);cursor:pointer;font-size:0.8rem;
+  font-family:'Inter',sans-serif;transition:all 0.2s;}
+.theme-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* COVER */
+.cover{background:linear-gradient(135deg,#060d1a 0%,#0a1f3a 50%,#060d1a 100%);
+  padding:3rem 2.5rem 2.5rem;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.cover::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 30% 50%,rgba(34,197,94,0.1) 0%,transparent 60%),
+             radial-gradient(ellipse at 70% 50%,rgba(59,130,246,0.1) 0%,transparent 60%);}
+.cover-label{font-size:0.7rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  color:var(--green);margin-bottom:0.7rem;position:relative;}
+.cover h2{font-family:'Merriweather',serif;font-size:clamp(1.4rem,2.8vw,2.1rem);
+  font-weight:700;color:#f8fafc;margin-bottom:0.7rem;position:relative;line-height:1.3;}
+.cover-sub{font-size:0.88rem;color:#94a3b8;max-width:660px;margin:0 auto 1.2rem;position:relative;}
+.cover-meta{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;
+  font-size:0.76rem;color:#64748b;position:relative;}
+
+/* SUMMARY STRIP */
+.summary-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+  background:var(--card);border-bottom:1px solid var(--border);}
+.ss-item{padding:1rem 1.5rem;text-align:center;border-right:1px solid var(--border);}
+.ss-item:last-child{border-right:none;}
+.ss-num{font-size:2rem;font-weight:800;line-height:1;}
+.ss-lbl{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-top:0.2rem;}
+.ss-sub{font-size:0.65rem;color:var(--muted);margin-top:0.1rem;}
+
+/* FILTER BAR */
+.filter-bar{display:flex;gap:0.5rem;align-items:center;padding:1rem 2rem;
+  background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.filter-btn{padding:0.35rem 0.9rem;border-radius:20px;border:1px solid var(--border);
+  background:transparent;color:var(--muted);cursor:pointer;font-size:0.78rem;
+  font-family:'Inter',sans-serif;transition:all 0.2s;font-weight:500;}
+.filter-btn:hover{opacity:0.85;}
+.filter-btn.active-all{background:var(--accent);color:#fff;border-color:var(--accent);}
+.filter-btn.active-opt{background:var(--opt);color:#fff;border-color:var(--opt);}
+.filter-btn.active-new{background:var(--new);color:#fff;border-color:var(--new);}
+.filter-btn.active-future{background:var(--future);color:#fff;border-color:var(--future);}
+.filter-label{font-size:0.72rem;color:var(--muted);margin-right:0.3rem;font-weight:600;}
+
+/* PAGE */
+.page{max-width:1200px;margin:0 auto;padding:2rem 1.5rem;}
+
+/* SECTION HEAD */
+.sec-head{margin:2rem 0 1rem;display:flex;align-items:center;gap:0.8rem;}
+.sec-badge{padding:0.3rem 0.9rem;border-radius:20px;font-size:0.72rem;font-weight:700;
+  letter-spacing:0.5px;white-space:nowrap;}
+.sec-badge.opt{background:rgba(34,197,94,0.15);color:var(--opt);border:1px solid rgba(34,197,94,0.3);}
+.sec-badge.new{background:rgba(59,130,246,0.15);color:var(--new);border:1px solid rgba(59,130,246,0.3);}
+.sec-badge.future{background:rgba(167,139,250,0.15);color:var(--future);border:1px solid rgba(167,139,250,0.3);}
+.sec-title{font-size:1.1rem;font-weight:700;}
+.sec-desc{font-size:0.82rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.7;
+  padding-left:0.3rem;border-left:3px solid var(--border);}
+
+/* CARD GRID */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;margin-bottom:0.5rem;}
+
+/* BUSINESS CARD */
+.biz-card{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:1.1rem;transition:transform 0.2s,box-shadow 0.2s;position:relative;overflow:hidden;}
+.biz-card:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.3);}
+.biz-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.biz-card.opt::before{background:var(--opt);}
+.biz-card.new::before{background:var(--new);}
+.biz-card.future::before{background:var(--future);}
+.biz-card.hidden{display:none;}
+
+.card-top{display:flex;align-items:flex-start;gap:0.7rem;margin-bottom:0.7rem;}
+.card-icon{font-size:1.6rem;flex-shrink:0;line-height:1;}
+.card-title-wrap{flex:1;}
+.card-title{font-size:0.88rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:0.2rem;}
+.card-subtitle{font-size:0.72rem;color:var(--muted);}
+.card-badge{display:inline-flex;align-items:center;gap:0.3rem;padding:0.15rem 0.55rem;
+  border-radius:10px;font-size:0.66rem;font-weight:700;margin-left:auto;flex-shrink:0;}
+.card-badge.opt{background:rgba(34,197,94,0.12);color:var(--opt);}
+.card-badge.new{background:rgba(59,130,246,0.12);color:var(--new);}
+.card-badge.future{background:rgba(167,139,250,0.12);color:var(--future);}
+
+.card-body{font-size:0.78rem;color:var(--muted);line-height:1.65;margin-bottom:0.8rem;}
+.card-body strong{color:var(--text);}
+
+.card-meta{display:flex;gap:0.5rem;flex-wrap:wrap;}
+.meta-tag{display:inline-flex;align-items:center;gap:0.2rem;padding:0.15rem 0.5rem;
+  border-radius:6px;font-size:0.66rem;background:rgba(255,255,255,0.04);
+  border:1px solid var(--border);color:var(--muted);}
+
+.card-footer{display:flex;justify-content:space-between;align-items:center;
+  margin-top:0.8rem;padding-top:0.7rem;border-top:1px solid var(--border);}
+.rev-tag{font-size:0.7rem;font-weight:700;}
+.rev-tag.high{color:var(--green);}
+.rev-tag.med{color:var(--amber);}
+.rev-tag.low{color:var(--muted);}
+.timeline-tag{font-size:0.67rem;color:var(--muted);}
+
+/* PRIORITY BADGE */
+.prio{position:absolute;top:0.7rem;right:0.7rem;
+  font-size:0.62rem;font-weight:700;letter-spacing:0.5px;
+  padding:0.15rem 0.45rem;border-radius:6px;}
+.prio-1{background:rgba(239,68,68,0.15);color:var(--red);}
+.prio-2{background:rgba(245,158,11,0.12);color:var(--amber);}
+.prio-3{background:rgba(148,163,184,0.1);color:var(--muted);}
+
+/* ROADMAP SECTION */
+.roadmap-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:1.5rem;margin:2rem 0;}
+.roadmap-title{font-size:0.75rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:2px;color:var(--muted);margin-bottom:1.2rem;}
+.timeline{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;position:relative;}
+.timeline::before{content:'';position:absolute;top:28px;left:16.67%;right:16.67%;
+  height:2px;background:linear-gradient(90deg,var(--opt),var(--new),var(--future));opacity:0.4;}
+.tl-col{padding:0 0.8rem;text-align:center;}
+.tl-dot{width:14px;height:14px;border-radius:50%;margin:0 auto 0.6rem;position:relative;z-index:1;}
+.tl-dot.opt{background:var(--opt);box-shadow:0 0 12px rgba(34,197,94,0.4);}
+.tl-dot.new{background:var(--new);box-shadow:0 0 12px rgba(59,130,246,0.4);}
+.tl-dot.future{background:var(--future);box-shadow:0 0 12px rgba(167,139,250,0.4);}
+.tl-year{font-size:0.72rem;font-weight:700;margin-bottom:0.2rem;}
+.tl-phase{font-size:0.65rem;color:var(--muted);margin-bottom:0.6rem;}
+.tl-items{list-style:none;text-align:left;}
+.tl-items li{font-size:0.7rem;color:var(--muted);padding:0.18rem 0 0.18rem 0.8rem;
+  position:relative;border-bottom:1px solid var(--border);}
+.tl-items li:last-child{border-bottom:none;}
+.tl-items li::before{content:'→';position:absolute;left:0;color:var(--accent);font-size:0.6rem;}
+.tl-items li strong{color:var(--text);}
+
+/* REVENUE CHART */
+.rev-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0 2rem;}
+.rev-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.2rem;}
+.rev-card h4{font-size:0.72rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;color:var(--muted);margin-bottom:0.8rem;}
+.rev-row{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.5rem;}
+.rev-label{font-size:0.73rem;color:var(--text);width:160px;flex-shrink:0;}
+.rev-bar-wrap{flex:1;height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;}
+.rev-bar{height:100%;border-radius:4px;transition:width 1s ease;}
+.rev-bar.opt{background:linear-gradient(90deg,var(--opt),rgba(34,197,94,0.5));}
+.rev-bar.new{background:linear-gradient(90deg,var(--new),rgba(59,130,246,0.5));}
+.rev-bar.future{background:linear-gradient(90deg,var(--future),rgba(167,139,250,0.5));}
+.rev-amt{font-size:0.7rem;color:var(--muted);width:70px;text-align:right;flex-shrink:0;}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:1.5rem 0;}
+
+@media(max-width:768px){
+  .summary-strip{grid-template-columns:repeat(2,1fr);}
+  .timeline{grid-template-columns:1fr;}
+  .timeline::before{display:none;}
+  .rev-grid{grid-template-columns:1fr;}
+  .card-grid{grid-template-columns:1fr;}
+  header{flex-direction:column;gap:0.5rem;}
+  .page{padding:1rem;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📊 RSB <span>Peta Bisnis</span></h1>
+  <div class="nav-links">
+    <a href="index.html">🗺️ Dashboard</a>
+    <a href="matriks.html">📑 IFAS/EFAS</a>
+    <a href="kinerja.html">📊 Kinerja RSB</a>
+    <a href="sinta.html">🔬 SINTA</a>
+    <a href="swot_blu.html">⚡ SWOT-BLU</a>
+    <a href="swot_pestle.html">📋 PESTLE</a>
+    <a href="rsb_peta.html" class="active">💼 Peta RSB</a>
+    <button class="theme-btn" id="themeToggle" onclick="toggleTheme()">☀️ Tema</button>
+  </div>
+</header>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-label">Rencana Strategis Bisnis — Pemetaan Potensi PNBP</div>
+  <h2>Peta Potensi Bisnis & Revenue<br>UIN Kiai Ageng Muhammad Besari Ponorogo</h2>
+  <p class="cover-sub">Klasifikasi strategis 20+ unit bisnis potensial dalam 3 jalur: Optimalisasi unit existing, Pengembangan unit baru, dan Visi jangka panjang menuju BLU dan PTN-BH</p>
+  <div class="cover-meta">
+    <span>📅 Peta per April 2026</span>
+    <span>🎯 Target: BLU Desember 2026</span>
+    <span>💰 18 Jalur PNBP Teridentifikasi</span>
+    <span>📊 Sumber: Aset & Unit Eksisting UIN Ponorogo</span>
+  </div>
+</div>
+
+<!-- SUMMARY STRIP -->
+<div class="summary-strip">
+  <div class="ss-item">
+    <div class="ss-num" style="color:var(--opt);">8</div>
+    <div class="ss-lbl">Unit Aktif</div>
+    <div class="ss-sub">Perlu dioptimalkan</div>
+  </div>
+  <div class="ss-item">
+    <div class="ss-num" style="color:var(--new);">9</div>
+    <div class="ss-lbl">Unit Baru</div>
+    <div class="ss-sub">Siap dikembangkan</div>
+  </div>
+  <div class="ss-item">
+    <div class="ss-num" style="color:var(--future);">6</div>
+    <div class="ss-lbl">Visi Jangka Panjang</div>
+    <div class="ss-sub">Pasca-BLU / PTN-BH</div>
+  </div>
+  <div class="ss-item">
+    <div class="ss-num" style="color:var(--amber);">23</div>
+    <div class="ss-lbl">Total Jalur</div>
+    <div class="ss-sub">Modal RSB ke Kemenkeu</div>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <span class="filter-label">Tampilkan:</span>
+  <button class="filter-btn active-all" id="btn-all" onclick="filterCards('all')">Semua</button>
+  <button class="filter-btn" id="btn-opt" onclick="filterCards('opt')" style="border-color:rgba(34,197,94,0.3);color:var(--opt);">✅ Optimalisasi</button>
+  <button class="filter-btn" id="btn-new" onclick="filterCards('new')" style="border-color:rgba(59,130,246,0.3);color:var(--new);">🚀 Pengembangan Baru</button>
+  <button class="filter-btn" id="btn-future" onclick="filterCards('future')" style="border-color:rgba(167,139,250,0.3);color:var(--future);">🔭 Jangka Panjang</button>
+</div>
+
+<div class="page">
+
+  <!-- ============================================================
+       ROADMAP TIMELINE
+  ============================================================ -->
+  <div class="roadmap-wrap">
+    <div class="roadmap-title">📍 Roadmap Tiga Fase — Menuju BLU & PTN-BH</div>
+    <div class="timeline">
+      <div class="tl-col">
+        <div class="tl-dot opt"></div>
+        <div class="tl-year" style="color:var(--opt);">2025–2026</div>
+        <div class="tl-phase">Fase 1: OPTIMALISASI</div>
+        <ul class="tl-items">
+          <li><strong>Status BLU</strong> diperoleh Q4 2026</li>
+          <li><strong>LPH & LP3H</strong> formalisasi PNBP</li>
+          <li><strong>LSP P1</strong> buka layanan eksternal</li>
+          <li><strong>PPG</strong> tingkatkan kuota mandiri</li>
+          <li><strong>Jurnal Q1</strong> aktifkan APC berbayar</li>
+          <li><strong>Sewa aset</strong> sistem terpusat</li>
+          <li><strong>LKBH</strong> perluas layanan bisnis</li>
+        </ul>
+      </div>
+      <div class="tl-col">
+        <div class="tl-dot new"></div>
+        <div class="tl-year" style="color:var(--new);">2026–2028</div>
+        <div class="tl-phase">Fase 2: EKSPANSI BARU</div>
+        <ul class="tl-items">
+          <li><strong>Kantin & Catering</strong> Kampus II</li>
+          <li><strong>Klinik Kampus</strong> buka ke umum</li>
+          <li><strong>UPT Bahasa</strong> TOEFL/TOAFL center</li>
+          <li><strong>Conference Center PSB</strong> aktif</li>
+          <li><strong>RPL</strong> program non-reguler</li>
+          <li><strong>Unit Bisnis Ma'had</strong> asrama premium</li>
+          <li><strong>2 Prodi non-agama</strong> dibuka</li>
+        </ul>
+      </div>
+      <div class="tl-col">
+        <div class="tl-dot future"></div>
+        <div class="tl-year" style="color:var(--future);">2028–2030+</div>
+        <div class="tl-phase">Fase 3: VISI STRATEGIS</div>
+        <ul class="tl-items">
+          <li><strong>Double Degree</strong> internasional</li>
+          <li><strong>Inkubator Startup</strong> Kampus II</li>
+          <li><strong>Research Park</strong> kolaborasi industri</li>
+          <li><strong>Smart Campus</strong> IoT & AI Hub</li>
+          <li><strong>Green Energy</strong> panel surya</li>
+          <li><strong>PTN-BH</strong> pasca-BLU matang</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ============================================================
+       BAGIAN 1: OPTIMALISASI
+  ============================================================ -->
+  <div class="sec-head">
+    <span class="sec-badge opt">✅ Optimalisasi</span>
+    <span class="sec-title">Unit Bisnis Aktif — Perlu Dioptimalkan</span>
+  </div>
+  <p class="sec-desc">
+    Unit-unit ini <strong>sudah beroperasi</strong> namun belum dikelola sebagai PNBP BLU yang terstruktur. Prioritas utama adalah memformalkan, mendokumentasikan pendapatan, dan meningkatkan skala — karena rekam jejak unit ini adalah <em>argumen kunci dalam dokumen RSB ke Kemenkeu</em>.
+  </p>
+  <div class="card-grid">
+
+    <div class="biz-card opt" data-cat="opt">
+      <span class="prio prio-1">PRIORITAS 1</span>
+      <div class="card-top">
+        <div class="card-icon">🏷️</div>
+        <div class="card-title-wrap">
+          <div class="card-title">LPH — Lembaga Pemeriksa Halal</div>
+          <div class="card-subtitle">Sertifikasi halal produk UMKM & industri</div>
+        </div>
+      </div>
+      <div class="card-body">
+        Sudah aktif mensertifikasi produk halal. Pasar UMKM Ponorogo-Madiun sangat besar mengingat program Wajib Halal 2026. <strong>Potensi besar</strong>: setiap sertifikasi menghasilkan fee + pendampingan LP3H.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">🏛️ Berbasis MUI/BPJPH</span>
+        <span class="meta-tag">📈 Tumbuh pasca-Wajib Halal 2026</span>
+        <span class="meta-tag">🔗 Sinergi LP3H</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag high">💰 Potensi: Rp 300–800 jt/tahun</span>
+        <span class="timeline-tag">Segera dioptimalkan</span>
+      </div>
+    </div>
+
+    <div class="biz-card opt" data-cat="opt">
+      <span class="prio prio-1">PRIORITAS 1</span>
+      <div class="card-top">
+        <div class="card-icon">🎓</div>
+        <div class="card-title-wrap">
+          <div class="card-title">LP3H — Lembaga Pendidikan & Pelatihan Halal</div>
+          <div class="card-subtitle">Pelatihan auditor halal & konsultan halal</div>
+        </div>
+      </div>
+      <div class="card-body">
+        Pelatihan auditor halal yang dibutuhkan oleh LPH seluruh Indonesia. Sinergi dengan LPH menciptakan <strong>ekosistem halal terpadu</strong>. Peserta bukan hanya internal — bisa dibuka nasional secara daring.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">🌐 Potensi peserta nasional</span>
+        <span class="meta-tag">📜 Sertifikat resmi BPJPH</span>
+        <span class="meta-tag">💻 Bisa daring</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag high">💰 Potensi: Rp 200–500 jt/tahun</span>
+        <span class="timeline-tag">Skala nasional via daring</span>
+      </div>
+    </div>
+
+    <div class="biz-card opt" data-cat="opt">
+      <span class="prio prio-1">PRIORITAS 1</span>
+      <div class="card-top">
+        <div class="card-icon">🏆</div>
+        <div class="card-title-wrap">
+          <div class="card-title">LSP P1 — Sertifikasi Profesi BNSP</div>
+          <div class="card-subtitle">lsp.uinponorogo.ac.id · Lisensi BNSP Resmi</div>
+        </div>
+      </div>
+      <div class="card-body">
+        Satu-satunya LSP P1 PTKIN aktif di Jawa Timur barat. Saat ini melayani SDM internal — <strong>segera buka asesmen untuk mahasiswa tingkat akhir, alumni, ASN, dan umum</strong>. Setiap sesi asesmen kompetensi menghasilkan fee resmi BNSP.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">✅ Berlisensi BNSP</span>
+        <span class="meta-tag">🎯 Buka ke eksternal</span>
+        <span class="meta-tag">👥 Target ASN Ponorogo</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag high">💰 Potensi: Rp 400–900 jt/tahun</span>
+        <span class="timeline-tag">Buka layanan eksternal Q3 2026</span>
+      </div>
+    </div>
+
+    <div class="biz-card opt" data-cat="opt">
+      <span class="prio prio-1">PRIORITAS 1</span>
+      <div class="card-top">
+        <div class="card-icon">🏫</div>
+        <div class="card-title-wrap">
+          <div class="card-title">PPG — Pendidikan Profesi Guru</div>
+          <div class="card-subtitle">Program profesi guru berbayar mandiri</div>
+        </div>
+      </div>
+      <div class="card-body">
+        PPG sudah berjalan dengan kuota pemerintah. Perlu ditambah <strong>kuota PPG Mandiri berbayar</strong> — guru swasta dan pesantren yang belum tersertifikasi menjadi target pasar utama di Ponorogo-Madiun.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">📋 Izin Kemendiktisaintek</span>
+        <span class="meta-tag">🕌 Target guru pesantren</span>
+        <span class="meta-tag">📈 Demand tinggi Jatim</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag high">💰 Potensi: Rp 500 jt–1,5 M/tahun</span>
+        <span class="timeline-tag">Ajukan kuota mandiri 2026</span>
+      </div>
+    </div>
+
+    <div class="biz-card opt" data-cat="opt">
+      <span class="prio prio-2">PRIORITAS 2</span>
+      <div class="card-top">
+        <div class="card-icon">📰</div>
+        <div class="card-title-wrap">
+          <div class="card-title">Portal Jurnal Ilmiah UIN Ponorogo</div>
+          <div class="card-subtitle">12+ jurnal · 1 Scopus Q1 · 2 SINTA 2</div>
+        </div>
+      </div>
+      <div class="card-body">
+        Jurnal Scopus Q1 adalah aset luar biasa — <strong>aktifkan Article Processing Charge (APC)</strong> untuk penulis dari luar UIN yang ingin terbit di Q1. SINTA 2 juga bisa dikenakan APC. Target: 50+ submission eksternal/tahun.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">⭐ 1 Jurnal Scopus Q1</span>
+        <span class="meta-tag">📊 2 Jurnal SINTA 2</span>
+        <span class="meta-tag">💵 APC Mechanism</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag med">💰 Potensi: Rp 100–400 jt/tahun</span>
+        <span class="timeline-tag">Aktifkan APC Q2 2026</span>
+      </div>
+    </div>
+
+    <div class="biz-card opt" data-cat="opt">
+      <span class="prio prio-2">PRIORITAS 2</span>
+      <div class="card-top">
+        <div class="card-icon">⚖️</div>
+        <div class="card-title-wrap">
+          <div class="card-title">LKBH Fakultas Syariah</div>
+          <div class="card-subtitle">Konsultasi & bantuan hukum masyarakat</div>
+        </div>
+      </div>
+      <div class="card-body">
+        LKBH sudah berjalan melayani masyarakat. Perlu diperluas ke <strong>konsultasi bisnis halal, UMKM, sengketa perdata ringan, dan hukum keluarga</strong> dengan tarif sliding scale. Kemitraan dengan Pemkab dan DPRD bisa membuka kontrak kerja retainer.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">🏛️ Berbasis FASya</span>
+        <span class="meta-tag">🤝 Mitra Pemkab</span>
+        <span class="meta-tag">💼 Retainer kontrak</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag med">💰 Potensi: Rp 100–250 jt/tahun</span>
+        <span class="timeline-tag">Perluas layanan 2026</span>
+      </div>
+    </div>
+
+    <div class="biz-card opt" data-cat="opt">
+      <span class="prio prio-2">PRIORITAS 2</span>
+      <div class="card-top">
+        <div class="card-icon">🏢</div>
+        <div class="card-title-wrap">
+          <div class="card-title">Sewa Aset Kampus</div>
+          <div class="card-subtitle">Gedung, aula, lapangan bola Kampus II</div>
+        </div>
+      </div>
+      <div class="card-body">
+        Kampus II memiliki lapangan bola, aula, dan gedung kuliah terpadu. <strong>Bangun sistem booking terpusat</strong> untuk acara komunitas, turnamen, wisuda sekolah, dan rapat instansi pemerintah. Potensi weekend revenue signifikan.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">⚽ Lapangan bola</span>
+        <span class="meta-tag">🏛️ Aula & GKT</span>
+        <span class="meta-tag">📅 Sistem booking online</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag med">💰 Potensi: Rp 150–350 jt/tahun</span>
+        <span class="timeline-tag">Sistem terpusat Q3 2026</span>
+      </div>
+    </div>
+
+    <div class="biz-card opt" data-cat="opt">
+      <span class="prio prio-2">PRIORITAS 2</span>
+      <div class="card-top">
+        <div class="card-icon">📄</div>
+        <div class="card-title-wrap">
+          <div class="card-title">Layanan Legalisir & Administrasi Alumni</div>
+          <div class="card-subtitle">Legalisir ijazah, transkrip, sertifikat alumni</div>
+        </div>
+      </div>
+      <div class="card-body">
+        Volume legalisir setiap tahun sangat tinggi dari ribuan alumni. Kembangkan menjadi <strong>layanan one-stop alumni digital</strong> — legalisir online, surat keterangan aktif, verifikasi ijazah untuk perusahaan, dengan tarif layanan ekspres.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">📲 Digitalisasi penuh</span>
+        <span class="meta-tag">👥 14.500+ alumni aktif</span>
+        <span class="meta-tag">⚡ Layanan ekspres</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag low">💰 Potensi: Rp 50–150 jt/tahun</span>
+        <span class="timeline-tag">Digitalisasi sistem 2026</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ============================================================
+       BAGIAN 2: PENGEMBANGAN BARU
+  ============================================================ -->
+  <div class="sec-head">
+    <span class="sec-badge new">🚀 Pengembangan Baru</span>
+    <span class="sec-title">Unit Bisnis Baru Siap Diluncurkan</span>
+  </div>
+  <p class="sec-desc">
+    Unit-unit ini <strong>belum beroperasi</strong> namun infrastruktur dan permintaan pasarnya sudah tersedia. Bisa diluncurkan dalam <em>1–2 tahun ke depan</em>, ideal sebagai demonstrasi kapasitas BLU kepada Kemenkeu. Beberapa bisa dimulai bahkan sebelum BLU resmi.
+  </p>
+  <div class="card-grid">
+
+    <div class="biz-card new" data-cat="new">
+      <span class="prio prio-1">PRIORITAS 1</span>
+      <div class="card-top">
+        <div class="card-icon">🎤</div>
+        <div class="card-title-wrap">
+          <div class="card-title">Seminar & Conference Center — PSB</div>
+          <div class="card-subtitle">Gedung PSB Kampus II sebagai venue nasional</div>
+        </div>
+      </div>
+      <div class="card-body">
+        Gedung PSB 2024/2025 adalah aset premium yang belum dimonetisasi. <strong>Jadikan venue konferensi nasional</strong> — seminar akademik, pelatihan pemerintah, gathering instansi. Kapasitas besar + lokasi strategis di Ponorogo.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">🏗️ PSB SBSN 2024</span>
+        <span class="meta-tag">🎯 Target Kemenag & Pemkab</span>
+        <span class="meta-tag">📡 AV system lengkap</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag high">💰 Potensi: Rp 300–700 jt/tahun</span>
+        <span class="timeline-tag">Soft launch Q3 2026</span>
+      </div>
+    </div>
+
+    <div class="biz-card new" data-cat="new">
+      <span class="prio prio-1">PRIORITAS 1</span>
+      <div class="card-top">
+        <div class="card-icon">🌐</div>
+        <div class="card-title-wrap">
+          <div class="card-title">Tes & Kursus TOEFL/TOAFL — UPT Bahasa</div>
+          <div class="card-subtitle">Sertifikasi bahasa + pelatihan intensif berbayar</div>
+        </div>
+      </div>
+      <div class="card-body">
+        UPT Bahasa sudah ada namun belum dijadikan pusat tes berbayar. <strong>Buka tes TOEFL ITP authorized center</strong> dan kursus intensif untuk mahasiswa, ASN, santri, dan umum. Permintaan sangat tinggi di Ponorogo-Madiun.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">🏛️ Berbasis UPT Bahasa</span>
+        <span class="meta-tag">📜 TOEFL ITP & TOAFL</span>
+        <span class="meta-tag">👥 Pasar: ASN + mahasiswa</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag high">💰 Potensi: Rp 200–500 jt/tahun</span>
+        <span class="timeline-tag">Daftar ETS/BC partner 2026</span>
+      </div>
+    </div>
+
+    <div class="biz-card new" data-cat="new">
+      <span class="prio prio-1">PRIORITAS 1</span>
+      <div class="card-top">
+        <div class="card-icon">📜</div>
+        <div class="card-title-wrap">
+          <div class="card-title">RPL — Rekognisi Pembelajaran Lampau</div>
+          <div class="card-subtitle">Permendiktisaintek 39/2025 — mahasiswa non-reguler</div>
+        </div>
+      </div>
+      <div class="card-body">
+        Landasan hukum sudah ada. <strong>Buka program RPL</strong> untuk masyarakat yang punya pengalaman kerja relevan — diakui sebagai kredit akademik. UKT RPL khusus lebih tinggi dari reguler. Segmen NEET dan profesional aktif.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">✅ Payung hukum 39/2025</span>
+        <span class="meta-tag">🎯 Target: profesional aktif</span>
+        <span class="meta-tag">🔖 UKT premium</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag high">💰 Potensi: Rp 400 jt–1 M/tahun</span>
+        <span class="timeline-tag">Perda & SOP 2026</span>
+      </div>
+    </div>
+
+    <div class="biz-card new" data-cat="new">
+      <span class="prio prio-2">PRIORITAS 2</span>
+      <div class="card-top">
+        <div class="card-icon">🕌</div>
+        <div class="card-title-wrap">
+          <div class="card-title">Unit Bisnis Ma'had Al-Jami'ah</div>
+          <div class="card-subtitle">Asrama premium, tahfidz, & layanan pesantren</div>
+        </div>
+      </div>
+      <div class="card-body">
+        Ma'had memiliki aset fisik (asrama, masjid, kantin Ma'had) yang bisa dimonetisasi. <strong>Buka asrama premium berbayar</strong> untuk santri dari luar (bukan mahasiswa UIN), program tahfidz mandiri, dan retreat keislaman untuk instansi.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">🕌 Aset Ma'had</span>
+        <span class="meta-tag">📿 Program tahfidz</span>
+        <span class="meta-tag">🏠 Asrama berbayar</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag med">💰 Potensi: Rp 300–600 jt/tahun</span>
+        <span class="timeline-tag">Formalisasi pasca-BLU</span>
+      </div>
+    </div>
+
+    <div class="biz-card new" data-cat="new">
+      <span class="prio prio-2">PRIORITAS 2</span>
+      <div class="card-top">
+        <div class="card-icon">🏥</div>
+        <div class="card-title-wrap">
+          <div class="card-title">Klinik Kesehatan Kampus</div>
+          <div class="card-subtitle">Layanan medis terbuka untuk civitas & masyarakat</div>
+        </div>
+      </div>
+      <div class="card-body">
+        Kampus II dengan lahan luas ideal untuk klinik. <strong>Buka klinik pratama</strong> yang melayani mahasiswa (gratis/subsidi) dan masyarakat umum (berbayar/BPJS). Sinergi dengan prodi Kesehatan Masyarakat yang akan dibuka.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">🏗️ Lahan Kampus II</span>
+        <span class="meta-tag">💊 Kemitraan BPJS</span>
+        <span class="meta-tag">🔬 Lab lab terpadu</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag med">💰 Potensi: Rp 200–500 jt/tahun</span>
+        <span class="timeline-tag">Studi kelayakan 2026</span>
+      </div>
+    </div>
+
+    <div class="biz-card new" data-cat="new">
+      <span class="prio prio-2">PRIORITAS 2</span>
+      <div class="card-top">
+        <div class="card-icon">🍽️</div>
+        <div class="card-title-wrap">
+          <div class="card-title">Kantin & Food Court Kampus II</div>
+          <div class="card-subtitle">Pengelolaan mandiri + bagi hasil tenant halal</div>
+        </div>
+      </div>
+      <div class="card-body">
+        Kampus II sudah memiliki kantin Ma'had. Diperluas menjadi <strong>food court multi-tenant halal</strong> dengan sistem bagi hasil — BLU menyediakan infrastruktur, tenant membayar sewa kios bulanan. Sinergi dengan LPH untuk sertifikasi halal.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">🏗️ Lahan tersedia</span>
+        <span class="meta-tag">🏷️ Kios bagi hasil</span>
+        <span class="meta-tag">✅ Halal certified</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag med">💰 Potensi: Rp 150–350 jt/tahun</span>
+        <span class="timeline-tag">Desain & tender 2026</span>
+      </div>
+    </div>
+
+    <div class="biz-card new" data-cat="new">
+      <span class="prio prio-2">PRIORITAS 2</span>
+      <div class="card-top">
+        <div class="card-icon">🎓</div>
+        <div class="card-title-wrap">
+          <div class="card-title">Micro-Credential & Kursus Singkat</div>
+          <div class="card-subtitle">Permendiktisaintek 39/2025 — 20–40 jam per modul</div>
+        </div>
+      </div>
+      <div class="card-body">
+        Buka <strong>program sertifikasi sub-gelar berbayar</strong> — modul 20–40 jam di bidang Hukum Halal, Manajemen Pesantren, Literasi Digital, Keuangan Syariah. Berkolaborasi dengan LSP P1 untuk penerbitan sertifikat kompetensi resmi.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">✅ Payung hukum 39/2025</span>
+        <span class="meta-tag">💻 Bisa daring/hybrid</span>
+        <span class="meta-tag">🏆 Sertifikat LSP P1</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag med">💰 Potensi: Rp 200–600 jt/tahun</span>
+        <span class="timeline-tag">Pilot program 2026–2027</span>
+      </div>
+    </div>
+
+    <div class="biz-card new" data-cat="new">
+      <span class="prio prio-2">PRIORITAS 2</span>
+      <div class="card-top">
+        <div class="card-icon">🍲</div>
+        <div class="card-title-wrap">
+          <div class="card-title">Unit Catering & Produksi Pangan Halal</div>
+          <div class="card-subtitle">Katering acara akademik, wisuda, seminar</div>
+        </div>
+      </div>
+      <div class="card-body">
+        Sinergi Ma'had + LPH untuk <strong>unit catering halal certified kampus</strong>. Melayani wisuda, seminar nasional, rapat Pemkab, dan acara korporat. Produk unggulan Ma'had (jamu, roti, kuliner tradisional) bisa dikemas sebagai souvenir kampus.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">🏷️ Halal certified LPH</span>
+        <span class="meta-tag">🎓 Wisuda & seminar</span>
+        <span class="meta-tag">🛍️ Souvenir kampus</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag med">💰 Potensi: Rp 100–300 jt/tahun</span>
+        <span class="timeline-tag">Pilot wisuda 2026</span>
+      </div>
+    </div>
+
+    <div class="biz-card new" data-cat="new">
+      <span class="prio prio-3">PRIORITAS 3</span>
+      <div class="card-top">
+        <div class="card-icon">📡</div>
+        <div class="card-title-wrap">
+          <div class="card-title">Ekspansi LSP P1 → LSP P2 (Feasibility)</div>
+          <div class="card-subtitle">Layanan asesmen kompetensi untuk instansi eksternal</div>
+        </div>
+      </div>
+      <div class="card-body">
+        LSP P1 yang sudah berlisensi BNSP dapat mengajukan perluasan lisensi menjadi <strong>LSP P2</strong> — yang bisa melayani perusahaan/instansi di luar UIN Ponorogo. Ini membuka pasar asesmen kompetensi untuk seluruh Jawa Timur bagian barat.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">🔄 Upgrade dari P1 ke P2</span>
+        <span class="meta-tag">🏢 Pasar korporat</span>
+        <span class="meta-tag">🌐 Jangkauan Jawa Timur</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag high">💰 Potensi: Rp 500 jt–1,5 M/tahun</span>
+        <span class="timeline-tag">Kajian BNSP 2027</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ============================================================
+       BAGIAN 3: JANGKA PANJANG
+  ============================================================ -->
+  <div class="sec-head">
+    <span class="sec-badge future">🔭 Jangka Panjang</span>
+    <span class="sec-title">Visi Strategis 2028–2030+ Pasca-BLU</span>
+  </div>
+  <p class="sec-desc">
+    Unit-unit ini memerlukan <strong>persiapan 2–5 tahun</strong> dan dapat direalisasikan setelah BLU stabil, SDM berkembang, dan infrastruktur terpenuhi. Menjadi fondasi perjalanan dari BLU menuju <em>PTN-BH</em>.
+  </p>
+  <div class="card-grid">
+
+    <div class="biz-card future" data-cat="future">
+      <span class="prio prio-1">STRATEGIS</span>
+      <div class="card-top">
+        <div class="card-icon">🤝</div>
+        <div class="card-title-wrap">
+          <div class="card-title">Double Degree & Joint Program Internasional</div>
+          <div class="card-subtitle">Kemitraan PT luar negeri · UKT ganda · Beasiswa</div>
+        </div>
+      </div>
+      <div class="card-body">
+        Bangun program gelar ganda dengan universitas Islam di Turki, Malaysia, Mesir, atau Maroko. Mahasiswa membayar <strong>UKT ganda</strong> namun mendapat dua ijazah. Jurnal Scopus Q1 dan LSP P1 menjadi modal reputasi internasional.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">🌍 Mitra: Turki/Malaysia/Mesir</span>
+        <span class="meta-tag">📋 MBKM framework</span>
+        <span class="meta-tag">⭐ Modal: Jurnal Q1</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag high">💰 Potensi: Rp 1–3 M/tahun</span>
+        <span class="timeline-tag">MoU 2027, aktif 2028</span>
+      </div>
+    </div>
+
+    <div class="biz-card future" data-cat="future">
+      <span class="prio prio-1">STRATEGIS</span>
+      <div class="card-top">
+        <div class="card-icon">🏗️</div>
+        <div class="card-title-wrap">
+          <div class="card-title">Inkubator Bisnis & Startup Kampus</div>
+          <div class="card-subtitle">Lahan Kampus II — Co-working & akselerasi UMKM</div>
+        </div>
+      </div>
+      <div class="card-body">
+        Kampus II memiliki lahan luas yang bisa dikembangkan menjadi <strong>inkubator bisnis syariah</strong> — co-working space, mentoring UMKM, demo day, dan program pitch startup mahasiswa. Kemitraan dengan Pemkab dan OJK Jawa Timur.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">🏗️ Lahan Kampus II</span>
+        <span class="meta-tag">🤝 Mitra: OJK & Pemkab</span>
+        <span class="meta-tag">🌱 Startup syariah</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag high">💰 Potensi: Rp 500 jt–2 M/tahun</span>
+        <span class="timeline-tag">Desain masterplan 2027</span>
+      </div>
+    </div>
+
+    <div class="biz-card future" data-cat="future">
+      <span class="prio prio-2">STRATEGIS</span>
+      <div class="card-top">
+        <div class="card-icon">🔬</div>
+        <div class="card-title-wrap">
+          <div class="card-title">Research Center & Riset Kontrak</div>
+          <div class="card-subtitle">Pusat riset terapan halal, pesantren & governance</div>
+        </div>
+      </div>
+      <div class="card-body">
+        Manfaatkan Jurnal Scopus Q1 dan 81 dosen doktor untuk membangun <strong>Research Center bertema unggulan</strong>: Halal Economy Research Center, Pesantren Governance Center, dan Islamic Family Law Center. Riset kontrak dari industri dan pemerintah.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">⭐ Berbasis Jurnal Q1</span>
+        <span class="meta-tag">💼 Riset kontrak industri</span>
+        <span class="meta-tag">🏛️ Niche PTKIN</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag high">💰 Potensi: Rp 500 jt–1,5 M/tahun</span>
+        <span class="timeline-tag">Proposal 2027</span>
+      </div>
+    </div>
+
+    <div class="biz-card future" data-cat="future">
+      <span class="prio prio-2">STRATEGIS</span>
+      <div class="card-top">
+        <div class="card-icon">🌱</div>
+        <div class="card-title-wrap">
+          <div class="card-title">Green Campus Economy</div>
+          <div class="card-subtitle">Panel surya, bank sampah, wisata edukatif</div>
+        </div>
+      </div>
+      <div class="card-body">
+        Jadikan komitmen Green Campus sebagai <strong>sumber pendapatan hijau</strong>: panel surya (hemat + jual surplus ke PLN), bank sampah kampus (tipping fee), wisata edukatif untuk sekolah (bayar masuk), dan Laporan ESG untuk fundraising CSR.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">☀️ Panel surya KLHK</span>
+        <span class="meta-tag">♻️ Bank sampah</span>
+        <span class="meta-tag">🌍 ESG fundraising</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag med">💰 Potensi: Rp 200–500 jt/tahun</span>
+        <span class="timeline-tag">Hibah KLHK 2027</span>
+      </div>
+    </div>
+
+    <div class="biz-card future" data-cat="future">
+      <span class="prio prio-3">STRATEGIS</span>
+      <div class="card-top">
+        <div class="card-icon">🖥️</div>
+        <div class="card-title-wrap">
+          <div class="card-title">Smart Campus Digital Hub</div>
+          <div class="card-subtitle">Layanan digitale, IoT, AI platform kampus</div>
+        </div>
+      </div>
+      <div class="card-body">
+        Kembangkan PSB menjadi <strong>Digital Hub</strong> — studio podcast & konten, lab AI, cloud server kampus, dan layanan digitalisasi arsip untuk instansi pemerintah daerah. Potensi pendapatan dari SaaS kampus (SIAKAD-as-a-Service ke PTKIN kecil).
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">💡 PSB sebagai hub</span>
+        <span class="meta-tag">☁️ SaaS untuk PTKIN kecil</span>
+        <span class="meta-tag">📡 IoT monitoring</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag med">💰 Potensi: Rp 300 jt–1 M/tahun</span>
+        <span class="timeline-tag">Hibah Kemendiktisaintek 2027</span>
+      </div>
+    </div>
+
+    <div class="biz-card future" data-cat="future">
+      <span class="prio prio-3">STRATEGIS</span>
+      <div class="card-top">
+        <div class="card-icon">🏛️</div>
+        <div class="card-title-wrap">
+          <div class="card-title">Prodi Baru Non-Agama (Informatika & Psikologi)</div>
+          <div class="card-subtitle">Ekspansi akademik pasca UIN 2025</div>
+        </div>
+      </div>
+      <div class="card-body">
+        Status UIN 2025 memberi kewenangan hukum membuka prodi non-agama. <strong>Informatika dan Psikologi</strong> adalah dua prodi paling dicari Gen Z yang belum ada kompetitor PTKIN di ring-1 Ponorogo. UKT prodi baru lebih tinggi dari prodi agama.
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">✅ Kewenangan Perpres UIN</span>
+        <span class="meta-tag">🎯 Target: Gen Z STEM</span>
+        <span class="meta-tag">💰 UKT premium</span>
+      </div>
+      <div class="card-footer">
+        <span class="rev-tag high">💰 Potensi: Rp 2–5 M/tahun</span>
+        <span class="timeline-tag">Pengajuan izin Q1 2026</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ESTIMASI PENDAPATAN -->
+  <div class="roadmap-wrap">
+    <div class="roadmap-title">💰 Estimasi Kontribusi Pendapatan PNBP per Fase (Proyeksi Konservatif)</div>
+    <div class="rev-grid">
+      <div class="rev-card">
+        <h4>✅ Optimalisasi — Target Fase 1 (2026)</h4>
+        <div class="rev-row">
+          <span class="rev-label">PPG Mandiri</span>
+          <div class="rev-bar-wrap"><div class="rev-bar opt" style="width:90%;"></div></div>
+          <span class="rev-amt">~Rp 1,5 M</span>
+        </div>
+        <div class="rev-row">
+          <span class="rev-label">LSP P1 Eksternal</span>
+          <div class="rev-bar-wrap"><div class="rev-bar opt" style="width:70%;"></div></div>
+          <span class="rev-amt">~Rp 900 jt</span>
+        </div>
+        <div class="rev-row">
+          <span class="rev-label">LPH + LP3H</span>
+          <div class="rev-bar-wrap"><div class="rev-bar opt" style="width:65%;"></div></div>
+          <span class="rev-amt">~Rp 800 jt</span>
+        </div>
+        <div class="rev-row">
+          <span class="rev-label">Sewa Aset</span>
+          <div class="rev-bar-wrap"><div class="rev-bar opt" style="width:35%;"></div></div>
+          <span class="rev-amt">~Rp 350 jt</span>
+        </div>
+        <div class="rev-row">
+          <span class="rev-label">Jurnal APC + LKBH</span>
+          <div class="rev-bar-wrap"><div class="rev-bar opt" style="width:30%;"></div></div>
+          <span class="rev-amt">~Rp 400 jt</span>
+        </div>
+      </div>
+      <div class="rev-card">
+        <h4>🚀 Pengembangan Baru — Target Fase 2 (2027–2028)</h4>
+        <div class="rev-row">
+          <span class="rev-label">RPL Non-Reguler</span>
+          <div class="rev-bar-wrap"><div class="rev-bar new" style="width:95%;"></div></div>
+          <span class="rev-amt">~Rp 1 M</span>
+        </div>
+        <div class="rev-row">
+          <span class="rev-label">Conference Center PSB</span>
+          <div class="rev-bar-wrap"><div class="rev-bar new" style="width:70%;"></div></div>
+          <span class="rev-amt">~Rp 700 jt</span>
+        </div>
+        <div class="rev-row">
+          <span class="rev-label">TOEFL/TOAFL Center</span>
+          <div class="rev-bar-wrap"><div class="rev-bar new" style="width:55%;"></div></div>
+          <span class="rev-amt">~Rp 500 jt</span>
+        </div>
+        <div class="rev-row">
+          <span class="rev-label">Unit Bisnis Ma'had</span>
+          <div class="rev-bar-wrap"><div class="rev-bar new" style="width:55%;"></div></div>
+          <span class="rev-amt">~Rp 600 jt</span>
+        </div>
+        <div class="rev-row">
+          <span class="rev-label">Micro-credential + Catering</span>
+          <div class="rev-bar-wrap"><div class="rev-bar new" style="width:45%;"></div></div>
+          <span class="rev-amt">~Rp 600 jt</span>
+        </div>
+      </div>
+    </div>
+    <div style="background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.2);
+      border-radius:10px;padding:0.9rem 1.1rem;font-size:0.8rem;color:var(--muted);">
+      <strong style="color:var(--future);">🔭 Visi Jangka Panjang (2028+):</strong>
+      Double Degree (~Rp 1–3 M) · Research Center (~Rp 1,5 M) · Prodi Non-Agama (~Rp 2–5 M) · Inkubator Startup (~Rp 2 M) · Smart Campus Hub (~Rp 1 M).
+      <strong style="color:var(--text);">Total potensi kumulatif Fase 3: Rp 7–13 M/tahun</strong> — setara awal PTN-BH kecil.
+    </div>
+  </div>
+
+  <!-- CALLOUT PENTING -->
+  <div style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);
+    border-left:4px solid var(--green);border-radius:10px;padding:1rem 1.2rem;font-size:0.82rem;
+    color:var(--muted);margin-bottom:2rem;">
+    <strong style="color:var(--green);">🎯 Argumen RSB ke Kemenkeu — Ringkasan:</strong><br>
+    UIN Ponorogo memiliki <strong style="color:var(--text);">8 sumber PNBP aktif</strong> dan <strong style="color:var(--text);">15 potensi baru</strong> yang terdistribusi dalam 3 fase. Total estimasi PNBP mandiri pada kondisi optimal Fase 1–2: <strong style="color:var(--green);">Rp 5–8 Miliar/tahun</strong> — jauh melampaui ambang batas minimum BLU (Rp 2,5 M untuk PTKIN). Ditambah keunikan: 
+    <strong style="color:var(--text);">LSP P1 berlisensi BNSP</strong>, <strong style="color:var(--text);">Jurnal Scopus Q1</strong>, dan <strong style="color:var(--text);">infrastruktur SBSN modern</strong> yang menjadi pembeda dari PTKIN Satker lainnya.
+    <div style="font-size:0.68rem;margin-top:0.4rem;color:#64748b;">Proyeksi konservatif berdasarkan analisis aset UIN Ponorogo, April 2026 — bukan angka resmi keuangan</div>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+function toggleTheme(){
+  const h=document.documentElement;
+  const d=h.getAttribute('data-theme')==='dark';
+  h.setAttribute('data-theme',d?'light':'dark');
+  document.getElementById('themeToggle').textContent=d?'🌙 Tema':'☀️ Tema';
+}
+
+function filterCards(cat){
+  const cards=document.querySelectorAll('.biz-card');
+  cards.forEach(c=>{
+    if(cat==='all'||c.dataset.cat===cat){
+      c.classList.remove('hidden');
+      c.style.animation='fadeIn 0.3s ease';
+    } else {
+      c.classList.add('hidden');
+    }
+  });
+  // Update button states
+  ['all','opt','new','future'].forEach(k=>{
+    const btn=document.getElementById('btn-'+k);
+    btn.className='filter-btn';
+    if(k===cat) btn.classList.add('active-'+k);
+  });
+}
+
+// Animate revenue bars on load
+window.addEventListener('load',()=>{
+  const bars=document.querySelectorAll('.rev-bar');
+  bars.forEach(b=>{
+    const w=b.style.width;
+    b.style.width='0%';
+    setTimeout(()=>b.style.width=w,300);
+  });
+});
+</script>
+
+<style>
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+</style>
+</body>
+</html>
