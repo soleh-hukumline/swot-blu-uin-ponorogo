@@ -12,6 +12,10 @@
     "blu_status": false,
     "ukt_avg": 2500000,
     "sinta_id": "8245308",
+    "lsp_p1": true,
+    "lsp_p1_url": "https://lsp.uinponorogo.ac.id",
+    "pnbp_aktif": 8,
+    "pnbp_potensi": 10,
     "sdm": {
       "dosen_total": 329,
       "dosen_doktor": 81,
