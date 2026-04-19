@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Peta RSB & Potensi Bisnis BLU — UIN Kiai Ageng Muhammad Besari Ponorogo</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -90,6 +91,18 @@ header h1 span{color:var(--accent);}
 
 /* CARD GRID */
 .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1rem;margin-bottom:0.5rem;}
+.export-bar{display:flex;align-items:center;gap:0.5rem;margin-left:auto;}
+.btn-export{display:inline-flex;align-items:center;gap:0.35rem;padding:0.3rem 0.75rem;border-radius:6px;font-size:0.72rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;white-space:nowrap;}
+.btn-export.opt{background:rgba(34,197,94,0.15);color:var(--opt);border:1px solid rgba(34,197,94,0.4);}
+.btn-export.opt:hover{background:var(--opt);color:#fff;}
+.btn-export.new{background:rgba(59,130,246,0.15);color:var(--new);border:1px solid rgba(59,130,246,0.4);}
+.btn-export.new:hover{background:var(--new);color:#fff;}
+.btn-export.future{background:rgba(167,139,250,0.15);color:var(--future);border:1px solid rgba(167,139,250,0.4);}
+.btn-export.future:hover{background:var(--future);color:#fff;}
+.btn-export.geo{background:rgba(251,191,36,0.15);color:var(--orange);border:1px solid rgba(251,191,36,0.4);}
+.btn-export.geo:hover{background:var(--orange);color:#fff;}
+.btn-export.exporting{opacity:.6;pointer-events:none;}
+.sec-head{display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;}
 
 /* BUSINESS CARD */
 .biz-card{background:var(--card);border:1px solid var(--border);border-radius:14px;
@@ -301,9 +314,15 @@ header h1 span{color:var(--accent);}
   <!-- ============================================================
        BAGIAN 1: OPTIMALISASI
   ============================================================ -->
+<div id="section-opt" class="export-section">
   <div class="sec-head">
     <span class="sec-badge opt">✅ Optimalisasi</span>
     <span class="sec-title">Unit Bisnis Aktif — Perlu Dioptimalkan</span>
+    <div class="export-bar">
+      <button class="btn-export opt" onclick="exportSection('section-opt','Unit_Bisnis_Aktif')">
+        📥 Ekspor PNG
+      </button>
+    </div>
   </div>
   <p class="sec-desc">
     UIN Ponorogo memiliki <strong>8 unit yang sudah beroperasi</strong> namun belum dikelola sebagai PNBP BLU yang terstruktur. Langkah utama: formalkan, dokumentasikan, dan tingkatkan skala pendapatan setiap unit.
@@ -498,12 +517,22 @@ header h1 span{color:var(--accent);}
 
   <div class="divider"></div>
 
+</div><!-- /section-opt -->
+
+<div class="divider"></div>
+
+<div id="section-new" class="export-section">
   <!-- ============================================================
        BAGIAN 2: PENGEMBANGAN BARU
   ============================================================ -->
   <div class="sec-head">
     <span class="sec-badge new">🚀 Pengembangan Baru</span>
     <span class="sec-title">Unit Bisnis Baru Siap Diluncurkan</span>
+    <div class="export-bar">
+      <button class="btn-export new" onclick="exportSection('section-new','Unit_Bisnis_Baru')">
+        📥 Ekspor PNG
+      </button>
+    </div>
   </div>
   <p class="sec-desc">
     Unit-unit ini <strong>belum beroperasi</strong> namun infrastruktur dan permintaan pasarnya sudah tersedia. Bisa diluncurkan dalam <em>1–2 tahun ke depan</em>, ideal sebagai demonstrasi kapasitas BLU. Beberapa bisa dimulai bahkan sebelum status BLU resmi diperoleh.
@@ -721,12 +750,22 @@ header h1 span{color:var(--accent);}
 
   <div class="divider"></div>
 
+</div><!-- /section-new -->
+
+<div class="divider"></div>
+
+<div id="section-future" class="export-section">
   <!-- ============================================================
        BAGIAN 3: JANGKA PANJANG
   ============================================================ -->
   <div class="sec-head">
     <span class="sec-badge future">🔭 Jangka Panjang</span>
     <span class="sec-title">Visi Strategis 2028–2030+ Pasca-BLU</span>
+    <div class="export-bar">
+      <button class="btn-export future" onclick="exportSection('section-future','Visi_Strategis')">
+        📥 Ekspor PNG
+      </button>
+    </div>
   </div>
   <p class="sec-desc">
     Unit-unit ini memerlukan <strong>persiapan 2–5 tahun</strong> dan dapat direalisasikan setelah BLU stabil, SDM berkembang, dan infrastruktur terpenuhi. Menjadi fondasi perjalanan dari BLU menuju <em>PTN-BH</em>.
@@ -944,11 +983,14 @@ header h1 span{color:var(--accent);}
     </div>
   </div>
 
+</div><!-- /section-future -->
+
   <!-- ================================================================
        SEKSI LOKASI: KEUNGGULAN GEOGRAFIS & KLASTER WISATA
   ================================================================ -->
   <div class="divider"></div>
 
+<div id="section-geo" class="export-section">
   <div class="sec-head">
     <span class="sec-badge" style="background:rgba(249,115,22,0.15);color:var(--orange);border:1px solid rgba(249,115,22,0.3);">🗺️ Keunggulan Lokasi</span>
     <span class="sec-title">Klaster Wisata & Potensi Bisnis Berbasis Geografi</span>
@@ -1101,7 +1143,13 @@ header h1 span{color:var(--accent);}
   <div style="background:rgba(249,115,22,0.06);border:1px solid rgba(249,115,22,0.2);
     border-left:4px solid var(--orange);border-radius:10px;padding:1rem 1.2rem;
     font-size:0.82rem;color:var(--muted);margin-top:1rem;margin-bottom:1.5rem;">
-    <strong style="color:var(--orange);">🗺️ Keunggulan Posisi Geografis Regional:</strong><br>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+    <strong style="color:var(--orange);">🗺️ Keunggulan Posisi Geografis Regional</strong>
+    <button class="btn-export geo" onclick="exportSection('section-geo','Posisi_Geografis')">
+      📥 Ekspor PNG
+    </button>
+  </div>
+  
     UIN Ponorogo adalah <strong style="color:var(--text);">satu-satunya PTKIN</strong> yang melayani wilayah eks-Karesidenan Madiun:
     <strong style="color:var(--text);">Ponorogo · Madiun · Magetan · Ngawi · Pacitan</strong> (~3–4 juta jiwa, 5 kabupaten/kota).
     UIN Ponorogo menjangkau populasi ini tanpa kompetitor PTKIN setingkat dalam radius 80 km — menjadikan setiap layanan akademik dan kelembagaan lebih aksesibel dan relevan bagi masyarakat wilayah ini.
@@ -1128,6 +1176,7 @@ header h1 span{color:var(--accent);}
   </div>
 
 
+</div><!-- /section-geo -->
 </div><!-- /page -->
 
 
@@ -1166,6 +1215,48 @@ window.addEventListener('load',()=>{
     setTimeout(()=>b.style.width=w,300);
   });
 });
+
+function exportSection(sectionId, filename) {
+  const el = document.getElementById(sectionId);
+  if (!el) return;
+  
+  const btn = el.querySelector('.btn-export');
+  if (btn) { btn.classList.add('exporting'); btn.textContent = '⏳ Memproses...'; }
+  
+  // Simpan state filter aktif
+  const hiddenCards = el.querySelectorAll('.biz-card[style*="display: none"],.biz-card[style*="display:none"]');
+  hiddenCards.forEach(c => c.style.display = '');
+  
+  const timestamp = new Date().toISOString().slice(0,10);
+  
+  html2canvas(el, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: getComputedStyle(document.documentElement)
+      .getPropertyValue('--bg').trim() || '#0f172a',
+    logging: false,
+    windowWidth: el.scrollWidth + 80,
+    onclone: function(doc) {
+      // Sembunyikan tombol ekspor di clone
+      doc.querySelectorAll('.btn-export').forEach(b => b.style.display = 'none');
+      // Pastikan semua card visible di clone
+      doc.querySelectorAll('.biz-card').forEach(c => c.style.removeProperty('display'));
+    }
+  }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = `RSB_${filename}_${timestamp}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    
+    if (btn) { btn.classList.remove('exporting'); btn.innerHTML = '📥 Ekspor PNG'; }
+    // Restore hidden cards
+    hiddenCards.forEach(c => c.style.display = 'none');
+  }).catch(err => {
+    console.error(err);
+    if (btn) { btn.classList.remove('exporting'); btn.innerHTML = '📥 Ekspor PNG'; }
+    alert('Export gagal. Pastikan koneksi internet aktif dan coba lagi.');
+  });
+}
 </script>
 
 <style>
