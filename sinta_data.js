@@ -16,12 +16,13 @@ const sintaData = [
     "garuda_docs": 1934,
     "garuda_citations": 0,
     "garuda_cited_docs": 0,
-    "q1": 0,
+    "q1": 42,
     "q2": 25,
     "q3": 41,
     "q4": 38,
     "researches": 0,
-    "community_services": 0
+    "community_services": 0,
+    "no_q": 37
   },
   {
     "id": "uin-jakarta",
@@ -40,12 +41,13 @@ const sintaData = [
     "garuda_docs": 17667,
     "garuda_citations": 0,
     "garuda_cited_docs": 0,
-    "q1": 0,
+    "q1": 606,
     "q2": 526,
     "q3": 724,
     "q4": 1326,
     "researches": 0,
-    "community_services": 0
+    "community_services": 0,
+    "no_q": 435
   },
   {
     "id": "uin-suka",
@@ -64,12 +66,13 @@ const sintaData = [
     "garuda_docs": 5774,
     "garuda_citations": 0,
     "garuda_cited_docs": 0,
-    "q1": 0,
+    "q1": 431,
     "q2": 179,
     "q3": 240,
     "q4": 303,
     "researches": 0,
-    "community_services": 0
+    "community_services": 0,
+    "no_q": 288
   },
   {
     "id": "uin-bandung",
@@ -88,10 +91,10 @@ const sintaData = [
     "garuda_docs": 12292,
     "garuda_citations": 0,
     "garuda_cited_docs": 0,
-    "q1": 0,
+    "q1": 253,
     "q2": 352,
     "q3": 806,
-    "q4": 0,
+    "q4": 224,
     "researches": 0,
     "community_services": 0,
     "no_q": 896
@@ -113,12 +116,13 @@ const sintaData = [
     "garuda_docs": 11306,
     "garuda_citations": 0,
     "garuda_cited_docs": 0,
-    "q1": 0,
+    "q1": 346,
     "q2": 407,
     "q3": 447,
     "q4": 373,
     "researches": 0,
-    "community_services": 0
+    "community_services": 0,
+    "no_q": 393
   },
   {
     "id": "uin-surabaya",
@@ -137,12 +141,13 @@ const sintaData = [
     "garuda_docs": 9085,
     "garuda_citations": 0,
     "garuda_cited_docs": 0,
-    "q1": 0,
+    "q1": 197,
     "q2": 146,
     "q3": 197,
     "q4": 211,
     "researches": 0,
-    "community_services": 0
+    "community_services": 0,
+    "no_q": 188
   },
   {
     "id": "uin-walisongo",
@@ -161,12 +166,13 @@ const sintaData = [
     "garuda_docs": 5853,
     "garuda_citations": 0,
     "garuda_cited_docs": 0,
-    "q1": 0,
+    "q1": 139,
     "q2": 138,
     "q3": 246,
     "q4": 162,
     "researches": 0,
-    "community_services": 0
+    "community_services": 0,
+    "no_q": 171
   },
   {
     "id": "uin-surakarta",
@@ -185,12 +191,13 @@ const sintaData = [
     "garuda_docs": 5038,
     "garuda_citations": 0,
     "garuda_cited_docs": 0,
-    "q1": 0,
+    "q1": 94,
     "q2": 83,
     "q3": 97,
     "q4": 119,
     "researches": 0,
-    "community_services": 0
+    "community_services": 0,
+    "no_q": 98
   },
   {
     "id": "uin-tulungagung",
@@ -209,12 +216,13 @@ const sintaData = [
     "garuda_docs": 5485,
     "garuda_citations": 0,
     "garuda_cited_docs": 0,
-    "q1": 0,
+    "q1": 80,
     "q2": 50,
     "q3": 107,
     "q4": 81,
     "researches": 0,
-    "community_services": 0
+    "community_services": 0,
+    "no_q": 80
   },
   {
     "id": "uin-purwokerto",
@@ -233,12 +241,13 @@ const sintaData = [
     "garuda_docs": 2113,
     "garuda_citations": 0,
     "garuda_cited_docs": 0,
-    "q1": 0,
+    "q1": 65,
     "q2": 44,
     "q3": 41,
     "q4": 73,
     "researches": 0,
-    "community_services": 0
+    "community_services": 0,
+    "no_q": 56
   },
   {
     "id": "uin-cirebon",
@@ -257,12 +266,13 @@ const sintaData = [
     "garuda_docs": 2592,
     "garuda_citations": 0,
     "garuda_cited_docs": 0,
-    "q1": 0,
+    "q1": 44,
     "q2": 27,
     "q3": 97,
     "q4": 65,
     "researches": 0,
-    "community_services": 0
+    "community_services": 0,
+    "no_q": 58
   },
   {
     "id": "uin-jember",
@@ -281,12 +291,13 @@ const sintaData = [
     "garuda_docs": 2036,
     "garuda_citations": 0,
     "garuda_cited_docs": 0,
-    "q1": 0,
+    "q1": 90,
     "q2": 25,
     "q3": 25,
     "q4": 59,
     "researches": 0,
-    "community_services": 0
+    "community_services": 0,
+    "no_q": 50
   },
   {
     "id": "iain-kudus",
@@ -305,12 +316,13 @@ const sintaData = [
     "garuda_docs": 2388,
     "garuda_citations": 0,
     "garuda_cited_docs": 0,
-    "q1": 0,
+    "q1": 45,
     "q2": 25,
     "q3": 37,
     "q4": 42,
     "researches": 0,
-    "community_services": 0
+    "community_services": 0,
+    "no_q": 37
   },
   {
     "id": "uin-madura",
@@ -329,12 +341,13 @@ const sintaData = [
     "garuda_docs": 1564,
     "garuda_citations": 0,
     "garuda_cited_docs": 0,
-    "q1": 0,
+    "q1": 45,
     "q2": 13,
     "q3": 24,
     "q4": 53,
     "researches": 0,
-    "community_services": 0
+    "community_services": 0,
+    "no_q": 34
   },
   {
     "id": "uin-salatiga",
@@ -353,12 +366,13 @@ const sintaData = [
     "garuda_docs": 791,
     "garuda_citations": 0,
     "garuda_cited_docs": 0,
-    "q1": 0,
+    "q1": 44,
     "q2": 38,
     "q3": 48,
     "q4": 48,
     "researches": 0,
-    "community_services": 0
+    "community_services": 0,
+    "no_q": 44
   },
   {
     "id": "iain-kediri",
@@ -377,12 +391,13 @@ const sintaData = [
     "garuda_docs": 645,
     "garuda_citations": 0,
     "garuda_cited_docs": 0,
-    "q1": 0,
+    "q1": 47,
     "q2": 19,
     "q3": 32,
     "q4": 24,
     "researches": 0,
-    "community_services": 0
+    "community_services": 0,
+    "no_q": 31
   },
   {
     "id": "uin-banten",
@@ -401,11 +416,11 @@ const sintaData = [
     "garuda_docs": 1849,
     "garuda_citations": 12,
     "garuda_cited_docs": 6,
-    "q1": 0,
+    "q1": 166,
     "q2": 0,
     "q3": 38,
     "q4": 0,
-    "no_q": 0,
+    "no_q": 51,
     "researches": 0,
     "community_services": 0
   }
