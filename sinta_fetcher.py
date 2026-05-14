@@ -7,8 +7,6 @@ import requests
 import json
 import re
 import time
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
@@ -50,7 +48,7 @@ def parse_float(text):
 def fetch_metrics(sinta_id):
     url = f"https://sinta.kemdiktisaintek.go.id/affiliations/profile/{sinta_id}/?view=matrics"
     try:
-        r = requests.get(url, headers=HEADERS, timeout=20, verify=False)
+        r = requests.get(url, headers=HEADERS, timeout=20)
         html = r.text
     except Exception as e:
         print(f"      [!] Error: {e}")
@@ -107,7 +105,7 @@ def fetch_counts(sinta_id):
     for view, key in [("researches", "researches"), ("services", "community_services")]:
         try:
             url = f"https://sinta.kemdiktisaintek.go.id/affiliations/profile/{sinta_id}/?view={view}"
-            r = requests.get(url, headers=HEADERS, timeout=20, verify=False)
+            r = requests.get(url, headers=HEADERS, timeout=20)
             # Cari "Showing X to Y of Z results"
             m = re.search(r'of\s+([\d,\.]+)\s+results', r.text, re.IGNORECASE)
             if not m:
