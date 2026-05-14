@@ -1,11 +1,20 @@
 import json
+import os
 import re
 import time
 import requests
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-SERP_API_KEY = "9e77abd24bdea6ce2080a15cb24b58c16ab1ed2f7a90015f10b5f55ffd11b126"
+# ⚠️  JANGAN hardcode API key di sini!
+# Jalankan dulu di terminal: export SERP_API_KEY="key_anda"
+# atau buat file .env dan gunakan python-dotenv
+
+SERP_API_KEY = os.environ.get("SERP_API_KEY", "")
+if not SERP_API_KEY:
+    raise EnvironmentError(
+        "❌ SERP_API_KEY tidak ditemukan!\n"
+        "Jalankan: export SERP_API_KEY='api_key_anda'\n"
+        "Dapatkan key baru di: https://serpapi.com/manage-api-key"
+    )
 DATA_JSON_FILE = "data.json"
 DATA_JS_FILE = "data.js"
 
@@ -20,7 +29,7 @@ def serp_search(query):
         "num": 10
     }
     try:
-        r = requests.get("https://serpapi.com/search", params=params, verify=False, timeout=15)
+        r = requests.get("https://serpapi.com/search", params=params, timeout=15)
         if r.status_code != 200:
             print(f"      [!] API Error {r.status_code}")
             return []

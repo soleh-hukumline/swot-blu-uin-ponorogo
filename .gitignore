@@ -8,6 +8,13 @@
 __pycache__/
 *.pyc
 
+# ⚠️ SENSITIVE - jangan pernah commit file ini!
+.env
+*.env
+.env.local
+secrets.py
+config_secret.py
+
 # Raw/draft files (opsional - hapus baris ini jika ingin tetap di-track)
 # matriks_raw.html
 # simpeg_raw.html
