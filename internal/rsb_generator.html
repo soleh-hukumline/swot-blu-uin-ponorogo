@@ -231,6 +231,16 @@ table.editable tr:hover .row-del{opacity:1;}
 ============================================================ */
 const SECTIONS = [
   {
+    id:'ringkasan', num:'RINGKASAN', title:'Ringkasan Eksekutif', limit:'Maksimal 2 Halaman', cls:'cyan',
+    components:[
+      { id:'rex', letter:'', title:'Ringkasan Eksekutif',
+        type:'rte',
+        template:'<h3>1. Latar Belakang</h3><p>Dokumen Rencana Strategis Bisnis (RSB) ini disusun sebagai pedoman strategis pengelolaan <b>Badan Layanan Umum (BLU) UIN Kiai Ageng Muhammad Besari Ponorogo</b> periode 2025–2029. Penyusunan RSB mengacu pada <b>PMK Nomor 76 Tahun 2025</b> (Perubahan Kedua atas PMK Nomor 129/PMK.05/2020) tentang Pedoman Pengelolaan BLU.</p><h3>2. Visi dan Arah Strategis</h3><p>UIN Ponorogo memiliki visi <b>\"Menjadi Universitas Islam Negeri yang Unggul, Moderat, dan Berdaya Saing di Tingkat Nasional dan Internasional pada Tahun 2030\"</b>. Transformasi dari IAIN menjadi UIN (Mei 2025) membuka peluang pengembangan prodi lintas bidang dan penguatan posisi sebagai BLU.</p><h3>3. Kondisi Saat Ini</h3><ul><li><b>Akademik:</b> 28 prodi aktif, 11 terakreditasi Unggul (37,9%), akreditasi institusi Unggul.</li><li><b>SDM:</b> 329 dosen (81 S3/24,6%, 15 Guru Besar), rasio dosen:mahasiswa 1:44.</li><li><b>Mahasiswa:</b> 10.182 mahasiswa aktif dengan pertumbuhan 4,7%/tahun.</li><li><b>Keuangan:</b> 7 unit PNBP aktif, pertumbuhan pendapatan rata-rata 8,3%/tahun.</li><li><b>Infrastruktur:</b> Fasilitas modern dari dana SBSN, Ma\'had Al-Jami\'ah.</li></ul><h3>4. Target Utama 2025–2029</h3><ul><li>Prodi terakreditasi Unggul naik dari 37,9% → 48,2%.</li><li>Dosen S3 naik dari 29,67% → 40%, rasio dosen:mahasiswa 1:30.</li><li>Pertumbuhan PNBP minimal 15%/tahun dengan 12+ unit bisnis aktif.</li><li>Publikasi Scopus meningkat dari 183 → 500+ dokumen.</li><li>Nilai SAKIP naik dari 78 (BB) → 90 (A).</li></ul><h3>5. Strategi Kunci</h3><ol><li><b>Diversifikasi PNBP:</b> Pengembangan 10 unit bisnis baru (LSP, teaching factory, klinik, inkubator).</li><li><b>Akselerasi SDM:</b> Program beasiswa S3, percepatan jabatan fungsional, rekrutmen dosen baru.</li><li><b>Penguatan Riset:</b> Research grant, visiting professor, target Q1/Q2 Scopus.</li><li><b>Tata Kelola BLU:</b> Implementasi SPIP, SOP keuangan BLU, reformasi birokrasi.</li><li><b>Infrastruktur Digital:</b> Smart campus, LMS, digital library, e-office.</li></ol>',
+        placeholder:'Tuliskan ringkasan eksekutif dokumen RSB...'
+      }
+    ]
+  },
+  {
     id:'bab1', num:'BAB I', title:'Pendahuluan', limit:'Maksimal 4 Halaman', cls:'accent',
     components:[
       { id:'b1a', letter:'A', title:'Resume Rencana Strategis K/L',
@@ -381,6 +391,11 @@ const SECTIONS = [
           opportunities:['Momentum nasional pengembangan BLU PTKIN: 28 PTKIN telah berstatus BLU, mendorong dukungan regulasi','Alokasi APBN untuk pendidikan Rp757,8 triliun (2025), termasuk pengembangan PTKIN','APK Pendidikan Tinggi baru 34,11% (2024), masih besar ruang pertumbuhan jumlah mahasiswa','Permendiktisaintek No. 39/2025 membuka peluang pembukaan prodi baru lintas bidang (sains, teknologi, kesehatan)','Potensi 10+ sumber PNBP baru: LSP, pusat bahasa, teaching factory, klinik kesehatan, inkubator bisnis','Regulasi BLU (PMK 129/2020 jo PMK 202/2022) memberikan fleksibilitas keuangan signifikan','Tren digitalisasi pendidikan membuka peluang program studi online dan hybrid learning','Demand pasar kerja tinggi untuk lulusan dengan kompetensi terintegrasi agama-sains-teknologi'],
           threats:['Instruksi Presiden No. 1/2025 tentang efisiensi anggaran — berpotensi mengurangi alokasi belanja K/L','28 PTKIN BLU yang sudah ada sebagai kompetitor dalam merebut mahasiswa dan pendanaan','Ketidakpastian ekonomi global (dampak kebijakan perdagangan internasional) mempengaruhi daya beli masyarakat','Gap tata kelola dan kompetensi digital/AI yang memerlukan investasi besar','Urbanisasi generasi muda ke kota besar (Surabaya, Jakarta) mengurangi potensi mahasiswa lokal','Dualisme regulasi antara Kemenag dan Kemendiktisaintek menciptakan kompleksitas tata kelola PTKIN']
         }
+      },
+      { id:'b2b2', letter:'', title:'🌍 Analisis PESTLE (Political, Economic, Social, Technological, Legal, Environmental)',
+        type:'rte',
+        template:'<h3>Analisis PESTLE</h3><p>Selain analisis SWOT, dilakukan juga analisis <b>PESTLE</b> untuk mengidentifikasi faktor-faktor lingkungan makro yang mempengaruhi strategi BLU UIN Ponorogo.</p><h3>1. Political (Politik)</h3><ul><li>Dukungan pemerintah terhadap transformasi PTKIN menjadi BLU (28 PTKIN sudah BLU).</li><li>Kebijakan efisiensi anggaran (Inpres 1/2025) berpotensi mengurangi alokasi belanja.</li><li>Perpres transformasi IAIN Ponorogo menjadi UIN (Mei 2025).</li><li>Regulasi BLU yang semakin akomodatif (PMK 76/2025).</li></ul><h3>2. Economic (Ekonomi)</h3><ul><li>Alokasi APBN pendidikan Rp757,8 triliun (2025).</li><li>Pertumbuhan PDB nasional 5,05% (2024) mendukung daya beli masyarakat.</li><li>UKT sebagai sumber PNBP utama sensitif terhadap kondisi ekonomi masyarakat.</li><li>Peluang pendapatan baru dari sektor jasa, sertifikasi, dan kerjasama industri.</li></ul><h3>3. Social (Sosial)</h3><ul><li>APK Pendidikan Tinggi baru 34,11% (2024), masih besar ruang pertumbuhan.</li><li>Tren urbanisasi generasi muda ke kota besar mengurangi potensi mahasiswa lokal.</li><li>Demand tinggi untuk pendidikan terintegrasi agama-sains-teknologi.</li><li>Monopoli geografis di kawasan Madiun Raya (catchment area 4 kabupaten).</li></ul><h3>4. Technological (Teknologi)</h3><ul><li>Revolusi AI dan digitalisasi pendidikan membuka peluang program online/hybrid.</li><li>Kebutuhan infrastruktur digital (smart campus, LMS, e-library) yang besar.</li><li>Peluang pengembangan prodi baru berbasis teknologi (data science, AI, bioteknologi).</li><li>Gap kompetensi digital dosen dan tenaga kependidikan.</li></ul><h3>5. Legal (Hukum)</h3><ul><li>PMK 76/2025 memberikan framework pengelolaan BLU yang lebih fleksibel.</li><li>Permendiktisaintek No. 39/2025 membuka peluang prodi baru lintas bidang.</li><li>Dualisme regulasi Kemenag dan Kemendiktisaintek menciptakan kompleksitas.</li><li>Kebutuhan compliance yang tinggi terhadap standar akuntansi pemerintah (SAI/SAIBA).</li></ul><h3>6. Environmental (Lingkungan)</h3><ul><li>Tren global green campus dan sustainable university.</li><li>Potensi pengembangan energi terbarukan di area kampus.</li><li>Kebutuhan pengelolaan limbah dan lingkungan yang berkelanjutan.</li><li>Peluang riset dan pendidikan berbasis lingkungan hidup.</li></ul>',
+        placeholder:'Tuliskan analisis PESTLE: faktor politik, ekonomi, sosial, teknologi, hukum, dan lingkungan...'
       },
       { id:'b2c', letter:'C', title:'Inisiatif Strategis',
         type:'rte+table',
@@ -1095,6 +1110,72 @@ window.addEventListener('DOMContentLoaded',()=>{
   SECTIONS.flatMap(s=>s.components).forEach(c=>updBadge(c.id));
 });
 
+
+/* ============================================================
+   AUTO-IMPORT DATA DARI HALAMAN LAIN (via localStorage)
+============================================================ */
+function autoImportData(){
+  let imported = 0;
+  let report = [];
+
+  // 1. Import SWOT data from swot_blu.html
+  try {
+    const swotRaw = localStorage.getItem('swot_blu_data');
+    if (swotRaw) {
+      const swotData = JSON.parse(swotRaw);
+      // Update SWOT items in generator
+      const swotComp = SECTIONS.find(s=>s.id==='bab2')?.components?.find(c=>c.id==='b2b');
+      if (swotComp && swotData) {
+        if (swotData.strengths) swotComp.swot.strengths = swotData.strengths;
+        if (swotData.weaknesses) swotComp.swot.weaknesses = swotData.weaknesses;
+        if (swotData.opportunities) swotComp.swot.opportunities = swotData.opportunities;
+        if (swotData.threats) swotComp.swot.threats = swotData.threats;
+        report.push('\u2705 SWOT: ' + (swotData.strengths?.length||0) + 'S, ' + (swotData.weaknesses?.length||0) + 'W, ' + (swotData.opportunities?.length||0) + 'O, ' + (swotData.threats?.length||0) + 'T');
+        imported++;
+      }
+    }
+  } catch(e) { report.push('\u26a0\ufe0f SWOT: ' + e.message); }
+
+  // 2. Import IFAS/EFAS scores from matriks.html  
+  try {
+    const matriksRaw = localStorage.getItem('ifas_efas_data') || localStorage.getItem('matriks_data');
+    if (matriksRaw) {
+      const md = JSON.parse(matriksRaw);
+      if (md.ifasScore || md.efasScore) {
+        report.push('\u2705 IFAS/EFAS: IFE=' + (md.ifasScore||'?') + ', EFE=' + (md.efasScore||'?'));
+        imported++;
+      }
+    }
+  } catch(e) { report.push('\u26a0\ufe0f IFAS/EFAS: ' + e.message); }
+
+  // 3. Import checklist scores from rsb_checklist.html
+  try {
+    const checkRaw = localStorage.getItem('rsb_dokumen_data_v3');
+    if (checkRaw) {
+      const cd = JSON.parse(checkRaw);
+      if (cd.scores) {
+        report.push('\u2705 Checklist: Kinerja=' + (cd.scores.kinerja||0) + ', Renstra=' + (cd.scores.renstra||0) + ', Proyeksi=' + (cd.scores.proyeksi||0) + ' (Total: ' + ((cd.scores.kinerja||0)+(cd.scores.renstra||0)+(cd.scores.proyeksi||0)) + '/12)');
+        imported++;
+      }
+    }
+  } catch(e) { report.push('\u26a0\ufe0f Checklist: ' + e.message); }
+
+  // Re-render if SWOT was updated
+  if (imported > 0) {
+    renderMain();
+    loadData();
+    SECTIONS.flatMap(s=>s.components).forEach(c=>updBadge(c.id));
+    markDirty();
+  }
+
+  // Show report
+  const msg = imported > 0 
+    ? `\u2705 Import berhasil (${imported} sumber):\n${report.join('\n')}`
+    : '\u26a0\ufe0f Tidak ada data tersimpan dari halaman lain.\nBuka halaman SWOT/PESTLE/Matriks/Checklist dan simpan data dulu.';
+  alert(msg);
+  showToast(imported > 0 ? `\u2705 ${imported} sumber data diimport` : '\u26a0\ufe0f Tidak ada data');
+}
+
 /* ============================================================
    EXPORT DOCX — PMK 76/2025 Lampiran III Format
 ============================================================ */
@@ -1165,8 +1246,8 @@ async function exportDOCX(){
     ch.push(new Paragraph({children:[new PageBreak()]}));
 
     ch.push(new Paragraph({children:[new TextRun({text:'DAFTAR ISI',bold:true,size:28,font:'Times New Roman'})],alignment:AlignmentType.CENTER,spacing:{after:400}}));
-    const toc=['BAB I \u2014 Pendahuluan','    A. Resume Rencana Strategis K/L','    B. Visi dan Misi BLU','    C. Target RSB',
-     'BAB II \u2014 Analisis dan Strategi','    A. Evaluasi Kinerja BLU','    B. Analisis SWOT/BSC/Fishbone','    C. Inisiatif Strategis',
+    const toc=['Ringkasan Eksekutif','BAB I \u2014 Pendahuluan','    A. Resume Rencana Strategis K/L','    B. Visi dan Misi BLU','    C. Target RSB',
+     'BAB II \u2014 Analisis dan Strategi','    A. Evaluasi Kinerja BLU','    B. Analisis SWOT/BSC/Fishbone','    B2. Analisis PESTLE','    C. Inisiatif Strategis',
      'BAB III \u2014 Rencana Strategis Bisnis 5 Tahun','    A. Program Kementerian/Lembaga','    B. Strategi Bisnis BLU','    C. Kegiatan dan Indikator',
      'BAB IV \u2014 Penutup','Lampiran I \u2014 Evaluasi Kinerja Tahun Berjalan','Lampiran II \u2014 Program dan Kegiatan 5 Tahun',
      'Lampiran III \u2014 Proyeksi 5 Tahun','Lampiran IV \u2014 Matriks Keterkaitan'];
