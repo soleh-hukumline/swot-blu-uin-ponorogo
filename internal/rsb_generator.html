@@ -169,6 +169,46 @@ table.editable tr:hover .row-del{opacity:1;}
 .cell-custom{width:100%;background:var(--editor-bg);color:var(--text);border:1px solid var(--border);border-radius:4px;
   padding:0.25rem 0.3rem;font-size:0.65rem;font-family:'Inter',sans-serif;margin-top:0.2rem;}
 .cell-custom:focus{border-color:var(--accent);outline:none;}
+/* Input-based table cells */
+.cell-input{width:100%;background:transparent;color:var(--text);border:1px solid transparent;border-radius:4px;
+  padding:0.3rem 0.4rem;font-size:0.68rem;font-family:'Inter',sans-serif;transition:all 0.15s;box-sizing:border-box;}
+.cell-input:hover{border-color:var(--border);}
+.cell-input:focus{border-color:var(--accent);background:rgba(59,130,246,0.05);outline:none;box-shadow:0 0 0 2px rgba(59,130,246,0.15);}
+.cell-label{font-weight:500;color:var(--text);}
+.cell-label:focus{background:rgba(59,130,246,0.05);}
+.cell-data{text-align:right;font-variant-numeric:tabular-nums;min-width:55px;}
+.cell-data::placeholder{color:var(--muted);opacity:0.3;text-align:center;}
+.cell-empty{background:rgba(245,158,11,0.04);border:1px dashed rgba(245,158,11,0.2);}
+.cell-empty:focus{border-style:solid;border-color:var(--accent);background:rgba(59,130,246,0.05);}
+.tbl-group-row td{background:rgba(59,130,246,0.06) !important;font-weight:700;font-size:0.65rem;letter-spacing:0.5px;
+  color:var(--accent);border-bottom:2px solid rgba(59,130,246,0.15);padding:0.3rem 0.5rem;}
+.tbl-section-header{font-weight:700;color:var(--accent);}
+
+
+/* ===== TABLE STYLE VARIANTS ===== */
+/* Data tables (Lampiran I) - spreadsheet feel with zebra + amber empties */
+.tbl-data th{background:linear-gradient(135deg,#1e3a5f,#1e293b);font-size:0.6rem;padding:0.5rem;}
+.tbl-data .cell-data{min-width:60px;}
+.tbl-data tr:nth-child(even) td{background:rgba(30,58,95,0.08);}
+
+/* Sasaran tables (Lampiran II sasaran) - emphasis on labels */
+.tbl-sasaran th{background:linear-gradient(135deg,#14532d,#1e293b);}
+.tbl-sasaran .cell-label{font-weight:600;}
+.tbl-sasaran .tbl-group-row td{background:rgba(34,197,94,0.08) !important;color:var(--green);border-color:rgba(34,197,94,0.2);}
+
+/* Program tables (Lampiran II program) - activity tracking */
+.tbl-program th{background:linear-gradient(135deg,#14532d,#1e293b);}
+.tbl-program .tbl-group-row td{background:rgba(34,197,94,0.08) !important;color:var(--green);border-color:rgba(34,197,94,0.2);}
+
+/* Projection tables (Lampiran III) - dual scenario comparison */
+.tbl-projection th{background:linear-gradient(135deg,#4c1d95,#1e293b);font-size:0.58rem;}
+.tbl-projection th[colspan]{text-align:center;}
+.tbl-projection thead tr:first-child th:nth-child(n+3):nth-child(-n+4){background:rgba(245,158,11,0.15);color:var(--amber);}
+.tbl-projection thead tr:first-child th:nth-last-child(-n+2){background:rgba(34,197,94,0.15);color:var(--green);}
+
+/* Matriks keterkaitan (Lampiran IV) - cascading */
+.tbl-matriks th{background:linear-gradient(135deg,#3b82f6,#1e293b);font-size:0.58rem;}
+.tbl-matriks td{vertical-align:top;font-size:0.65rem;line-height:1.4;}
 
 /* ===== SWOT TABLE ===== */
 .swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-bottom:0.8rem;}
@@ -943,6 +983,22 @@ function renderRTE(c){
   </div>`;
 }
 
+
+function cellInput(el){
+  markDirty();
+  const v=el.value.trim();
+  if(v&&v!=='...'&&v!=='—'){
+    el.classList.remove('cell-empty');
+    // Auto-format numbers with thousand separator
+    const num=v.replace(/[^0-9.,\-]/g,'');
+    if(num===v&&!isNaN(parseFloat(num.replace(/\./g,'').replace(',','.')))){
+      // It's a number, keep as is for now
+    }
+  } else {
+    el.classList.add('cell-empty');
+  }
+}
+
 function renderTable(t,dd){
   const hasSub=!!t.subheaders;
   let thRow1='',thRow2='';
@@ -965,23 +1021,46 @@ function renderTable(t,dd){
   }else{
     thRow1=t.headers.map(h=>`<th>${h}</th>`).join('');
   }
+  const labelCols=new Set();
+  t.headers.forEach((h,i)=>{
+    const hl=h.toLowerCase();
+    if(['no','indikator','uraian','satuan','jenis','tujuan','sasaran','kebijakan','program','kegiatan',
+        'visi','misi','output','pelaksana','keterkaitan','penanggung','keterangan','skenario','sumber'].some(k=>hl.includes(k)))
+      labelCols.add(i);
+    if(i===0) labelCols.add(i);
+  });
   let rows=t.rows.map((r,ri)=>{
+    const isHeader=r[0]===''&&r[1]&&r[1]===r[1].toUpperCase()&&r[1].length>3&&!r[1].includes('.');
     const cells=r.map((c,ci)=>{
       if(dd&&dd[ci]){
         const opts=dd[ci].map(o=>`<option value="${o}"${o===c?' selected':''}>${o}</option>`).join('');
         return `<td><select class="cell-select" onchange="markDirty()">${opts}<option value="__custom"${!dd[ci].includes(c)&&c?' selected':''}>Lainnya...</option></select>${!dd[ci].includes(c)&&c?`<input class="cell-custom" value="${c}" oninput="markDirty()" placeholder="Ketik sendiri..."/>`:''}${dd[ci].includes(c)?'':''}</td>`;
       }
-      return `<td contenteditable="true" data-ph="..." oninput="markDirty()">${c}</td>`;
+      if(isHeader) return `<td class="tbl-section-header" colspan="1">${c}</td>`;
+      const isLabel=labelCols.has(ci);
+      if(isLabel){
+        return `<td><input type="text" class="cell-input cell-label" value="${c.replace(/"/g,'&quot;')}" oninput="markDirty()" placeholder="${ci===0?'#':'Isi...'}"/></td>`;
+      }
+      const isEmpty=!c||c==='...'||c==='—';
+      return `<td><input type="text" class="cell-input cell-data${isEmpty?' cell-empty':''}" value="${c==='...'?'':c}" oninput="cellInput(this)" placeholder="..." data-orig="${c}"/></td>`;
     }).join('');
-    return `<tr>${cells}<td><button class="row-del" onclick="delRow(this)" title="Hapus baris">✕</button></td></tr>`;
+    return `<tr${isHeader?' class="tbl-group-row"':''}>${cells}<td><button class="row-del" onclick="delRow(this)" title="Hapus baris">\u2715</button></td></tr>`;
   }).join('');
 
+  // Determine table style
+  const styleMap={'tbl-layanan':'tbl-data','tbl-keuangan':'tbl-data','tbl-sdm':'tbl-data',
+    'tbl-riset':'tbl-data','tbl-sarpras':'tbl-data','tbl-pkm':'tbl-data',
+    'tbl-sasaran':'tbl-sasaran','tbl-progkeg':'tbl-program',
+    'tbl-asumsi':'tbl-data','tbl-proy-vol':'tbl-projection','tbl-proy-pnbp':'tbl-projection',
+    'tbl-proy-belanja':'tbl-projection','tbl-proporsi':'tbl-projection',
+    'tbl-cascading':'tbl-matriks'};
+  const tblClass='editable '+(styleMap[t.id]||'');
   return `<div class="tbl-wrap" id="tw-${t.id}">
     <div class="tbl-actions">
       <button class="tbl-act" onclick="addRow('${t.id}')">+ Tambah Baris</button>
       <button class="tbl-act" onclick="addCol('${t.id}')">+ Tambah Kolom</button>
     </div>
-    <table class="editable" id="${t.id}">
+    <table class="${tblClass}" id="${t.id}">
       <thead><tr>${thRow1}<th></th></tr>${hasSub?'<tr>'+thRow2+'<th></th></tr>':''}</thead>
       <tbody>${rows}</tbody>
     </table>
@@ -1041,7 +1120,11 @@ function addRow(tid){
   const cols=tbl.querySelector('thead tr').children.length;
   const tr=document.createElement('tr');
   for(let i=0;i<cols-1;i++){
-    const td=document.createElement('td');td.contentEditable='true';td.dataset.ph='...';td.setAttribute('oninput','markDirty()');
+    const td=document.createElement('td');
+    const inp=document.createElement('input');
+    inp.type='text';inp.className='cell-input'+(i<3?' cell-label':' cell-data cell-empty');
+    inp.placeholder=i===0?'#':'...';inp.oninput=function(){i<3?markDirty():cellInput(this);};
+    td.appendChild(inp);
     tr.appendChild(td);
   }
   const tdDel=document.createElement('td');
@@ -1150,6 +1233,11 @@ function saveAll(){
       if(c.table){
         const tbl=document.getElementById(c.table.id);
         if(tbl){
+          // Sync input values to attributes for persistence
+          tbl.querySelectorAll('input.cell-input,input.cell-custom').forEach(inp=>{inp.setAttribute('value',inp.value);});
+          tbl.querySelectorAll('select.cell-select').forEach(sel=>{
+            sel.querySelectorAll('option').forEach(opt=>{opt.selected?(opt.setAttribute('selected','selected')):(opt.removeAttribute('selected'));});
+          });
           cd.tableHTML=tbl.querySelector('tbody').innerHTML;
           cd.theadHTML=tbl.querySelector('thead').innerHTML;
         }
