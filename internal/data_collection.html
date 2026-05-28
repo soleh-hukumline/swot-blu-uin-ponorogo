@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Pengisian Data RSB — Per Unit Kerja | BLU UIN Ponorogo</title>
+<meta name="description" content="Form pengisian data RSB BLU UIN Ponorogo per unit kerja"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+<style>
+:root{--bg:#f8fafc;--card:#fff;--text:#1e293b;--muted:#94a3b8;--border:#e2e8f0;--accent:#2563eb;
+  --green:#16a34a;--red:#dc2626;--amber:#d97706;--purple:#7c3aed;--cyan:#0891b2;
+  --tbl-head:#f6f8fa;--editor-focus:#e8f0fe;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:0.82rem;line-height:1.6;}
+/* Layout */
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh;}
+header{grid-column:1/-1;display:flex;align-items:center;padding:0.5rem 1.2rem;background:#fff;
+  border-bottom:1px solid var(--border);gap:0.8rem;position:sticky;top:0;z-index:100;}
+.logo{font-size:0.9rem;font-weight:800;background:linear-gradient(135deg,#2563eb,#7c3aed);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;}
+.logo-sub{font-size:0.6rem;color:var(--muted);font-weight:500;}
+.nav-links{display:flex;gap:0.3rem;margin-left:auto;flex-wrap:wrap;}
+.nav-links a{padding:0.3rem 0.6rem;border-radius:6px;font-size:0.65rem;color:var(--muted);
+  text-decoration:none;font-weight:500;transition:all 0.15s;}
+.nav-links a:hover{background:#f0f4ff;color:var(--accent);}
+.nav-links a.active{background:#e8f0fe;color:var(--accent);font-weight:600;}
+/* Sidebar */
+.sidebar{overflow-y:auto;padding:0.5rem 0.4rem;background:#fff;border-right:1px solid var(--border);
+  position:sticky;top:45px;height:calc(100vh - 45px);display:flex;flex-direction:column;}
+.sb-group-header{font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:1.8px;color:#94a3b8;
+  padding:0.5rem 0.5rem 0.25rem;display:flex;align-items:center;gap:0.4rem;border-bottom:1px solid #e2e8f0;margin-bottom:0.3rem;}
+.sb-group-header:not(:first-child){margin-top:0.4rem;}
+.sb-item{display:flex;align-items:center;gap:0.35rem;padding:0.3rem 0.5rem;border-radius:8px;
+  font-size:0.7rem;color:#3c4043;cursor:pointer;transition:all 0.15s;border:1px solid transparent;
+  margin-bottom:1px;text-decoration:none;border-left:3px solid transparent;}
+.sb-item:hover{background:#f0f4ff;color:#1a73e8;}
+.sb-item.active{background:#e8f0fe;color:#1a73e8;border-left-color:#1a73e8;font-weight:600;box-shadow:0 1px 3px rgba(26,115,232,0.1);}
+/* Unit color codes */
+.sb-item.u-keuangan{border-left-color:#dc2626;}.sb-item.u-keuangan.active,.sb-item.u-keuangan:hover{background:#fef2f2;color:#dc2626;}
+.sb-item.u-perencanaan{border-left-color:#7c3aed;}.sb-item.u-perencanaan.active,.sb-item.u-perencanaan:hover{background:#f5f3ff;color:#7c3aed;}
+.sb-item.u-akademik{border-left-color:#2563eb;}.sb-item.u-akademik.active,.sb-item.u-akademik:hover{background:#eff6ff;color:#2563eb;}
+.sb-item.u-kepegawaian{border-left-color:#d97706;}.sb-item.u-kepegawaian.active,.sb-item.u-kepegawaian:hover{background:#fffbeb;color:#d97706;}
+.sb-item.u-lp2m{border-left-color:#16a34a;}.sb-item.u-lp2m.active,.sb-item.u-lp2m:hover{background:#f0fdf4;color:#16a34a;}
+.sb-item.u-umum{border-left-color:#0891b2;}.sb-item.u-umum.active,.sb-item.u-umum:hover{background:#ecfeff;color:#0891b2;}
+.sb-item.u-pendukung{border-left-color:#64748b;}.sb-item.u-pendukung.active,.sb-item.u-pendukung:hover{background:#f1f5f9;color:#475569;}
+/* Main */
+.main{overflow-y:auto;padding:1.5rem 2rem;height:calc(100vh - 45px);}
+.unit-block{display:none;}
+.unit-block.active{display:block;}
+.unit-head{margin-bottom:1.2rem;padding:1rem 1.2rem;background:#fff;border-radius:12px;border:1px solid var(--border);}
+.unit-icon{font-size:1.5rem;margin-bottom:0.3rem;}
+.unit-name{font-size:1.1rem;font-weight:800;color:var(--text);}
+.unit-desc{font-size:0.72rem;color:var(--muted);margin-top:0.2rem;}
+.unit-badge{display:inline-block;padding:0.15rem 0.5rem;border-radius:20px;font-size:0.58rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.5px;margin-top:0.4rem;}
+/* Table cards */
+.tbl-card{background:#fff;border:1px solid var(--border);border-radius:10px;margin-bottom:1rem;overflow:hidden;}
+.tbl-card-head{display:flex;align-items:center;gap:0.5rem;padding:0.6rem 0.8rem;border-bottom:1px solid var(--border);background:var(--tbl-head);}
+.tbl-card-title{font-size:0.75rem;font-weight:700;color:var(--text);}
+.tbl-card-ref{font-size:0.58rem;color:var(--muted);margin-left:auto;background:#f1f5f9;padding:0.15rem 0.4rem;border-radius:4px;}
+.tbl-card-body{padding:0.5rem;}
+/* Tables - Google Sheets style */
+table.data-tbl{width:100%;border-collapse:collapse;font-size:0.72rem;}
+table.data-tbl th{background:#f0f4ff;color:#1e293b;font-weight:600;padding:0.4rem 0.5rem;
+  border:1px solid #d0d7de;text-align:left;white-space:normal;word-break:break-word;font-size:0.65rem;}
+table.data-tbl td{border:1px solid #d0d7de;padding:0;}
+table.data-tbl tr:nth-child(even) td{background:#fafbfc;}
+table.data-tbl tr:hover td{background:#f0f4ff;}
+table.data-tbl .section-row td{background:#eef2ff !important;font-weight:700;color:var(--accent);padding:0.4rem 0.5rem;}
+.cell-input{width:100%;border:none;padding:0.35rem 0.5rem;font-size:0.72rem;font-family:'Inter',sans-serif;
+  background:transparent;color:var(--text);outline:none;min-height:1.8rem;
+  white-space:normal;word-break:break-word;}
+.cell-input:focus{background:#fff;box-shadow:inset 0 0 0 2px #1a73e8;}
+.cell-input.cell-label{font-weight:500;background:rgba(0,0,0,0.01);}
+.cell-input.cell-readonly{background:#f6f8fa;color:#64748b;cursor:default;}
+/* Status badges */
+.status-empty{color:#dc2626;font-size:0.6rem;}.status-partial{color:#d97706;font-size:0.6rem;}.status-done{color:#16a34a;font-size:0.6rem;}
+/* Actions */
+.sb-actions{margin-top:auto;padding:0.5rem 0.3rem;border-top:1px solid var(--border);}
+.sb-btn{display:flex;align-items:center;justify-content:center;gap:0.3rem;width:100%;padding:0.45rem;
+  border-radius:8px;font-size:0.7rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;
+  transition:all 0.15s;border:none;margin-bottom:0.3rem;}
+.sb-btn.primary{background:linear-gradient(135deg,#2563eb,#3b82f6);color:#fff;}
+.sb-btn.primary:hover{box-shadow:0 3px 12px rgba(37,99,235,0.3);}
+.sb-btn.export{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;}
+.sb-btn.secondary{background:#f1f5f9;color:#475569;border:1px solid #d0d7de;}
+.sb-btn.secondary:hover{background:#e2e8f0;}
+/* Toast */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:#fff;border:1px solid var(--green);border-radius:10px;padding:0.5rem 1.2rem;
+  font-size:0.78rem;color:var(--green);font-weight:600;box-shadow:0 6px 24px rgba(0,0,0,0.15);
+  opacity:0;pointer-events:none;transition:all 0.3s;z-index:400;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+/* Progress */
+.sb-progress-wrap{padding:0.5rem;margin-top:0.5rem;}
+.sb-progress-label{font-size:0.6rem;font-weight:600;color:var(--muted);margin-bottom:0.3rem;}
+.sb-progress-bar{height:6px;border-radius:3px;background:#e2e8f0;overflow:hidden;}
+.sb-progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#2563eb,#16a34a);transition:width 0.4s ease;width:0;}
+.sb-progress-pct{font-size:0.6rem;font-weight:700;color:var(--accent);text-align:right;margin-top:0.2rem;}
+/* Print */
+@media print{header,.sidebar,.sb-actions,.toast{display:none!important;}.layout{grid-template-columns:1fr;}}
+@media(max-width:800px){.layout{grid-template-columns:1fr;}.sidebar{display:none;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">📋 Data Collection</div>
+    <div class="logo-sub">Pengisian Data RSB — Per Unit Kerja</div>
+  </div>
+  <nav class="nav-links">
+    <a href="../index.html">🗺️ Dashboard</a>
+    <a href="index.html">🔒 Internal</a>
+    <a href="rsb_generator.html">📄 RSB Generator</a>
+    <a href="data_collection.html" class="active">📋 Data Collection</a>
+  </nav>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main" id="mainContent"></main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   UNIT DEFINITIONS & DATA TABLES
+============================================================ */
+const SK='rsb_datacollect_v1';
+const UNITS=[
+  {
+    id:'keuangan', name:'Bagian Keuangan', icon:'💰', color:'u-keuangan',
+    colorHex:'#dc2626', bgHex:'#fef2f2',
+    desc:'Data keuangan: PNBP, belanja, realisasi anggaran 5 tahun terakhir & proyeksi 5 tahun ke depan.',
+    badge:'KRITIS — 5 Tabel',
+    tables:[
+      { id:'dc-pnbp', title:'Pendapatan PNBP (2020–2025)', ref:'Lampiran I → tbl-keuangan (Pendapatan)',
+        headers:['No','Uraian Pendapatan PNBP','Satuan','2020','2021','2022','2023','2024','2025'],
+        rows:[
+          ['1','UKT/SPP Mahasiswa','Rp Juta'],['2','Asrama Ma\'had Al-Jami\'ah','Rp Juta'],
+          ['3','Sewa Gedung & Aula','Rp Juta'],['4','Sewa Lapangan','Rp Juta'],
+          ['5','PPG (Pendidikan Profesi Guru)','Rp Juta'],['6','RPL (Rekognisi Pembelajaran Lampau)','Rp Juta'],
+          ['7','Pendapatan Lainnya','Rp Juta'],['','TOTAL PENDAPATAN PNBP','Rp Juta']
+        ]},
+      { id:'dc-belanja', title:'Belanja (2020–2025)', ref:'Lampiran I → tbl-keuangan (Belanja)',
+        headers:['No','Uraian Belanja','Satuan','2020','2021','2022','2023','2024','2025'],
+        rows:[
+          ['1','Belanja Pegawai (MAK 51)','Rp Juta'],['2','Belanja Barang (MAK 52)','Rp Juta'],
+          ['3','Belanja Modal (MAK 53)','Rp Juta'],['','TOTAL BELANJA','Rp Juta'],
+          ['4','Pagu DIPA (RM + PNBP)','Rp Juta'],['5','Realisasi Belanja','%'],
+          ['6','Proporsi PNBP / Total Belanja','%'],['7','Nilai SAKIP','Nilai']
+        ]},
+      { id:'dc-proy-pnbp', title:'Proyeksi PNBP 5 Tahun (2025–2029)', ref:'Lampiran III → tbl-proy-pnbp',
+        headers:['No','Sumber PNBP','Satuan','Realisasi 2024','2025','2026','2027','2028','2029'],
+        rows:[
+          ['1','UKT/SPP','Rp Juta'],['2','Asrama','Rp Juta'],['3','Sewa Gedung & Aula','Rp Juta'],
+          ['4','Sewa Lapangan','Rp Juta'],['5','PPG','Rp Juta'],['6','RPL','Rp Juta'],
+          ['7','LSP-P1 Sertifikasi','Rp Juta'],['8','Digital Learning Hub','Rp Juta'],
+          ['9','Klinik Kesehatan','Rp Juta'],['10','Inkubator Bisnis','Rp Juta'],
+          ['11','Pendapatan Lainnya','Rp Juta'],['','TOTAL PROYEKSI PNBP','Rp Juta']
+        ]},
+      { id:'dc-proy-belanja', title:'Proyeksi Belanja 5 Tahun (2025–2029)', ref:'Lampiran III → tbl-proy-belanja',
+        headers:['No','Jenis Belanja','Satuan','Realisasi 2024','2025','2026','2027','2028','2029'],
+        rows:[
+          ['1','Belanja Pegawai','Rp Juta'],['2','Belanja Barang','Rp Juta'],['3','Belanja Modal','Rp Juta'],
+          ['','TOTAL BELANJA','Rp Juta']
+        ]},
+      { id:'dc-proporsi', title:'Proporsi Kemandirian Keuangan', ref:'Lampiran III → tbl-proporsi',
+        headers:['Tahun','Total Belanja (Rp Juta)','Total PNBP (Rp Juta)','RM (Rp Juta)','SBSN (Rp Juta)','Proporsi PNBP (%)'],
+        rows:[['2024'],['2025'],['2026'],['2027'],['2028'],['2029']]
+      }
+    ]
+  },
+  {
+    id:'akademik', name:'Bagian Akademik & Kemahasiswaan', icon:'🎓', color:'u-akademik',
+    colorHex:'#2563eb', bgHex:'#eff6ff',
+    desc:'Data layanan pendidikan: jumlah mahasiswa, lulusan, prodi, kelulusan tepat waktu, dan volume layanan.',
+    badge:'PENTING — 2 Tabel',
+    tables:[
+      { id:'dc-layanan', title:'Kinerja Layanan Pendidikan (2020–2025)', ref:'Lampiran I → tbl-layanan',
+        headers:['No','Indikator Layanan','Satuan','2020','2021','2022','2023','2024','2025'],
+        rows:[
+          ['1','Jumlah mahasiswa aktif','Orang'],['2','Jumlah mahasiswa baru','Orang'],
+          ['3','Jumlah lulusan','Orang'],['4','Jumlah program studi','Prodi'],
+          ['5','Prodi akreditasi Unggul','Prodi'],['6','Prodi akreditasi Baik Sekali','Prodi'],
+          ['7','Tingkat kelulusan tepat waktu','%'],['8','IPK rata-rata lulusan','Nilai'],
+          ['9','Masa tunggu kerja lulusan','Bulan'],['10','Kepuasan mahasiswa (IKM)','%'],
+          ['11','Peserta RPL','Orang'],['12','Peserta PPG','Orang'],
+          ['13','Mahasiswa Ma\'had terintegrasi','Orang'],['14','MoU kerjasama aktif','MoU']
+        ]},
+      { id:'dc-vol', title:'Proyeksi Volume Layanan 5 Tahun (2025–2029)', ref:'Lampiran III → tbl-proy-vol',
+        headers:['No','Indikator Volume','Satuan','Tanpa BLU','Realisasi 2024','2025','2026','2027','2028','2029'],
+        rows:[
+          ['1','Mahasiswa aktif','Orang'],['2','Mahasiswa baru/tahun','Orang'],
+          ['3','Lulusan/tahun','Orang'],['4','Program studi','Prodi'],
+          ['5','Prodi akreditasi Unggul','Prodi'],['6','Peserta sertifikasi LSP','Orang'],
+          ['7','Peserta Digital Learning Hub','Orang'],['8','Pasien Klinik/tahun','Orang'],
+          ['9','Tenant Inkubator','Tenant']
+        ]}
+    ]
+  },
+  {
+    id:'kepegawaian', name:'Bagian Kepegawaian / SDM', icon:'👥', color:'u-kepegawaian',
+    colorHex:'#d97706', bgHex:'#fffbeb',
+    desc:'Data SDM: dosen (kualifikasi, jabatan fungsional, sertifikasi), tenaga kependidikan, rasio dosen:mahasiswa.',
+    badge:'PENTING — 1 Tabel (Detail)',
+    tables:[
+      { id:'dc-sdm', title:'Data SDM Dosen & Tendik (2020–2025)', ref:'Lampiran I → tbl-sdm',
+        headers:['No','Indikator SDM','Satuan','2020','2021','2022','2023','2024','2025'],
+        rows:[
+          ['1','Jumlah dosen tetap (PNS)','Orang'],['2','Jumlah dosen tetap (PPPK)','Orang'],
+          ['3','Dosen S3 (Doktor)','Orang'],['4','Persentase dosen S3','%'],
+          ['5','Guru Besar','Orang'],['6','Lektor Kepala','Orang'],['7','Lektor','Orang'],
+          ['8','Asisten Ahli','Orang'],['9','Tenaga Pengajar (belum jabfung)','Orang'],
+          ['10','Rasio dosen:mahasiswa','Rasio'],['11','Dosen bersertifikat pendidik','%'],
+          ['12','Tenaga kependidikan (PNS)','Orang'],['13','Tenaga kependidikan (Non-PNS)','Orang'],
+          ['14','Tendik mengikuti diklat/tahun','%']
+        ]}
+    ]
+  },
+  {
+    id:'lp2m', name:'LP2M (Penelitian & PkM)', icon:'🔬', color:'u-lp2m',
+    colorHex:'#16a34a', bgHex:'#f0fdf4',
+    desc:'Data penelitian, publikasi, HKI, pengabdian masyarakat, hibah, dan kerjasama riset.',
+    badge:'PENTING — 2 Tabel',
+    tables:[
+      { id:'dc-riset', title:'Kinerja Penelitian & Publikasi (2020–2025)', ref:'Lampiran I → tbl-riset',
+        headers:['No','Indikator Riset','Satuan','2020','2021','2022','2023','2024','2025'],
+        rows:[
+          ['1','Publikasi Scopus (kumulatif)','Dokumen'],['2','Sitasi Scopus (kumulatif)','Sitasi'],
+          ['3','Publikasi Q1','Dokumen'],['4','Publikasi Q2','Dokumen'],
+          ['5','Jurnal SINTA terakreditasi','Jurnal'],['6','Jurnal internasional terindeks','Jurnal'],
+          ['7','HKI/Paten granted','Jumlah'],['8','Buku ber-ISBN','Judul'],
+          ['9','Hibah penelitian eksternal','Jumlah'],['10','Dana penelitian internal','Rp Juta'],
+          ['11','Dana penelitian dari BOPTN','Rp Juta']
+        ]},
+      { id:'dc-pkm', title:'Kinerja Pengabdian Masyarakat (2020–2025)', ref:'Lampiran I → tbl-pkm',
+        headers:['No','Indikator PkM','Satuan','2020','2021','2022','2023','2024','2025'],
+        rows:[
+          ['1','Jumlah kegiatan PkM','Kegiatan'],['2','Desa/kelurahan binaan','Desa'],
+          ['3','Kerjasama aktif (MoU PkM)','MoU'],['4','Dana PkM internal','Rp Juta'],
+          ['5','Hibah PkM eksternal','Jumlah'],['6','Dosen terlibat PkM','%'],
+          ['7','Produk PkM yang dimanfaatkan','Produk']
+        ]}
+    ]
+  },
+  {
+    id:'umum', name:'Bagian Umum / BMN', icon:'🏢', color:'u-umum',
+    colorHex:'#0891b2', bgHex:'#ecfeff',
+    desc:'Data sarana prasarana: lahan, gedung, laboratorium, aset BMN, dan fasilitas kampus.',
+    badge:'PENTING — 1 Tabel',
+    tables:[
+      { id:'dc-sarpras', title:'Data Sarana & Prasarana (2020–2025)', ref:'Lampiran I → tbl-sarpras',
+        headers:['No','Indikator Sarpras','Satuan','2020','2021','2022','2023','2024','2025'],
+        rows:[
+          ['1','Luas lahan kampus','Hektar'],['2','Luas bangunan total','m²'],
+          ['3','Gedung perkuliahan','Unit'],['4','Laboratorium','Unit'],
+          ['5','Lab terakreditasi/tersertifikasi','Unit'],['6','Ruang dosen','Unit'],
+          ['7','Asrama Ma\'had (kapasitas)','Orang'],['8','Lapangan olahraga','Unit'],
+          ['9','Masjid/Musholla kampus','Unit'],['10','Gedung Aula/Convention','Unit'],
+          ['11','Kendaraan dinas','Unit'],['12','Total nilai aset (BMN)','Rp Miliar']
+        ]}
+    ]
+  },
+  {
+    id:'pendukung', name:'Unit Pendukung', icon:'🤝', color:'u-pendukung',
+    colorHex:'#64748b', bgHex:'#f1f5f9',
+    desc:'Data dari: LPM (akreditasi), PTIPD (IT), Perpustakaan (koleksi), Ma\'had (penghuni), Pusat Karier (tracer study).',
+    badge:'PENDUKUNG — Data Spesifik',
+    tables:[
+      { id:'dc-lpm', title:'Data LPM — Penjaminan Mutu', ref:'Lampiran I → tbl-layanan (akreditasi)',
+        headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
+        rows:[
+          ['1','Prodi terakreditasi Unggul','Prodi'],['2','Prodi terakreditasi Baik Sekali','Prodi'],
+          ['3','Prodi belum re-akreditasi','Prodi'],['4','Indeks Kepuasan Mahasiswa (IKM)','%'],
+          ['5','Tingkat kelulusan tepat waktu','%'],['6','Dokumen mutu ter-review','%']
+        ]},
+      { id:'dc-ptipd', title:'Data PTIPD — Teknologi Informasi', ref:'Lampiran I → tbl-sarpras (IT)',
+        headers:['No','Indikator IT','Satuan','2020','2021','2022','2023','2024','2025'],
+        rows:[
+          ['1','Bandwidth internet','Mbps'],['2','Layanan berbasis TI','%'],
+          ['3','Server aktif','Unit'],['4','Aplikasi terintegrasi','Aplikasi'],
+          ['5','User SIAKAD aktif','User'],['6','Uptime sistem','%']
+        ]},
+      { id:'dc-perpus', title:'Data Perpustakaan', ref:'Lampiran I → tbl-sarpras (Koleksi)',
+        headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
+        rows:[
+          ['1','Koleksi buku cetak','Judul'],['2','Koleksi e-book','Judul'],
+          ['3','Database jurnal dilanggan','Database'],['4','Pengunjung/tahun','Orang'],
+          ['5','Peminjaman/tahun','Transaksi']
+        ]},
+      { id:'dc-karier', title:'Data Pusat Karier & Alumni', ref:'Lampiran I → tbl-layanan (Lulusan)',
+        headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
+        rows:[
+          ['1','Masa tunggu kerja lulusan','Bulan'],['2','Kesesuaian kerja dengan bidang','%'],
+          ['3','Responden tracer study','%'],['4','Alumni terdata','Orang'],
+          ['5','Alumni aktif berkontribusi','%']
+        ]}
+    ]
+  }
+];
+
+let activeUnit='keuangan';
+
+function showToast(msg){const t=document.getElementById('toast');t.innerHTML=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+
+function navigateTo(unitId){
+  activeUnit=unitId;
+  document.querySelectorAll('.unit-block').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  const block=document.getElementById('unit-'+unitId);
+  if(block)block.classList.add('active');
+  const sbItem=document.querySelector(`.sb-item[data-unit="${unitId}"]`);
+  if(sbItem)sbItem.classList.add('active');
+  document.querySelector('.main').scrollTop=0;
+}
+
+function renderSidebar(){
+  let h='<div class="sb-group-header"><i class="fa-solid fa-building-columns"></i> UNIT KERJA</div>';
+  UNITS.forEach(u=>{
+    const count=u.tables.reduce((s,t)=>s+t.rows.length,0);
+    h+=`<div class="sb-item ${u.color}${u.id===activeUnit?' active':''}" data-unit="${u.id}" onclick="navigateTo('${u.id}')">
+      <span>${u.icon}</span> <span style="flex:1">${u.name}</span>
+      <span class="status-empty" id="status-${u.id}">0%</span>
+    </div>`;
+  });
+  // Progress
+  h+=`<div class="sb-progress-wrap">
+    <div class="sb-progress-label"><i class="fa-solid fa-tasks"></i> Progress Total</div>
+    <div class="sb-progress-bar"><div class="sb-progress-fill" id="sb-progress-fill"></div></div>
+    <div class="sb-progress-pct" id="sb-progress-pct">0%</div>
+  </div>`;
+  // Actions
+  h+=`<div class="sb-actions">
+    <button class="sb-btn primary" onclick="saveAll()"><i class="fa-solid fa-floppy-disk"></i> Simpan Data</button>
+    <button class="sb-btn export" onclick="exportToGenerator()"><i class="fa-solid fa-file-export"></i> Export ke RSB Generator</button>
+    <button class="sb-btn secondary" onclick="exportCSV()"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+    <button class="sb-btn secondary" onclick="if(confirm('Reset semua data?'))resetAll()"><i class="fa-solid fa-rotate"></i> Reset</button>
+  </div>`;
+  document.getElementById('sidebar').innerHTML=h;
+}
+
+function renderTable(tbl){
+  const numDataCols=tbl.headers.length-3; // Minus No, Indikator, Satuan (or similar first 3)
+  let h=`<table class="data-tbl" id="${tbl.id}"><thead><tr>`;
+  tbl.headers.forEach((hd,i)=>{
+    const w=i===0?'width:35px':i===1?'min-width:180px':i===2?'width:60px':'min-width:80px';
+    h+=`<th style="${w}">${hd}</th>`;
+  });
+  h+=`</tr></thead><tbody>`;
+  tbl.rows.forEach((row,ri)=>{
+    const isSection=row[0]===''&&row.length<=3;
+    if(isSection&&row[1]){
+      h+=`<tr class="section-row"><td colspan="${tbl.headers.length}">${row[1]}</td></tr>`;
+      return;
+    }
+    h+=`<tr>`;
+    tbl.headers.forEach((hd,ci)=>{
+      const val=row[ci]||'';
+      if(ci<3){
+        // Label columns (No, Name, Satuan)
+        h+=`<td><input type="text" class="cell-input cell-label${ci===0?' cell-readonly':''}" value="${val.replace(/"/g,'&quot;')}" ${ci===0?'readonly':''} oninput="markDirty()"/></td>`;
+      } else {
+        // Data columns
+        h+=`<td><input type="text" class="cell-input" value="${val.replace(/"/g,'&quot;')}" oninput="markDirty()" placeholder="..."/></td>`;
+      }
+    });
+    h+=`</tr>`;
+  });
+  h+=`</tbody></table>`;
+  return h;
+}
+
+function renderMain(){
+  let h='';
+  UNITS.forEach(u=>{
+    h+=`<div class="unit-block${u.id===activeUnit?' active':''}" id="unit-${u.id}">`;
+    h+=`<div class="unit-head" style="border-left:4px solid ${u.colorHex}">
+      <div class="unit-icon">${u.icon}</div>
+      <div class="unit-name">${u.name}</div>
+      <div class="unit-desc">${u.desc}</div>
+      <span class="unit-badge" style="background:${u.bgHex};color:${u.colorHex}">${u.badge}</span>
+    </div>`;
+    u.tables.forEach(tbl=>{
+      h+=`<div class="tbl-card">
+        <div class="tbl-card-head">
+          <i class="fa-solid fa-table" style="color:${u.colorHex}"></i>
+          <span class="tbl-card-title">${tbl.title}</span>
+          <span class="tbl-card-ref"><i class="fa-solid fa-link"></i> ${tbl.ref}</span>
+        </div>
+        <div class="tbl-card-body">${renderTable(tbl)}</div>
+      </div>`;
+    });
+    h+=`</div>`;
+  });
+  document.getElementById('mainContent').innerHTML=h;
+}
+
+let dirty=false;
+function markDirty(){dirty=true;updateProgress();}
+
+function updateProgress(){
+  let total=0,filled=0;
+  UNITS.forEach(u=>{
+    let uTotal=0,uFilled=0;
+    u.tables.forEach(t=>{
+      const tbl=document.getElementById(t.id);
+      if(!tbl)return;
+      tbl.querySelectorAll('tbody .cell-input:not(.cell-label):not(.cell-readonly)').forEach(inp=>{
+        uTotal++;
+        if(inp.value.trim()&&inp.value.trim()!=='...'&&inp.value.trim()!=='\u2014')uFilled++;
+      });
+    });
+    total+=uTotal;filled+=uFilled;
+    const pct=uTotal>0?Math.round(uFilled/uTotal*100):0;
+    const st=document.getElementById('status-'+u.id);
+    if(st){
+      st.textContent=pct+'%';
+      st.className=pct===0?'status-empty':pct<100?'status-partial':'status-done';
+    }
+  });
+  const totalPct=total>0?Math.round(filled/total*100):0;
+  const fill=document.getElementById('sb-progress-fill');
+  const pctEl=document.getElementById('sb-progress-pct');
+  if(fill)fill.style.width=totalPct+'%';
+  if(pctEl)pctEl.textContent=totalPct+'%';
+}
+
+function saveAll(){
+  const data={units:{},timestamp:new Date().toISOString()};
+  UNITS.forEach(u=>{
+    data.units[u.id]={};
+    u.tables.forEach(t=>{
+      const tbl=document.getElementById(t.id);
+      if(!tbl)return;
+      const rows=[];
+      tbl.querySelectorAll('tbody tr').forEach(tr=>{
+        if(tr.classList.contains('section-row'))return;
+        const cells=[];
+        tr.querySelectorAll('.cell-input').forEach(inp=>cells.push(inp.value));
+        rows.push(cells);
+      });
+      data.units[u.id][t.id]=rows;
+    });
+  });
+  localStorage.setItem(SK,JSON.stringify(data));
+  dirty=false;
+  showToast('<i class="fa-solid fa-circle-check"></i> Data tersimpan!');
+}
+
+function loadData(){
+  try{
+    const raw=localStorage.getItem(SK);
+    if(!raw)return;
+    const data=JSON.parse(raw);
+    if(!data.units)return;
+    UNITS.forEach(u=>{
+      if(!data.units[u.id])return;
+      u.tables.forEach(t=>{
+        const saved=data.units[u.id][t.id];
+        if(!saved)return;
+        const tbl=document.getElementById(t.id);
+        if(!tbl)return;
+        const rows=tbl.querySelectorAll('tbody tr:not(.section-row)');
+        saved.forEach((cells,ri)=>{
+          if(!rows[ri])return;
+          const inputs=rows[ri].querySelectorAll('.cell-input');
+          cells.forEach((v,ci)=>{if(inputs[ci])inputs[ci].value=v;});
+        });
+      });
+    });
+    updateProgress();
+  }catch(e){console.error('Load error:',e);}
+}
+
+function resetAll(){
+  localStorage.removeItem(SK);
+  UNITS.forEach(u=>u.tables.forEach(t=>{
+    const tbl=document.getElementById(t.id);
+    if(!tbl)return;
+    tbl.querySelectorAll('.cell-input:not(.cell-label):not(.cell-readonly)').forEach(inp=>inp.value='');
+  }));
+  updateProgress();
+  showToast('Data di-reset!');
+}
+
+function exportToGenerator(){
+  // Save current data, then copy to RSB Generator localStorage
+  saveAll();
+  const raw=localStorage.getItem(SK);
+  if(!raw){showToast('Tidak ada data untuk di-export');return;}
+  const data=JSON.parse(raw);
+  // Map dc-* tables to rsb generator tbl-* tables
+  const mapping={
+    'dc-pnbp':'tbl-keuangan','dc-belanja':'tbl-keuangan',
+    'dc-layanan':'tbl-layanan','dc-sdm':'tbl-sdm',
+    'dc-riset':'tbl-riset','dc-sarpras':'tbl-sarpras','dc-pkm':'tbl-pkm',
+    'dc-proy-pnbp':'tbl-proy-pnbp','dc-proy-belanja':'tbl-proy-belanja',
+    'dc-vol':'tbl-proy-vol','dc-proporsi':'tbl-proporsi'
+  };
+  // Store export data for generator to import
+  localStorage.setItem('rsb_import_data',JSON.stringify({from:'data_collection',data:data,mapping:mapping,timestamp:new Date().toISOString()}));
+  showToast('<i class="fa-solid fa-circle-check"></i> Data siap di-import! Buka RSB Generator dan klik "Import Data".');
+}
+
+function exportCSV(){
+  saveAll();
+  let csv='Unit,Tabel,'+['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'].join(',')+'\n';
+  UNITS.forEach(u=>{
+    u.tables.forEach(t=>{
+      const tbl=document.getElementById(t.id);
+      if(!tbl)return;
+      tbl.querySelectorAll('tbody tr:not(.section-row)').forEach(tr=>{
+        const cells=['"'+u.name+'"','"'+t.title+'"'];
+        tr.querySelectorAll('.cell-input').forEach(inp=>cells.push('"'+(inp.value||'')+'"'));
+        csv+=cells.join(',')+'\n';
+      });
+    });
+  });
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='data_rsb_per_unit_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  showToast('CSV downloaded!');
+}
+
+// Auto-save warning
+window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});
+
+// Init
+renderSidebar();
+renderMain();
+loadData();
+updateProgress();
+</script>
+</body>
+</html>
