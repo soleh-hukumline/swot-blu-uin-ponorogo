@@ -516,14 +516,19 @@ function updateProgress(){
   if(pctEl)pctEl.textContent=totalPct+'%';
 }
 
-function saveAll(){
+const API_URL='/api/data';
+
+async function saveAll(){
   const data={units:{},timestamp:new Date().toISOString()};
+  const exportData={timestamp:new Date().toISOString(), tables:{}};
+
   UNITS.forEach(u=>{
     data.units[u.id]={};
     u.tables.forEach(t=>{
       const tbl=document.getElementById(t.id);
       if(!tbl)return;
       const rows=[];
+      const hdrs=[...tbl.querySelectorAll('thead th')].map(th=>th.textContent.trim());
       tbl.querySelectorAll('tbody tr').forEach(tr=>{
         if(tr.classList.contains('section-row'))return;
         const cells=[];
@@ -531,36 +536,92 @@ function saveAll(){
         rows.push(cells);
       });
       data.units[u.id][t.id]=rows;
-    });
-  });
-  localStorage.setItem(SK,JSON.stringify(data));
-  // Auto-sync: also write export data for RSB Generator
-  _writeExport();
-  dirty=false;
-  showToast('<i class="fa-solid fa-circle-check"></i> Data tersimpan & auto-sync ke Generator!');
-}
-function _writeExport(){
-  const exportData={timestamp:new Date().toISOString(), tables:{}};
-  UNITS.forEach(u=>{
-    u.tables.forEach(t=>{
-      const tbl=document.getElementById(t.id);
-      if(!tbl)return;
-      const hdrs=[...tbl.querySelectorAll('thead th')].map(th=>th.textContent.trim());
-      const rows=[];
+      // Build export format
+      const expRows=[];
       tbl.querySelectorAll('tbody tr:not(.section-row)').forEach(tr=>{
         const cells=[];
         tr.querySelectorAll('.cell-input').forEach(inp=>cells.push(inp.value.trim()));
         const dataVals=cells.slice(3);
         if(dataVals.some(v=>v&&v!=='...'&&v!=='\u2014'))
-          rows.push({cells:cells, headers:hdrs});
+          expRows.push({cells:cells, headers:hdrs});
       });
-      if(rows.length>0) exportData.tables[t.id]={ref:t.ref, unit:u.name, rows:rows};
+      if(expRows.length>0) exportData.tables[t.id]={ref:t.ref, unit:u.name, rows:expRows};
     });
   });
+
+  // Save to localStorage (fallback & local cache)
+  localStorage.setItem(SK,JSON.stringify(data));
   localStorage.setItem('rsb_dc_export',JSON.stringify(exportData));
+
+  // Save to centralized API (Cloudflare KV)
+  let cloudSaved=false;
+  try{
+    // Save each unit separately to API
+    const promises=UNITS.map(u=>{
+      if(!data.units[u.id])return Promise.resolve();
+      const unitExport={};
+      u.tables.forEach(t=>{
+        if(exportData.tables[t.id]) unitExport[t.id]=exportData.tables[t.id];
+      });
+      return fetch(API_URL,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          unitId:u.id,
+          tables:unitExport,
+          rawData:data.units[u.id],
+          savedBy: 'unit-user'
+        })
+      });
+    });
+    await Promise.all(promises);
+    cloudSaved=true;
+  }catch(e){console.warn('Cloud save failed, data saved locally:',e);}
+
+  dirty=false;
+  showToast(cloudSaved
+    ?'<i class="fa-solid fa-cloud-arrow-up"></i> Data tersimpan ke server!'
+    :'<i class="fa-solid fa-circle-check"></i> Data tersimpan lokal (offline mode).');
 }
 
-function loadData(){
+async function loadData(){
+  // Try loading from centralized API first
+  let cloudData=null;
+  try{
+    const res=await fetch(API_URL);
+    const json=await res.json();
+    if(json.ok && json.data){
+      cloudData=json.data;
+      // Merge cloud data into tables
+      Object.entries(cloudData).forEach(([unitId,record])=>{
+        if(!record||!record.rawData)return;
+        const unit=UNITS.find(u=>u.id===unitId);
+        if(!unit)return;
+        unit.tables.forEach(t=>{
+          const saved=record.rawData[t.id];
+          if(!saved)return;
+          const tbl=document.getElementById(t.id);
+          if(!tbl)return;
+          const rows=tbl.querySelectorAll('tbody tr:not(.section-row)');
+          saved.forEach((cells,ri)=>{
+            if(!rows[ri])return;
+            const inputs=rows[ri].querySelectorAll('.cell-input');
+            cells.forEach((v,ci)=>{if(inputs[ci])inputs[ci].value=v;});
+          });
+        });
+      });
+      // Also update localStorage cache & export
+      const mergedExport={timestamp:new Date().toISOString(), tables:{}};
+      Object.values(cloudData).forEach(record=>{
+        if(record&&record.tables) Object.assign(mergedExport.tables,record.tables);
+      });
+      localStorage.setItem('rsb_dc_export',JSON.stringify(mergedExport));
+      updateProgress();
+      return;
+    }
+  }catch(e){console.warn('Cloud load failed, using local:',e);}
+
+  // Fallback: load from localStorage
   try{
     const raw=localStorage.getItem(SK);
     if(!raw)return;

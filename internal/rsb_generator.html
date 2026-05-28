@@ -1803,20 +1803,41 @@ window.addEventListener('DOMContentLoaded',()=>{
   SECTIONS.flatMap(s=>s.components).forEach(c=>updBadge(c.id));
 });
 
-function autoSyncFromDC(){
-  const raw=localStorage.getItem('rsb_dc_export');
-  if(!raw)return;
+async function autoSyncFromDC(){
+  let exp=null;
+
+  // Try fetching merged data from centralized API
   try{
-    const exp=JSON.parse(raw);
-    const lastImport=localStorage.getItem('rsb_dc_last_import');
-    // Only auto-import if DC data is newer than last import
-    if(lastImport && exp.timestamp && exp.timestamp <= lastImport) return;
-    const count=_doImportDC(exp);
-    if(count>0){
-      localStorage.setItem('rsb_dc_last_import',exp.timestamp||new Date().toISOString());
-      showToast('<i class="fa-solid fa-arrows-rotate"></i> Auto-sync: '+count+' cell dari Data Collection.');
+    const res=await fetch('/api/data');
+    const json=await res.json();
+    if(json.ok && json.data){
+      // Build merged export from all units
+      const merged={timestamp:new Date().toISOString(), tables:{}};
+      Object.values(json.data).forEach(record=>{
+        if(record&&record.tables) Object.assign(merged.tables,record.tables);
+      });
+      if(Object.keys(merged.tables).length>0){
+        exp=merged;
+        // Cache locally
+        localStorage.setItem('rsb_dc_export',JSON.stringify(merged));
+      }
     }
-  }catch(e){console.error('Auto-sync DC error:',e);}
+  }catch(e){console.warn('API fetch failed, using local cache:',e);}
+
+  // Fallback to localStorage
+  if(!exp){
+    const raw=localStorage.getItem('rsb_dc_export');
+    if(!raw)return;
+    try{exp=JSON.parse(raw);}catch(e){return;}
+  }
+
+  const lastImport=localStorage.getItem('rsb_dc_last_import');
+  if(lastImport && exp.timestamp && exp.timestamp <= lastImport) return;
+  const count=_doImportDC(exp);
+  if(count>0){
+    localStorage.setItem('rsb_dc_last_import',exp.timestamp||new Date().toISOString());
+    showToast('<i class="fa-solid fa-cloud-arrow-down"></i> Auto-sync: '+count+' cell dari Data Collection (server).');
+  }
 }
 
 
