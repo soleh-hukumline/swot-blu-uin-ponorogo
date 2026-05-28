@@ -73,9 +73,11 @@ header{grid-column:1/-1;display:flex;align-items:center;padding:0.5rem 1.2rem;ba
   font-weight:600;border:1px solid;margin-top:0.3rem;}
 .unit-badge-row{display:flex;flex-wrap:wrap;gap:0.4rem;padding:0.4rem 0.8rem;border-bottom:1px solid var(--border);background:var(--bg);}
 /* Tables */
-table.data-tbl{width:100%;border-collapse:collapse;font-size:0.72rem;}
+table.data-tbl{width:100%;border-collapse:collapse;font-size:0.72rem;table-layout:auto;}
 table.data-tbl th{background:var(--tbl-head);color:var(--text);font-weight:600;padding:0.4rem 0.5rem;
-  border:1px solid var(--border);text-align:left;white-space:normal;word-break:break-word;font-size:0.65rem;min-width:60px;}
+  border:1px solid var(--border);text-align:left;white-space:nowrap;font-size:0.65rem;}
+table.data-tbl th:nth-child(1){width:35px;min-width:35px;}
+table.data-tbl th:nth-child(2){min-width:200px;}
 table.data-tbl th.col-ceiling{background:var(--ceiling-bg);color:var(--amber);font-weight:700;}
 table.data-tbl td{border:1px solid var(--border);padding:0;}
 table.data-tbl td.ceiling-cell{background:var(--ceiling-bg);}
@@ -84,9 +86,9 @@ table.data-tbl tr:hover td{background:var(--editor-focus);}
 table.data-tbl .section-row td{background:#eef2ff !important;font-weight:700;color:var(--accent);padding:0.4rem 0.5rem;}
 [data-theme="dark"] table.data-tbl .section-row td{background:#1e3a5f !important;}
 .cell-input{width:100%;border:none;padding:0.35rem 0.5rem;font-size:0.72rem;font-family:'Inter',sans-serif;
-  background:transparent;color:var(--text);outline:none;min-height:1.8rem;white-space:normal;word-break:break-word;}
+  background:transparent;color:var(--text);outline:none;min-height:1.8rem;white-space:nowrap;}
 .cell-input:focus{background:var(--card);box-shadow:inset 0 0 0 2px #1a73e8;}
-.cell-input.cell-label{font-weight:500;background:rgba(0,0,0,0.01);}
+.cell-input.cell-label{font-weight:500;background:rgba(0,0,0,0.01);white-space:normal;word-break:break-word;min-width:180px;}
 .cell-input.cell-readonly{background:var(--bg);color:var(--muted);cursor:default;}
 .cell-input.ceiling-input{background:var(--ceiling-bg);font-weight:600;color:var(--amber);}
 /* Status icons */
