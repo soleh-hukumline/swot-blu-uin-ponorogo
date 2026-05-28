@@ -112,8 +112,42 @@ table.data-tbl td.col-act{padding:0;text-align:center;border:1px solid #d0d7de;}
 .sb-progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#2563eb,#16a34a);transition:width 0.4s ease;width:0;}
 .sb-progress-pct{font-size:0.6rem;font-weight:700;color:var(--accent);text-align:right;margin-top:0.2rem;}
 /* Print */
-@media print{header,.sidebar,.sb-actions,.toast{display:none!important;}.layout{grid-template-columns:1fr;}}
+@media print{header,.sidebar,.sb-actions,.toast,.modal-overlay{display:none!important;}.layout{grid-template-columns:1fr;}}
 @media(max-width:800px){.layout{grid-template-columns:1fr;}.sidebar{display:none;}}
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:500;
+  align-items:center;justify-content:center;backdrop-filter:blur(2px);}
+.modal-overlay.show{display:flex;}
+.modal-box{background:#fff;border:1px solid var(--border);border-radius:14px;padding:1.5rem;
+  width:90%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
+.modal-title{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:1rem;
+  display:flex;align-items:center;gap:0.5rem;}
+.modal-field{margin-bottom:0.8rem;}
+.modal-field label{display:block;font-size:0.7rem;font-weight:600;color:var(--muted);margin-bottom:0.3rem;}
+.modal-field input,.modal-field select{width:100%;padding:0.5rem 0.7rem;border:1px solid var(--border);
+  border-radius:8px;font-size:0.78rem;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);outline:none;}
+.modal-field input:focus,.modal-field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
+.modal-actions{display:flex;gap:0.5rem;justify-content:flex-end;margin-top:1rem;}
+.modal-actions button{padding:0.5rem 1.2rem;border-radius:8px;font-size:0.75rem;font-weight:600;
+  font-family:'Inter',sans-serif;cursor:pointer;border:none;transition:all 0.15s;}
+.modal-actions .btn-cancel{background:var(--bg);color:var(--text);border:1px solid var(--border);}
+.modal-actions .btn-cancel:hover{background:var(--editor-focus);}
+.modal-actions .btn-create{background:linear-gradient(135deg,#2563eb,#3b82f6);color:#fff;}
+.modal-actions .btn-create:hover{box-shadow:0 3px 12px rgba(37,99,235,0.3);}
+/* Add category button */
+.add-category-btn{display:flex;align-items:center;justify-content:center;gap:0.5rem;width:100%;
+  padding:1rem;margin-top:1rem;border:2px dashed var(--accent);border-radius:12px;
+  background:linear-gradient(135deg,rgba(37,99,235,0.05),rgba(124,58,237,0.05));
+  color:var(--accent);font-size:0.85rem;font-weight:700;font-family:'Inter',sans-serif;
+  cursor:pointer;transition:all 0.25s;letter-spacing:0.3px;}
+.add-category-btn:hover{border-style:solid;background:linear-gradient(135deg,rgba(37,99,235,0.12),rgba(124,58,237,0.12));
+  box-shadow:0 4px 16px rgba(37,99,235,0.15);transform:translateY(-1px);}
+.add-category-btn i.plus-icon{font-size:0.7rem;background:var(--accent);color:#fff;width:24px;height:24px;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;}
+/* Delete table button */
+.tbl-delete-btn{margin-left:0.4rem;background:none;border:none;color:#cbd5e1;cursor:pointer;
+  font-size:0.65rem;padding:0.2rem 0.4rem;border-radius:4px;transition:all 0.15s;}
+.tbl-delete-btn:hover{background:#fef2f2;color:#dc2626;}
 </style>
 </head>
 <body>
@@ -139,6 +173,29 @@ table.data-tbl td.col-act{padding:0;text-align:center;border:1px solid #d0d7de;}
 </div>
 
 <div class="toast" id="toast"></div>
+
+<div class="modal-overlay" id="addModal">
+  <div class="modal-box">
+    <div class="modal-title"><i class="fa-solid fa-plus-circle"></i> Tambah Tabel Data Baru</div>
+    <input type="hidden" id="modal-unit"/>
+    <div class="modal-field">
+      <label><i class="fa-solid fa-tag"></i> Nama Tabel</label>
+      <input type="text" id="modal-title" placeholder="Contoh: Data Kerjasama Internasional"/>
+    </div>
+    <div class="modal-field">
+      <label><i class="fa-solid fa-link"></i> Referensi/Mapping RSB</label>
+      <input type="text" id="modal-ref" placeholder="Contoh: Lampiran I → tbl-kerjasama" value="Custom"/>
+    </div>
+    <div class="modal-field">
+      <label><i class="fa-solid fa-list"></i> Kolom Data (pisahkan koma)</label>
+      <input type="text" id="modal-cols" placeholder="Contoh: 2020,2021,2022,2023,2024,2025" value="2020,2021,2022,2023,2024,2025"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeAddModal()"><i class="fa-solid fa-xmark"></i> Batal</button>
+      <button class="btn-create" onclick="createCustomTable()"><i class="fa-solid fa-plus"></i> Buat Tabel</button>
+    </div>
+  </div>
+</div>
 
 <script>
 /* ============================================================
@@ -347,6 +404,11 @@ const UNITS=[
 
 let activeUnit='keuangan';
 
+// Custom tables storage
+let dcCustomTables={};
+try{const s=localStorage.getItem('dc_custom_tables');if(s)dcCustomTables=JSON.parse(s)||{};}catch(e){}
+function saveDcCustom(){localStorage.setItem('dc_custom_tables',JSON.stringify(dcCustomTables));}
+
 function showToast(msg){const t=document.getElementById('toast');t.innerHTML=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 
 function navigateTo(unitId){
@@ -437,6 +499,28 @@ function renderMain(){
         </div>
       </div>`;
     });
+    // Render custom tables for this unit
+    const customKey='custom_'+u.id;
+    (dcCustomTables[customKey]||[]).forEach((ct,ci)=>{
+      h+=`<div class="tbl-card">
+        <div class="tbl-card-head">
+          <i class="fa-solid fa-table" style="color:${u.colorHex}"></i>
+          <span class="tbl-card-title">${ct.title}</span>
+          <span class="tbl-card-ref"><i class="fa-solid fa-link"></i> ${ct.ref}</span>
+          <button class="tbl-delete-btn" onclick="deleteCustomDcTable('${customKey}',${ci})" title="Hapus tabel">
+            <i class="fa-solid fa-trash-can"></i> Hapus
+          </button>
+        </div>
+        <div class="tbl-card-body">
+          ${renderTable(ct)}
+          <button class="add-row-btn" onclick="addRow('${ct.id}',${ct.headers.length})"><i class="fa-solid fa-plus"></i> Tambah Baris</button>
+        </div>
+      </div>`;
+    });
+    // Add category button
+    h+=`<button class="add-category-btn" onclick="openAddModal('${u.id}')">
+      <i class="fa-solid fa-plus plus-icon"></i> Tambah Tabel Data Baru
+    </button>`;
     h+=`</div>`;
   });
   document.getElementById('mainContent').innerHTML=h;
@@ -488,7 +572,13 @@ function deleteRow(btn){
 }
 
 let dirty=false;
-function markDirty(){dirty=true;updateProgress();}
+let _dcAutoSave=null;
+function markDirty(){
+  dirty=true;
+  updateProgress();
+  clearTimeout(_dcAutoSave);
+  _dcAutoSave=setTimeout(()=>{if(dirty)saveAll(true);},3000);
+}
 
 function updateProgress(){
   let total=0,filled=0;
@@ -510,6 +600,16 @@ function updateProgress(){
       st.className=pct===0?'status-empty':pct<100?'status-partial':'status-done';
     }
   });
+  // Also include custom tables
+  Object.values(dcCustomTables).forEach(tables=>{
+    tables.forEach(t=>{
+      const tbl=document.getElementById(t.id);
+      if(!tbl)return;
+      tbl.querySelectorAll('tbody .cell-input:not(.cell-label):not(.cell-readonly)').forEach(inp=>{
+        total++;if(inp.value.trim()&&inp.value.trim()!=='...'&&inp.value.trim()!=='\u2014')filled++;
+      });
+    });
+  });
   const totalPct=total>0?Math.round(filled/total*100):0;
   const fill=document.getElementById('sb-progress-fill');
   const pctEl=document.getElementById('sb-progress-pct');
@@ -519,7 +619,7 @@ function updateProgress(){
 
 const API_URL='/api/data';
 
-async function saveAll(){
+async function saveAll(silent=false){
   const data={units:{},timestamp:new Date().toISOString()};
   const exportData={timestamp:new Date().toISOString(), tables:{}};
 
@@ -547,6 +647,34 @@ async function saveAll(){
           expRows.push({cells:cells, headers:hdrs});
       });
       if(expRows.length>0) exportData.tables[t.id]={ref:t.ref, unit:u.name, rows:expRows};
+    });
+  });
+
+  // Collect custom tables
+  Object.entries(dcCustomTables).forEach(([key,tables])=>{
+    const unitId=key.replace('custom_','');
+    if(!data.units[unitId])data.units[unitId]={};
+    tables.forEach(t=>{
+      const tbl=document.getElementById(t.id);
+      if(!tbl)return;
+      const rows=[];
+      const hdrs=[...tbl.querySelectorAll('thead th')].map(th=>th.textContent.trim());
+      tbl.querySelectorAll('tbody tr').forEach(tr=>{
+        if(tr.classList.contains('section-row'))return;
+        const cells=[];
+        tr.querySelectorAll('.cell-input').forEach(inp=>cells.push(inp.value));
+        rows.push(cells);
+      });
+      data.units[unitId][t.id]=rows;
+      const expRows=[];
+      tbl.querySelectorAll('tbody tr:not(.section-row)').forEach(tr=>{
+        const cells=[];
+        tr.querySelectorAll('.cell-input').forEach(inp=>cells.push(inp.value.trim()));
+        const dataVals=cells.slice(3);
+        if(dataVals.some(v=>v&&v!=='...'&&v!=='\u2014'))
+          expRows.push({cells, headers:hdrs});
+      });
+      if(expRows.length>0) exportData.tables[t.id]={ref:t.ref, unit:key, rows:expRows};
     });
   });
 
@@ -580,7 +708,7 @@ async function saveAll(){
   }catch(e){console.warn('Cloud save failed, data saved locally:',e);}
 
   dirty=false;
-  showToast(cloudSaved
+  if(!silent) showToast(cloudSaved
     ?'<i class="fa-solid fa-cloud-arrow-up"></i> Data tersimpan ke server!'
     :'<i class="fa-solid fa-circle-check"></i> Data tersimpan lokal (offline mode).');
 }
@@ -681,6 +809,65 @@ async function exportCSV(){
 
 // Auto-save warning
 window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});
+
+/* ============================================================
+   CUSTOM TABLE MANAGEMENT
+============================================================ */
+function openAddModal(unitId){
+  document.getElementById('modal-unit').value=unitId;
+  document.getElementById('modal-title').value='';
+  document.getElementById('modal-ref').value='Custom';
+  document.getElementById('modal-cols').value='2020,2021,2022,2023,2024,2025';
+  document.getElementById('addModal').classList.add('show');
+  setTimeout(()=>document.getElementById('modal-title').focus(),100);
+}
+function closeAddModal(){
+  document.getElementById('addModal').classList.remove('show');
+}
+
+function createCustomTable(){
+  const unitId=document.getElementById('modal-unit').value;
+  const title=document.getElementById('modal-title').value.trim();
+  const ref=document.getElementById('modal-ref').value.trim();
+  const colsStr=document.getElementById('modal-cols').value.trim();
+  if(!title){showToast('<i class="fa-solid fa-circle-exclamation" style="color:#dc2626"></i> Nama tabel harus diisi');return;}
+  
+  const cols=colsStr.split(',').map(c=>c.trim()).filter(c=>c);
+  const customKey='custom_'+unitId;
+  if(!dcCustomTables[customKey])dcCustomTables[customKey]=[];
+
+  const newTbl={
+    id:'dc-custom-'+Date.now(),
+    title:title,
+    ref:ref||'Custom',
+    headers:['No','Indikator','Satuan',...cols],
+    rows:[
+      ['1','',''],
+      ['2','',''],
+      ['3','',''],
+    ]
+  };
+  dcCustomTables[customKey].push(newTbl);
+  saveDcCustom();
+  closeAddModal();
+  renderMain();
+  navigateTo(unitId);
+  showToast(`<i class="fa-solid fa-circle-check"></i> Tabel "${title}" ditambahkan`);
+  markDirty();
+}
+
+function deleteCustomDcTable(customKey,idx){
+  const tbl=dcCustomTables[customKey]?.[idx];
+  if(!tbl)return;
+  if(!confirm(`Hapus tabel "${tbl.title}"? Data di dalamnya akan hilang.`))return;
+  dcCustomTables[customKey].splice(idx,1);
+  saveDcCustom();
+  const unitId=customKey.replace('custom_','');
+  renderMain();
+  navigateTo(unitId);
+  showToast(`<i class="fa-solid fa-trash-can"></i> Tabel "${tbl.title}" dihapus`);
+  markDirty();
+}
 
 // Init
 const isAdmin=(()=>{try{const c=JSON.parse(localStorage.getItem('rsb_ai_config')||'{}');return!!c.apiKey;}catch(e){return false;}})();
