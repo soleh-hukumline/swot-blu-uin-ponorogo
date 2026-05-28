@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="dark">
+<html lang="id" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +11,15 @@
 <style>
 /* ===== THEME ===== */
 :root{
+  --bg:#f1f5f9;--surface:#fff;--card:rgba(255,255,255,0.97);
+  --text:#0f172a;--muted:#64748b;--accent:#2563eb;
+  --border:rgba(0,0,0,0.08);--green:#16a34a;--amber:#d97706;
+  --red:#dc2626;--purple:#7c3aed;--cyan:#0891b2;--teal:#0d9488;
+  --editor-bg:rgba(241,245,249,0.8);--editor-focus:rgba(37,99,235,0.06);
+  --tbl-head:rgba(37,99,235,0.06);--tbl-alt:rgba(0,0,0,0.02);
+  --tbl-border:rgba(0,0,0,0.08);
+}
+[data-theme="light"]{
   --bg:#0f172a;--surface:#1e293b;--card:rgba(30,41,59,0.95);
   --text:#f8fafc;--muted:#94a3b8;--accent:#3b82f6;
   --border:rgba(255,255,255,0.08);--green:#22c55e;--amber:#f59e0b;
@@ -18,15 +27,6 @@
   --editor-bg:rgba(15,23,42,0.6);--editor-focus:rgba(59,130,246,0.12);
   --tbl-head:rgba(59,130,246,0.08);--tbl-alt:rgba(255,255,255,0.015);
   --tbl-border:rgba(255,255,255,0.06);
-}
-[data-theme="light"]{
-  --bg:#f1f5f9;--surface:#fff;--card:rgba(255,255,255,0.97);
-  --text:#0f172a;--muted:#64748b;--border:rgba(0,0,0,0.08);
-  --green:#16a34a;--amber:#d97706;--red:#dc2626;--purple:#7c3aed;
-  --cyan:#0891b2;--teal:#0d9488;--accent:#2563eb;
-  --editor-bg:rgba(241,245,249,0.8);--editor-focus:rgba(37,99,235,0.06);
-  --tbl-head:rgba(37,99,235,0.06);--tbl-alt:rgba(0,0,0,0.015);
-  --tbl-border:rgba(0,0,0,0.06);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7;}
@@ -187,27 +187,27 @@ table.editable tr:hover .row-del{opacity:1;}
 
 /* ===== TABLE STYLE VARIANTS ===== */
 /* Data tables (Lampiran I) - spreadsheet feel with zebra + amber empties */
-.tbl-data th{background:linear-gradient(135deg,#1e3a5f,#1e293b);font-size:0.6rem;padding:0.5rem;}
+.tbl-data th{background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff;font-size:0.6rem;padding:0.5rem;}
 .tbl-data .cell-data{min-width:60px;}
 .tbl-data tr:nth-child(even) td{background:rgba(30,58,95,0.08);}
 
 /* Sasaran tables (Lampiran II sasaran) - emphasis on labels */
-.tbl-sasaran th{background:linear-gradient(135deg,#14532d,#1e293b);}
+.tbl-sasaran th{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;}
 .tbl-sasaran .cell-label{font-weight:600;}
 .tbl-sasaran .tbl-group-row td{background:rgba(34,197,94,0.08) !important;color:var(--green);border-color:rgba(34,197,94,0.2);}
 
 /* Program tables (Lampiran II program) - activity tracking */
-.tbl-program th{background:linear-gradient(135deg,#14532d,#1e293b);}
+.tbl-program th{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;}
 .tbl-program .tbl-group-row td{background:rgba(34,197,94,0.08) !important;color:var(--green);border-color:rgba(34,197,94,0.2);}
 
 /* Projection tables (Lampiran III) - dual scenario comparison */
-.tbl-projection th{background:linear-gradient(135deg,#4c1d95,#1e293b);font-size:0.58rem;}
+.tbl-projection th{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;font-size:0.58rem;}
 .tbl-projection th[colspan]{text-align:center;}
 .tbl-projection thead tr:first-child th:nth-child(n+3):nth-child(-n+4){background:rgba(245,158,11,0.15);color:var(--amber);}
 .tbl-projection thead tr:first-child th:nth-last-child(-n+2){background:rgba(34,197,94,0.15);color:var(--green);}
 
 /* Matriks keterkaitan (Lampiran IV) - cascading */
-.tbl-matriks th{background:linear-gradient(135deg,#3b82f6,#1e293b);font-size:0.58rem;}
+.tbl-matriks th{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;font-size:0.58rem;}
 .tbl-matriks td{vertical-align:top;font-size:0.65rem;line-height:1.4;}
 
 /* ===== SWOT TABLE ===== */
@@ -1029,7 +1029,10 @@ function renderTable(t,dd){
       labelCols.add(i);
     if(i===0) labelCols.add(i);
   });
+  const colCount=hasSub?(t.subheaders||t.headers).length:t.headers.length;
   let rows=t.rows.map((r,ri)=>{
+    // Pad row to match header count
+    while(r.length<colCount) r.push('...');
     const isHeader=r[0]===''&&r[1]&&r[1]===r[1].toUpperCase()&&r[1].length>3&&!r[1].includes('.');
     const cells=r.map((c,ci)=>{
       if(dd&&dd[ci]){
@@ -1306,7 +1309,7 @@ function resetAll(){if(!confirm('Reset semua konten?'))return;localStorage.remov
    UTILS
 ============================================================ */
 function toggleTheme(){
-  const d=document.documentElement.getAttribute('data-theme')==='dark';
+  const d=document.documentElement.getAttribute('data-theme')!=='dark';
   document.documentElement.setAttribute('data-theme',d?'light':'dark');
   localStorage.setItem('rsb_gen_theme',d?'light':'dark');
 }
