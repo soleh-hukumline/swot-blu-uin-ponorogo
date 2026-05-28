@@ -163,6 +163,12 @@ table.editable td[contenteditable]:empty::before{content:attr(data-ph);color:var
   font-size:0.6rem;opacity:0;transition:opacity 0.15s;border-radius:4px;}
 table.editable tr:hover .row-del{opacity:1;}
 .row-del:hover{background:rgba(239,68,68,0.15);color:var(--red);}
+.cell-select{width:100%;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:4px;
+  padding:0.25rem 0.3rem;font-size:0.65rem;font-family:'Inter',sans-serif;cursor:pointer;}
+.cell-select:focus{border-color:var(--accent);outline:none;}
+.cell-custom{width:100%;background:var(--editor-bg);color:var(--text);border:1px solid var(--border);border-radius:4px;
+  padding:0.25rem 0.3rem;font-size:0.65rem;font-family:'Inter',sans-serif;margin-top:0.2rem;}
+.cell-custom:focus{border-color:var(--accent);outline:none;}
 
 /* ===== SWOT TABLE ===== */
 .swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-bottom:0.8rem;}
@@ -731,6 +737,34 @@ const SECTIONS = [
     components:[
       { id:'l4a', letter:'', title:'Matriks Keterkaitan Visi \u2192 Misi \u2192 Tujuan \u2192 Sasaran \u2192 Kebijakan \u2192 Program \u2192 Kegiatan 5 Tahun',
         type:'rte+table',
+        dropdownCols:{
+          0:['UIN yang Unggul, Moderat, dan Berdaya Saing di Tingkat Nasional dan Internasional 2030'],
+          1:['Misi 1: Pendidikan berkualitas, inovatif, integrasi keilmuan',
+             'Misi 2: Penelitian kompetitif',
+             'Misi 3: Pengabdian masyarakat',
+             'Misi 4: Tata kelola profesional',
+             'Misi 5: Kerjasama strategis'],
+          2:['Meningkatkan kualitas dan akses pendidikan',
+             'Meningkatkan kualitas riset & PkM',
+             'Meningkatkan kontribusi sosial',
+             'Mewujudkan tata kelola BLU profesional',
+             'Mengembangkan SDM unggul',
+             'Memperluas kerjasama strategis'],
+          5:['Peningkatan Mutu Akademik (BAB III)',
+             'Pengembangan Riset & Inovasi (BAB III)',
+             'Penguatan Tata Kelola (BAB III)',
+             'Pengembangan SDM (BAB III)',
+             'Digital Learning Hub (Lamp II)',
+             'Inkubator Bisnis (Lamp II)',
+             'Klinik Kesehatan Kampus (Lamp II)',
+             'Optimalisasi PNBP Eksisting (Lamp II)',
+             'Pengembangan Unit Bisnis Baru (Lamp II)',
+             'Penetapan Tarif BLU (Lamp II)',
+             'Pembentukan Organ BLU (Lamp II)',
+             'LSP-P1 Sertifikasi (Lamp II)',
+             'Pusat Pelatihan & Sertifikasi (Lamp II)',
+             'Kerjasama Revenue-Sharing (Lamp II)']
+        },
         template:'<p>Tabel berikut menunjukkan keterkaitan antara visi, misi, tujuan strategis, sasaran strategis, kebijakan, program utama, dan kegiatan strategis BLU UIN Ponorogo 2025\u20132029. Matriks ini menjamin <i>alignment</i> dari level strategis hingga operasional, mencakup <b>program renstra (BAB III)</b> maupun <b>program bisnis BLU (Lampiran II)</b>.</p>',
         placeholder:'Tuliskan narasi pengantar matriks keterkaitan...',
         table:{ id:'tbl-cascading',
@@ -812,6 +846,7 @@ function renderSidebar(){
     <button class="sb-btn primary" onclick="showPreview()"><i class="fa-solid fa-eye"></i> Preview</button>
     <button class="sb-btn export" onclick="exportDOCX()"><i class="fa-solid fa-file-word"></i> Export DOCX</button>
     <button class="sb-btn secondary" onclick="syncFromLampiran()"><i class="fa-solid fa-arrows-rotate"></i> Sync ke BAB II</button>
+    <button class="sb-btn secondary" onclick="syncLampiran()"><i class="fa-solid fa-link"></i> Sync Lampiran I→III</button>
     <div class="sb-btn-row">
       <button class="sb-btn secondary" onclick="window.print()"><i class="fa-solid fa-print"></i> Cetak</button>
       <button class="sb-btn secondary" onclick="saveAll()"><i class="fa-solid fa-floppy-disk"></i> Simpan</button>
@@ -886,7 +921,7 @@ function renderComponent(c){
   let h='';
   if(c.type.includes('swot')) h+=renderSwot(c);
   if(c.type.includes('rte')) h+=renderRTE(c);
-  if(c.type.includes('table')&&c.table) h+=renderTable(c.table);
+  if(c.type.includes('table')&&c.table) h+=renderTable(c.table,c.dropdownCols);
   return h;
 }
 
@@ -908,7 +943,7 @@ function renderRTE(c){
   </div>`;
 }
 
-function renderTable(t){
+function renderTable(t,dd){
   const hasSub=!!t.subheaders;
   let thRow1='',thRow2='';
   if(hasSub){
@@ -931,7 +966,13 @@ function renderTable(t){
     thRow1=t.headers.map(h=>`<th>${h}</th>`).join('');
   }
   let rows=t.rows.map((r,ri)=>{
-    const cells=r.map((c,ci)=>`<td contenteditable="true" data-ph="..." oninput="markDirty()">${c}</td>`).join('');
+    const cells=r.map((c,ci)=>{
+      if(dd&&dd[ci]){
+        const opts=dd[ci].map(o=>`<option value="${o}"${o===c?' selected':''}>${o}</option>`).join('');
+        return `<td><select class="cell-select" onchange="markDirty()">${opts}<option value="__custom"${!dd[ci].includes(c)&&c?' selected':''}>Lainnya...</option></select>${!dd[ci].includes(c)&&c?`<input class="cell-custom" value="${c}" oninput="markDirty()" placeholder="Ketik sendiri..."/>`:''}${dd[ci].includes(c)?'':''}</td>`;
+      }
+      return `<td contenteditable="true" data-ph="..." oninput="markDirty()">${c}</td>`;
+    }).join('');
     return `<tr>${cells}<td><button class="row-del" onclick="delRow(this)" title="Hapus baris">✕</button></td></tr>`;
   }).join('');
 
@@ -1420,7 +1461,152 @@ function autoImportData(){
 /* ============================================================
    EXPORT DOCX — PMK 76/2025 Lampiran III Format
 ============================================================ */
-async function exportDOCX(){
+async 
+/* ============================================================
+   SYNC LAMPIRAN: I→III baseline, II→III targets, III auto-calc
+============================================================ */
+function syncLampiran(){
+  let changes=0;
+
+  // --- A. Lamp I → Lamp III: Copy 2024/2025 realisasi as baseline ---
+  // Lamp I tbl-keuangan row values → Lamp III tbl-proy-pnbp "Realisasi 2024"
+  const tblKeu=document.getElementById('tbl-keuangan');
+  const tblPnbp=document.getElementById('tbl-proy-pnbp');
+  if(tblKeu && tblPnbp){
+    // Map keuangan indicators to PNBP rows by name matching
+    const keuRows=tblKeu.querySelectorAll('tbody tr');
+    const pnbpRows=tblPnbp.querySelectorAll('tbody tr');
+    // Copy total PNBP from last year column of keuangan
+    keuRows.forEach(kr=>{
+      const cells=kr.querySelectorAll('td');
+      if(cells.length<2)return;
+      const label=(cells[1]?.textContent||'').trim().toLowerCase();
+      if(label.includes('total pnbp')||label.includes('pendapatan pnbp')){
+        const lastVal=(cells[cells.length-2]?.textContent||'').trim();
+        // Put in PNBP total row
+        pnbpRows.forEach(pr=>{
+          const pcells=pr.querySelectorAll('td');
+          if(pcells.length<2)return;
+          const plabel=(pcells[0]?.textContent||'').trim();
+          if(plabel===''&&(pcells[1]?.textContent||'').includes('TOTAL')){
+            if(pcells[2]&&lastVal!=='...'){pcells[2].textContent=lastVal;changes++;}
+          }
+        });
+      }
+    });
+  }
+
+  // --- B. Lamp I tbl-layanan → Lamp III tbl-proy-vol baseline ---
+  const tblLay=document.getElementById('tbl-layanan');
+  const tblVol=document.getElementById('tbl-proy-vol');
+  if(tblLay && tblVol){
+    const layRows=tblLay.querySelectorAll('tbody tr');
+    const volRows=tblVol.querySelectorAll('tbody tr');
+    const layMap={};
+    layRows.forEach(r=>{
+      const cells=r.querySelectorAll('td');
+      if(cells.length<3)return;
+      const label=(cells[1]?.textContent||'').trim().toLowerCase();
+      const lastVal=(cells[cells.length-2]?.textContent||'').trim();
+      if(label&&lastVal&&lastVal!=='...')layMap[label]=lastVal;
+    });
+    volRows.forEach(r=>{
+      const cells=r.querySelectorAll('td');
+      if(cells.length<3)return;
+      const label=(cells[1]?.textContent||'').trim().toLowerCase();
+      // Match by partial name
+      for(const[k,v] of Object.entries(layMap)){
+        if(label.includes('mahasiswa')&&k.includes('mahasiswa')){
+          if(cells[2]&&cells[2].textContent==='...')cells[2].textContent=v;changes++;break;
+        }
+        if(label.includes('program studi')&&k.includes('program studi')){
+          if(cells[2]&&cells[2].textContent==='...')cells[2].textContent=v;changes++;break;
+        }
+      }
+    });
+  }
+
+  // --- C. Lamp II targets → Lamp III volume BLU rows ---
+  const tblSasaran=document.getElementById('tbl-sasaran');
+  const tblProgkeg=document.getElementById('tbl-progkeg');
+  if(tblSasaran && tblVol){
+    const sasRows=tblSasaran.querySelectorAll('tbody tr');
+    const volRows2=tblVol.querySelectorAll('tbody tr');
+    // Map sasaran targets to volume items
+    sasRows.forEach(sr=>{
+      const sc=sr.querySelectorAll('td');
+      if(sc.length<5)return;
+      const ind=(sc[3]?.textContent||'').trim().toLowerCase();
+      const targets=[];
+      for(let i=5;i<sc.length;i++)targets.push((sc[i]?.textContent||'').trim());
+      volRows2.forEach(vr=>{
+        const vc=vr.querySelectorAll('td');
+        if(vc.length<3)return;
+        const vlabel=(vc[1]?.textContent||'').trim().toLowerCase();
+        // Match LSP peserta
+        if(vlabel.includes('sertifikasi lsp')&&ind.includes('sertifikasi')){
+          // Copy "Setelah BLU" targets (last 5 columns)
+          const startCol=vc.length-5;
+          targets.forEach((t,i)=>{
+            if(startCol+i<vc.length&&t!=='...'&&vc[startCol+i].textContent==='...'){
+              vc[startCol+i].textContent=t;changes++;
+            }
+          });
+        }
+      });
+    });
+  }
+
+  // --- D. Auto-calc Proporsi PNBP (l3e) from l3c and l3d ---
+  const tblPropor=document.getElementById('tbl-proporsi');
+  if(tblPnbp && tblPropor){
+    // Get PNBP totals and Belanja totals
+    const pnbpTotal={},belanjaTotal={};
+    const tblBelanja=document.getElementById('tbl-proy-belanja');
+    
+    // Helper: get total row values
+    function getTotalRow(tbl,scenario){
+      if(!tbl)return {};
+      const rows=tbl.querySelectorAll('tbody tr');
+      const result={};
+      rows.forEach(r=>{
+        const cells=r.querySelectorAll('td');
+        const first=(cells[0]?.textContent||'').trim();
+        if(first===''||(cells[1]?.textContent||'').includes('TOTAL')){
+          // This is total row. Read values
+          for(let i=2;i<cells.length;i++){
+            const v=parseFloat((cells[i]?.textContent||'0').replace(/[,.]/g,''));
+            if(!isNaN(v))result[i]=v;
+          }
+        }
+      });
+      return result;
+    }
+
+    // Auto-calc when both PNBP and Belanja totals are filled
+    const pRows=tblPropor.querySelectorAll('tbody tr');
+    pRows.forEach(r=>{
+      const cells=r.querySelectorAll('td');
+      if(cells.length<6)return;
+      const totalBel=parseFloat((cells[2]?.textContent||'0').replace(/[,.]/g,''));
+      const totalPnbp=parseFloat((cells[3]?.textContent||'0').replace(/[,.]/g,''));
+      if(totalBel>0&&totalPnbp>0){
+        const proporsi=((totalPnbp/totalBel)*100).toFixed(1);
+        if(cells[5])cells[5].textContent=proporsi+'%';
+        changes++;
+      }
+    });
+  }
+
+  if(changes>0){
+    markDirty();
+    showToast('<i class="fa-solid fa-circle-check"></i> Sync Lampiran berhasil! '+changes+' data diperbarui');
+  } else {
+    showToast('<i class="fa-solid fa-circle-check"></i> Sync selesai. Tidak ada data baru untuk disinkronkan.');
+  }
+}
+
+function exportDOCX(){
   showToast('<i class="fa-solid fa-spinner fa-spin"></i> Generating DOCX...');
   try{
     const{Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,
