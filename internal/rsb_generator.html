@@ -1111,70 +1111,76 @@ window.addEventListener('DOMContentLoaded',()=>{
 });
 
 
+
 /* ============================================================
-   AUTO-IMPORT DATA DARI HALAMAN LAIN (via localStorage)
+   AUTO-IMPORT: IFAS/EFAS data + Checklist scores
 ============================================================ */
+const IFAS_EMBED=[
+  {cat:'S',no:1,factor:'Satu-satunya PTKIN di Karesidenan Madiun',w:0.10,r:4},
+  {cat:'S',no:2,factor:'Akreditasi Institusi Unggul BAN-PT 2024-2029',w:0.09,r:4},
+  {cat:'S',no:3,factor:'Alih status UIN (Mei 2025)',w:0.08,r:4},
+  {cat:'S',no:4,factor:"Ma'had Al-Jami'ah terintegrasi",w:0.07,r:3},
+  {cat:'S',no:5,factor:'SDM: 329 dosen (81 S3, 15 GB) & 162 tendik',w:0.07,r:3},
+  {cat:'S',no:6,factor:'Infrastruktur modern dua kampus',w:0.06,r:3},
+  {cat:'S',no:7,factor:'7 unit PNBP sudah beroperasi',w:0.06,r:3},
+  {cat:'S',no:8,factor:'SIAKAD GAPURA terintegrasi',w:0.04,r:3},
+  {cat:'S',no:9,factor:'Program moderasi beragama dan ToT aktif',w:0.03,r:3},
+  {cat:'W',no:1,factor:'Masih berstatus Satker (bukan BLU)',w:0.10,r:1},
+  {cat:'W',no:2,factor:'Scopus 183 dok, sitasi/dosen 2.04',w:0.08,r:2},
+  {cat:'W',no:3,factor:'Rasio dosen:mhs 1:44',w:0.08,r:2},
+  {cat:'W',no:4,factor:'143 Asisten Ahli (43.5%)',w:0.07,r:2},
+  {cat:'W',no:5,factor:'Belum ada RSB, SPM, kebijakan AI',w:0.06,r:1},
+  {cat:'W',no:6,factor:'Brand awareness rendah nasional',w:0.05,r:2}
+];
+const EFAS_EMBED=[
+  {cat:'O',no:1,factor:'Momentum BLU PTKIN nasional',w:0.12,r:4},
+  {cat:'O',no:2,factor:'Anggaran pendidikan APBN 2026: Rp757,8T',w:0.10,r:3},
+  {cat:'O',no:3,factor:'APK Dikti 34% (target 60% 2045)',w:0.09,r:4},
+  {cat:'O',no:4,factor:'Permendiktisaintek 39/2025 prodi baru',w:0.08,r:3},
+  {cat:'O',no:5,factor:'Status UIN izinkan prodi non-agama',w:0.07,r:4},
+  {cat:'O',no:6,factor:'10 potensi PNBP baru',w:0.05,r:3},
+  {cat:'T',no:1,factor:'Inpres 1/2025 efisiensi Rp306,69T',w:0.12,r:2},
+  {cat:'T',no:2,factor:'28 PTKIN BLU sebagai kompetitor',w:0.10,r:1},
+  {cat:'T',no:3,factor:'Geopolitik & ketidakpastian ekonomi global',w:0.08,r:2},
+  {cat:'T',no:4,factor:'AI generatif tanpa kebijakan',w:0.07,r:2},
+  {cat:'T',no:5,factor:'Urbanisasi & migrasi pemuda',w:0.06,r:2},
+  {cat:'T',no:6,factor:'Dualitas regulasi Kemenag + Kemendiktisaintek',w:0.07,r:2}
+];
+
 function autoImportData(){
-  let imported = 0;
-  let report = [];
+  const report=[];
+  const ife=IFAS_EMBED.reduce((s,i)=>s+i.w*i.r,0).toFixed(2);
+  const efe=EFAS_EMBED.reduce((s,i)=>s+i.w*i.r,0).toFixed(2);
+  const sScore=IFAS_EMBED.filter(i=>i.cat==='S').reduce((s,i)=>s+i.w*i.r,0).toFixed(2);
+  const wScore=IFAS_EMBED.filter(i=>i.cat==='W').reduce((s,i)=>s+i.w*i.r,0).toFixed(2);
+  const oScore=EFAS_EMBED.filter(i=>i.cat==='O').reduce((s,i)=>s+i.w*i.r,0).toFixed(2);
+  const tScore=EFAS_EMBED.filter(i=>i.cat==='T').reduce((s,i)=>s+i.w*i.r,0).toFixed(2);
+  const quad=ife>=2.5&&efe>=2.5?'I (SO/Agresif)':ife<2.5&&efe>=2.5?'II (WO/Turn-around)':ife>=2.5&&efe<2.5?'III (ST/Diversifikasi)':'IV (WT/Defensif)';
 
-  // 1. Import SWOT data from swot_blu.html
-  try {
-    const swotRaw = localStorage.getItem('swot_blu_data');
-    if (swotRaw) {
-      const swotData = JSON.parse(swotRaw);
-      // Update SWOT items in generator
-      const swotComp = SECTIONS.find(s=>s.id==='bab2')?.components?.find(c=>c.id==='b2b');
-      if (swotComp && swotData) {
-        if (swotData.strengths) swotComp.swot.strengths = swotData.strengths;
-        if (swotData.weaknesses) swotComp.swot.weaknesses = swotData.weaknesses;
-        if (swotData.opportunities) swotComp.swot.opportunities = swotData.opportunities;
-        if (swotData.threats) swotComp.swot.threats = swotData.threats;
-        report.push('\u2705 SWOT: ' + (swotData.strengths?.length||0) + 'S, ' + (swotData.weaknesses?.length||0) + 'W, ' + (swotData.opportunities?.length||0) + 'O, ' + (swotData.threats?.length||0) + 'T');
-        imported++;
-      }
-    }
-  } catch(e) { report.push('\u26a0\ufe0f SWOT: ' + e.message); }
-
-  // 2. Import IFAS/EFAS scores from matriks.html  
-  try {
-    const matriksRaw = localStorage.getItem('ifas_efas_data') || localStorage.getItem('matriks_data');
-    if (matriksRaw) {
-      const md = JSON.parse(matriksRaw);
-      if (md.ifasScore || md.efasScore) {
-        report.push('\u2705 IFAS/EFAS: IFE=' + (md.ifasScore||'?') + ', EFE=' + (md.efasScore||'?'));
-        imported++;
-      }
-    }
-  } catch(e) { report.push('\u26a0\ufe0f IFAS/EFAS: ' + e.message); }
-
-  // 3. Import checklist scores from rsb_checklist.html
-  try {
-    const checkRaw = localStorage.getItem('rsb_dokumen_data_v3');
-    if (checkRaw) {
-      const cd = JSON.parse(checkRaw);
-      if (cd.scores) {
-        report.push('\u2705 Checklist: Kinerja=' + (cd.scores.kinerja||0) + ', Renstra=' + (cd.scores.renstra||0) + ', Proyeksi=' + (cd.scores.proyeksi||0) + ' (Total: ' + ((cd.scores.kinerja||0)+(cd.scores.renstra||0)+(cd.scores.proyeksi||0)) + '/12)');
-        imported++;
-      }
-    }
-  } catch(e) { report.push('\u26a0\ufe0f Checklist: ' + e.message); }
-
-  // Re-render if SWOT was updated
-  if (imported > 0) {
-    renderMain();
-    loadData();
-    SECTIONS.flatMap(s=>s.components).forEach(c=>updBadge(c.id));
-    markDirty();
+  const rteSwot=document.getElementById('rte-b2b');
+  if(rteSwot){
+    let html=rteSwot.innerHTML;
+    html=html.replace(/Skor Strengths \(S\):<\/b> \.\.\./g,'Skor Strengths (S):</b> '+sScore);
+    html=html.replace(/Skor Weaknesses \(W\):<\/b> \.\.\./g,'Skor Weaknesses (W):</b> '+wScore);
+    html=html.replace(/Skor IFE:<\/b> \.\.\./g,'Skor IFE:</b> '+ife);
+    html=html.replace(/Skor Opportunities \(O\):<\/b> \.\.\./g,'Skor Opportunities (O):</b> '+oScore);
+    html=html.replace(/Skor Threats \(T\):<\/b> \.\.\./g,'Skor Threats (T):</b> '+tScore);
+    html=html.replace(/Skor EFE:<\/b> \.\.\./g,'Skor EFE:</b> '+efe);
+    html=html.replace(/Kuadran \.\.\.<\/b>/g,'Kuadran '+quad+'</b>');
+    html=html.replace(/strategi <b>\.\.\.<\/b>/g,'strategi <b>'+quad+'</b>');
+    rteSwot.innerHTML=html;
+    report.push('\u2705 IFAS/EFAS: IFE='+ife+', EFE='+efe+' \u2192 Kuadran '+quad);
   }
-
-  // Show report
-  const msg = imported > 0 
-    ? `\u2705 Import berhasil (${imported} sumber):\n${report.join('\n')}`
-    : '\u26a0\ufe0f Tidak ada data tersimpan dari halaman lain.\nBuka halaman SWOT/PESTLE/Matriks/Checklist dan simpan data dulu.';
-  alert(msg);
-  showToast(imported > 0 ? `\u2705 ${imported} sumber data diimport` : '\u26a0\ufe0f Tidak ada data');
+  try{
+    const cd=JSON.parse(localStorage.getItem('rsb_dokumen_data_v3')||'{}');
+    if(cd.scores)report.push('\u2705 Checklist: Total='+(cd.scores.kinerja+cd.scores.renstra+cd.scores.proyeksi)+'/12');
+    else report.push('\u26a0\ufe0f Checklist belum ada skor');
+  }catch(e){report.push('\u26a0\ufe0f Checklist: belum tersimpan');}
+  markDirty();
+  alert('\ud83d\udce5 Import Report:\n\n'+report.join('\n')+'\n\nSemua data bisa diedit manual.');
+  showToast('\u2705 Data diimport!');
 }
+
 
 /* ============================================================
    EXPORT DOCX — PMK 76/2025 Lampiran III Format
