@@ -454,7 +454,8 @@ function renderSidebar(){
 function renderTable(tbl){
   let h=`<table class="data-tbl" id="${tbl.id}"><thead><tr>`;
   tbl.headers.forEach((hd,i)=>{
-    const w=i===0?'width:35px':i===1?'min-width:180px':i===2?'width:60px':'min-width:80px';
+    const isNoCol=i===0 && hd.toLowerCase()==='no';
+    const w=isNoCol?'width:35px':i===0?'min-width:55px':i===1?'min-width:180px':i===2?'width:70px':'min-width:80px';
     h+=`<th style="${w}">${hd}</th>`;
   });
   h+=`<th class="col-act"></th></tr></thead><tbody>`;
@@ -465,10 +466,13 @@ function renderTable(tbl){
       return;
     }
     h+=`<tr>`;
+    const isNoHeader=tbl.headers[0].toLowerCase()==='no';
     tbl.headers.forEach((hd,ci)=>{
       const val=row[ci]||'';
-      if(ci<3){
-        h+=`<td><input type="text" class="cell-input cell-label${ci===0?' cell-readonly':''}" value="${val.replace(/"/g,'&quot;')}" ${ci===0?'readonly':''} oninput="markDirty()"/></td>`;
+      if(ci===0 && isNoHeader){
+        h+=`<td><input type="text" class="cell-input cell-label cell-readonly" value="${val.replace(/"/g,'&quot;')}" readonly oninput="markDirty()"/></td>`;
+      } else if(ci<3){
+        h+=`<td><input type="text" class="cell-input cell-label" value="${val.replace(/"/g,'&quot;')}" oninput="markDirty()"/></td>`;
       } else {
         h+=`<td><input type="text" class="cell-input" value="${val.replace(/"/g,'&quot;')}" oninput="markDirty()" placeholder="..."/></td>`;
       }
