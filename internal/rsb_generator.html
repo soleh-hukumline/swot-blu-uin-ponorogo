@@ -6,6 +6,8 @@
 <title>RSB Generator — Dokumen Laporan RSB BLU UIN Ponorogo</title>
 <meta name="description" content="Document builder untuk auto-generate laporan RSB BLU UIN Ponorogo">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/docx@9.1.1/build/index.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <style>
 /* ===== THEME ===== */
 :root{
@@ -195,12 +197,15 @@ table.editable tr:hover .row-del{opacity:1;}
 <header>
   <h1>🔧 RSB <span>Generator</span></h1>
   <div class="nav-links">
-    <a href="index.html">🗺️ Dashboard</a>
+    <a href="../index.html">🗺️ Dashboard</a>
+    <a href="../sinta.html">🔬 SINTA</a>
+    <a href="index.html">🔒 Internal</a>
+    <a href="swot_blu.html">⚡ SWOT-BLU</a>
+    <a href="swot_pestle.html">📋 PESTLE</a>
+    <a href="matriks.html">📑 IFAS/EFAS</a>
     <a href="kinerja.html">📊 Kinerja</a>
-    <a href="swot_blu.html">⚡ SWOT</a>
     <a href="rsb_peta.html">💼 Peta RSB</a>
-    <a href="rsb_dokumen.html">📝 Dokumen</a>
-    <a href="rsb_laporan.html">📋 Laporan</a>
+    <a href="rsb_checklist.html">☑️ Checklist</a>
     <a href="rsb_generator.html" class="active">🔧 Generator</a>
     <button onclick="toggleTheme()">☀️</button>
   </div>
@@ -240,7 +245,7 @@ const SECTIONS = [
       },
       { id:'b1c', letter:'C', title:'Target RSB',
         type:'rte',
-        template:'<h3>1. Maksud Penyusunan RSB</h3><p>Rencana Strategi Bisnis (RSB) BLU UIN Kiai Ageng Muhammad Besari Ponorogo periode 2025–2029 disusun dengan maksud:</p><ol><li>Menyediakan dokumen perencanaan strategis bisnis yang komprehensif sebagai acuan pengelolaan BLU.</li><li>Menetapkan arah pengembangan layanan, keuangan, SDM, dan sarana prasarana selama 5 tahun ke depan.</li><li>Memenuhi persyaratan administratif dalam proses pengajuan status Pola Keuangan BLU sesuai PMK No. 129/PMK.05/2020.</li></ol><h3>2. Tujuan RSB</h3><p>Tujuan penyusunan RSB ini meliputi:</p><ol><li>Meningkatkan kualitas dan kapasitas layanan pendidikan, penelitian, dan pengabdian masyarakat.</li><li>Mencapai kemandirian finansial melalui optimalisasi sumber PNBP dan diversifikasi pendapatan.</li><li>Membangun tata kelola BLU yang transparan, akuntabel, dan berorientasi pada hasil.</li><li>Memperkuat daya saing institusional di tingkat nasional dan regional.</li></ol><h3>3. Target Utama 5 Tahun (2025–2029)</h3><p>Target strategis utama dalam periode RSB ini:</p><ul><li><b>Layanan:</b> Peningkatan prodi terakreditasi Unggul dari 37,9% menjadi 48,2%.</li><li><b>SDM:</b> Peningkatan dosen S3 dari 29,67% menjadi 40%, rasio dosen:mahasiswa dari 1:44 menjadi 1:30.</li><li><b>Keuangan:</b> Peningkatan pendapatan PNBP minimal 15% per tahun.</li><li><b>Penelitian:</b> Peningkatan publikasi Scopus dan sitasi internasional.</li><li><b>Mahasiswa:</b> Peningkatan jumlah mahasiswa dari 10.182 menjadi ~14.500.</li><li><b>Infrastruktur:</b> Pengembangan smart campus dan green campus.</li></ul>',
+        template:'<h3>1. Maksud Penyusunan RSB</h3><p>Rencana Strategi Bisnis (RSB) BLU UIN Kiai Ageng Muhammad Besari Ponorogo periode 2025–2029 disusun dengan maksud:</p><ol><li>Menyediakan dokumen perencanaan strategis bisnis yang komprehensif sebagai acuan pengelolaan BLU.</li><li>Menetapkan arah pengembangan layanan, keuangan, SDM, dan sarana prasarana selama 5 tahun ke depan.</li><li>Memenuhi persyaratan administratif dalam proses pengajuan status Pola Keuangan BLU sesuai PMK Nomor 76 Tahun 2025 (Perubahan Kedua PMK 129/PMK.05/2020).</li></ol><h3>2. Tujuan RSB</h3><p>Tujuan penyusunan RSB ini meliputi:</p><ol><li>Meningkatkan kualitas dan kapasitas layanan pendidikan, penelitian, dan pengabdian masyarakat.</li><li>Mencapai kemandirian finansial melalui optimalisasi sumber PNBP dan diversifikasi pendapatan.</li><li>Membangun tata kelola BLU yang transparan, akuntabel, dan berorientasi pada hasil.</li><li>Memperkuat daya saing institusional di tingkat nasional dan regional.</li></ol><h3>3. Target Utama 5 Tahun (2025–2029)</h3><p>Target strategis utama dalam periode RSB ini:</p><ul><li><b>Layanan:</b> Peningkatan prodi terakreditasi Unggul dari 37,9% menjadi 48,2%.</li><li><b>SDM:</b> Peningkatan dosen S3 dari 29,67% menjadi 40%, rasio dosen:mahasiswa dari 1:44 menjadi 1:30.</li><li><b>Keuangan:</b> Peningkatan pendapatan PNBP minimal 15% per tahun.</li><li><b>Penelitian:</b> Peningkatan publikasi Scopus dan sitasi internasional.</li><li><b>Mahasiswa:</b> Peningkatan jumlah mahasiswa dari 10.182 menjadi ~14.500.</li><li><b>Infrastruktur:</b> Pengembangan smart campus dan green campus.</li></ul>',
         placeholder:'Tuliskan maksud, tujuan, dan target utama 5 tahun yang ingin dicapai BLU melalui penyusunan RSB...'
       },
     ]
@@ -742,6 +747,7 @@ function renderSidebar(){
   h+=`<div class="sb-sep"></div>
   <div class="sb-actions">
     <button class="sb-btn primary" onclick="showPreview()">👁️ Preview Dokumen</button>
+    <button class="sb-btn primary" onclick="exportDOCX()" style="background:linear-gradient(135deg,#22c55e,#14b8a6);">📄 Export DOCX</button>
     <button class="sb-btn secondary" onclick="window.print()">🖨️ Cetak / PDF</button>
     <button class="sb-btn secondary" onclick="saveAll()">💾 Simpan</button>
     <button class="sb-btn secondary" onclick="resetAll()">🔄 Reset</button>
@@ -1088,6 +1094,125 @@ window.addEventListener('DOMContentLoaded',()=>{
   loadData();
   SECTIONS.flatMap(s=>s.components).forEach(c=>updBadge(c.id));
 });
+
+/* ============================================================
+   EXPORT DOCX — PMK 76/2025 Lampiran III Format
+============================================================ */
+async function exportDOCX(){
+  showToast('⏳ Generating DOCX...');
+  try{
+    const{Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,
+      WidthType,AlignmentType,HeadingLevel,ShadingType,TableLayoutType,PageBreak}=docx;
+
+    function htmlToParas(html){
+      const ps=[];if(!html||!html.trim())return ps;
+      const d=document.createElement('div');d.innerHTML=html;
+      function proc(n){
+        if(n.nodeType===3){const t=n.textContent.trim();if(t)ps.push(new Paragraph({children:[new TextRun({text:t,size:24,font:'Times New Roman'})]}));return;}
+        if(n.nodeType!==1)return;const tag=n.tagName.toLowerCase();
+        if(tag==='h3'){ps.push(new Paragraph({children:[new TextRun({text:n.textContent,bold:true,size:24,font:'Times New Roman'})],spacing:{before:240,after:120}}));
+        }else if(tag==='p'){
+          const rs=[];
+          n.childNodes.forEach(c=>{
+            if(c.nodeType===3)rs.push(new TextRun({text:c.textContent,size:24,font:'Times New Roman'}));
+            else if(c.tagName==='B'||c.tagName==='STRONG')rs.push(new TextRun({text:c.textContent,bold:true,size:24,font:'Times New Roman'}));
+            else if(c.tagName==='I'||c.tagName==='EM')rs.push(new TextRun({text:c.textContent,italics:true,size:24,font:'Times New Roman'}));
+            else rs.push(new TextRun({text:c.textContent,size:24,font:'Times New Roman'}));
+          });
+          if(rs.length)ps.push(new Paragraph({children:rs,spacing:{after:120},alignment:AlignmentType.JUSTIFIED}));
+        }else if(tag==='ul'||tag==='ol'){
+          n.querySelectorAll(':scope>li').forEach((li,i)=>{
+            const px=tag==='ol'?`${i+1}. `:'\u2022 ';const rs=[new TextRun({text:px,size:24,font:'Times New Roman'})];
+            li.childNodes.forEach(c=>{
+              if(c.nodeType===3)rs.push(new TextRun({text:c.textContent,size:24,font:'Times New Roman'}));
+              else if(c.tagName==='B'||c.tagName==='STRONG')rs.push(new TextRun({text:c.textContent,bold:true,size:24,font:'Times New Roman'}));
+              else rs.push(new TextRun({text:c.textContent,size:24,font:'Times New Roman'}));
+            });
+            ps.push(new Paragraph({children:rs,indent:{left:720},spacing:{after:60}}));
+          });
+        }else{n.childNodes.forEach(c=>proc(c));}
+      }
+      d.childNodes.forEach(c=>proc(c));return ps;
+    }
+
+    function tblToDocx(el){
+      if(!el)return null;const rows=el.querySelectorAll('tr');if(!rows.length)return null;
+      const drs=[];
+      rows.forEach((tr,ri)=>{
+        const cells=tr.querySelectorAll('th,td');const dcs=[];
+        cells.forEach(c=>{
+          const isH=c.tagName==='TH'||ri===0;
+          dcs.push(new TableCell({
+            children:[new Paragraph({children:[new TextRun({text:c.textContent.trim(),bold:isH,size:20,font:'Times New Roman'})],spacing:{after:0}})],
+            shading:isH?{type:ShadingType.CLEAR,fill:'D9E2F3'}:undefined
+          }));
+        });
+        drs.push(new TableRow({children:dcs}));
+      });
+      return new Table({rows:drs,width:{size:100,type:WidthType.PERCENTAGE}});
+    }
+
+    const ch=[];
+    ch.push(new Paragraph({spacing:{before:3000}}));
+    ch.push(new Paragraph({children:[new TextRun({text:'RENCANA STRATEGIS BISNIS',bold:true,size:36,font:'Times New Roman'})],alignment:AlignmentType.CENTER,spacing:{after:200}}));
+    ch.push(new Paragraph({children:[new TextRun({text:'BADAN LAYANAN UMUM',bold:true,size:32,font:'Times New Roman'})],alignment:AlignmentType.CENTER,spacing:{after:200}}));
+    ch.push(new Paragraph({children:[new TextRun({text:'UIN KIAI AGENG MUHAMMAD BESARI PONOROGO',bold:true,size:32,font:'Times New Roman'})],alignment:AlignmentType.CENTER,spacing:{after:400}}));
+    ch.push(new Paragraph({children:[new TextRun({text:'TAHUN ANGGARAN 2025 s.d. 2029',bold:true,size:28,font:'Times New Roman'})],alignment:AlignmentType.CENTER,spacing:{after:1600}}));
+    ch.push(new Paragraph({children:[new TextRun({text:'Disusun berdasarkan PMK Nomor 76 Tahun 2025',size:24,font:'Times New Roman',italics:true})],alignment:AlignmentType.CENTER,spacing:{after:200}}));
+    ch.push(new Paragraph({children:[new TextRun({text:'(Perubahan Kedua atas PMK Nomor 129/PMK.05/2020)',size:22,font:'Times New Roman',italics:true})],alignment:AlignmentType.CENTER,spacing:{after:2000}}));
+    ch.push(new Paragraph({children:[new TextRun({text:'KEMENTERIAN AGAMA REPUBLIK INDONESIA',bold:true,size:24,font:'Times New Roman'})],alignment:AlignmentType.CENTER,spacing:{after:100}}));
+    ch.push(new Paragraph({children:[new TextRun({text:new Date().getFullYear().toString(),size:24,font:'Times New Roman'})],alignment:AlignmentType.CENTER}));
+    ch.push(new Paragraph({children:[new PageBreak()]}));
+
+    ch.push(new Paragraph({children:[new TextRun({text:'DAFTAR ISI',bold:true,size:28,font:'Times New Roman'})],alignment:AlignmentType.CENTER,spacing:{after:400}}));
+    const toc=['BAB I \u2014 Pendahuluan','    A. Resume Rencana Strategis K/L','    B. Visi dan Misi BLU','    C. Target RSB',
+     'BAB II \u2014 Analisis dan Strategi','    A. Evaluasi Kinerja BLU','    B. Analisis SWOT/BSC/Fishbone','    C. Inisiatif Strategis',
+     'BAB III \u2014 Rencana Strategis Bisnis 5 Tahun','    A. Program Kementerian/Lembaga','    B. Strategi Bisnis BLU','    C. Kegiatan dan Indikator',
+     'BAB IV \u2014 Penutup','Lampiran I \u2014 Evaluasi Kinerja Tahun Berjalan','Lampiran II \u2014 Program dan Kegiatan 5 Tahun',
+     'Lampiran III \u2014 Proyeksi 5 Tahun','Lampiran IV \u2014 Matriks Keterkaitan'];
+    toc.forEach(item=>{const isSub=item.startsWith('    ');
+      ch.push(new Paragraph({children:[new TextRun({text:item.trim(),size:24,font:'Times New Roman',bold:!isSub})],indent:isSub?{left:720}:undefined,spacing:{after:80}}));
+    });
+    ch.push(new Paragraph({children:[new PageBreak()]}));
+
+    SECTIONS.forEach((sec,si)=>{
+      ch.push(new Paragraph({children:[new TextRun({text:`${sec.num} \u2014 ${sec.title}`.toUpperCase(),bold:true,size:28,font:'Times New Roman'})],heading:HeadingLevel.HEADING_1,spacing:{before:400,after:200}}));
+      if(sec.limit)ch.push(new Paragraph({children:[new TextRun({text:`(${sec.limit})`,size:20,font:'Times New Roman',italics:true,color:'666666'})],spacing:{after:200}}));
+      sec.components.forEach(comp=>{
+        const ct=comp.letter?`${comp.letter}. ${comp.title}`:comp.title;
+        ch.push(new Paragraph({children:[new TextRun({text:ct,bold:true,size:24,font:'Times New Roman'})],heading:HeadingLevel.HEADING_2,spacing:{before:300,after:150}}));
+        if(comp.type.includes('rte')||comp.type==='swot+rte'){const rte=document.getElementById(`rte-${comp.id}`);if(rte)ch.push(...htmlToParas(rte.innerHTML));}
+        if(comp.type==='swot+rte'){
+          const labels={str:'STRENGTHS (Kekuatan)',wk:'WEAKNESSES (Kelemahan)',opp:'OPPORTUNITIES (Peluang)',thr:'THREATS (Ancaman)'};
+          ['str','wk','opp','thr'].forEach(qk=>{
+            const qb=document.querySelector(`[data-comp="${comp.id}"] .swot-quad-body[data-quad="${qk}"]`);if(!qb)return;
+            ch.push(new Paragraph({children:[new TextRun({text:labels[qk],bold:true,size:22,font:'Times New Roman'})],spacing:{before:200,after:100}}));
+            qb.querySelectorAll('.swot-item-text').forEach((it,i)=>{const t=it.textContent.trim();
+              if(t)ch.push(new Paragraph({children:[new TextRun({text:`${i+1}. ${t}`,size:22,font:'Times New Roman'})],indent:{left:360},spacing:{after:60}}));
+            });
+          });
+        }
+        if(comp.type.includes('table')||comp.table){
+          const te=document.querySelector(`#comp-${comp.id} table.editable`);
+          if(te){const dt=tblToDocx(te);if(dt){ch.push(new Paragraph({spacing:{before:100}}));ch.push(dt);ch.push(new Paragraph({spacing:{after:200}}));}}
+        }
+      });
+      if(si<SECTIONS.length-1)ch.push(new Paragraph({children:[new PageBreak()]}));
+    });
+
+    const doc=new Document({
+      creator:'RSB Generator \u2014 BLU UIN Ponorogo',
+      title:'Rencana Strategis Bisnis BLU UIN Ponorogo 2025-2029',
+      description:'Dokumen RSB sesuai PMK 76 Tahun 2025',
+      styles:{default:{document:{run:{font:'Times New Roman',size:24},paragraph:{spacing:{line:360}}}}},
+      sections:[{properties:{page:{margin:{top:1440,right:1080,bottom:1440,left:1440},size:{width:12240,height:15840}}},children:ch}]
+    });
+    const blob=await Packer.toBlob(doc);
+    saveAs(blob,`RSB_BLU_UIN_Ponorogo_2025-2029_${new Date().toISOString().slice(0,10)}.docx`);
+    showToast('\u2705 DOCX berhasil di-export!');
+  }catch(err){console.error('DOCX export error:',err);showToast('\u274c Gagal export: '+err.message);}
+}
+
 </script>
 </body>
 </html>
