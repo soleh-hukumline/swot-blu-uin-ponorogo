@@ -687,7 +687,15 @@ function updateProgress(){
 /* ============================================================
    SAVE / LOAD / RESET
 ============================================================ */
-function markDirty(){dirty=true;}
+let _autoSaveTimer=null;
+function markDirty(){
+  dirty=true;
+  // Auto-save after 3 seconds of inactivity
+  clearTimeout(_autoSaveTimer);
+  _autoSaveTimer=setTimeout(()=>{
+    if(dirty)saveAll(true); // silent=true
+  },3000);
+}
 
 function showToast(msg){
   const t=document.getElementById('toast');
@@ -695,7 +703,7 @@ function showToast(msg){
   setTimeout(()=>t.classList.remove('show'),3000);
 }
 
-async function saveAll(){
+async function saveAll(silent=false){
   // Collect all table data
   const allData={};
   SECTIONS.forEach(s=>{
@@ -733,7 +741,7 @@ async function saveAll(){
   }catch(e){console.warn('API save failed, localStorage only:',e);}
 
   dirty=false;
-  showToast(`<i class="fa-solid fa-circle-check"></i> Data tarif disimpan${cloudSaved?' ke server':' (lokal)'}`);
+  if(!silent) showToast(`<i class="fa-solid fa-circle-check"></i> Data tarif disimpan${cloudSaved?' ke server':' (lokal)'}`);
   updateProgress();
   updateCompliance();
 }
@@ -759,12 +767,17 @@ async function loadData(){
     }
   }catch(e){console.warn('API load failed, trying localStorage:',e);}
 
-  // Fallback to localStorage
+  // Fallback to localStorage — and auto-push to server if server was empty
   try{
     const raw=localStorage.getItem('tarif_blu_data');
     if(raw){
       const parsed=JSON.parse(raw);
-      if(parsed&&parsed.tables)applyData(parsed.tables);
+      if(parsed&&parsed.tables){
+        applyData(parsed.tables);
+        // Auto-migrate: push localStorage data to server
+        console.log('Auto-migrating localStorage data to server...');
+        setTimeout(()=>saveAll(true),1000);
+      }
     }
   }catch(e){console.warn('localStorage load failed:',e);}
 }
