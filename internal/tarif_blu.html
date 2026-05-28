@@ -65,14 +65,17 @@ header{grid-column:1/-1;display:flex;align-items:center;padding:0.5rem 1.2rem;ba
   text-transform:uppercase;letter-spacing:0.5px;margin-top:0.4rem;}
 /* Table cards */
 .tbl-card{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:1rem;overflow:hidden;}
-.tbl-card-head{display:flex;align-items:center;gap:0.5rem;padding:0.6rem 0.8rem;border-bottom:1px solid var(--border);background:var(--tbl-head);}
+.tbl-card-head{display:flex;align-items:center;gap:0.5rem;padding:0.6rem 0.8rem;border-bottom:1px solid var(--border);background:var(--tbl-head);flex-wrap:wrap;}
 .tbl-card-title{font-size:0.75rem;font-weight:700;color:var(--text);}
 .tbl-card-ref{font-size:0.58rem;color:var(--muted);margin-left:auto;background:var(--bg);padding:0.15rem 0.4rem;border-radius:4px;}
 .tbl-card-body{padding:0.5rem;overflow-x:auto;}
+.unit-badge{display:inline-flex;align-items:center;gap:0.3rem;padding:0.2rem 0.6rem;border-radius:20px;font-size:0.6rem;
+  font-weight:600;border:1px solid;margin-top:0.3rem;}
+.unit-badge-row{display:flex;flex-wrap:wrap;gap:0.4rem;padding:0.4rem 0.8rem;border-bottom:1px solid var(--border);background:var(--bg);}
 /* Tables */
 table.data-tbl{width:100%;border-collapse:collapse;font-size:0.72rem;}
 table.data-tbl th{background:var(--tbl-head);color:var(--text);font-weight:600;padding:0.4rem 0.5rem;
-  border:1px solid var(--border);text-align:left;white-space:nowrap;font-size:0.65rem;}
+  border:1px solid var(--border);text-align:left;white-space:normal;word-break:break-word;font-size:0.65rem;min-width:60px;}
 table.data-tbl th.col-ceiling{background:var(--ceiling-bg);color:var(--amber);font-weight:700;}
 table.data-tbl td{border:1px solid var(--border);padding:0;}
 table.data-tbl td.ceiling-cell{background:var(--ceiling-bg);}
@@ -81,7 +84,7 @@ table.data-tbl tr:hover td{background:var(--editor-focus);}
 table.data-tbl .section-row td{background:#eef2ff !important;font-weight:700;color:var(--accent);padding:0.4rem 0.5rem;}
 [data-theme="dark"] table.data-tbl .section-row td{background:#1e3a5f !important;}
 .cell-input{width:100%;border:none;padding:0.35rem 0.5rem;font-size:0.72rem;font-family:'Inter',sans-serif;
-  background:transparent;color:var(--text);outline:none;min-height:1.8rem;}
+  background:transparent;color:var(--text);outline:none;min-height:1.8rem;white-space:normal;word-break:break-word;}
 .cell-input:focus{background:var(--card);box-shadow:inset 0 0 0 2px #1a73e8;}
 .cell-input.cell-label{font-weight:500;background:rgba(0,0,0,0.01);}
 .cell-input.cell-readonly{background:var(--bg);color:var(--muted);cursor:default;}
@@ -217,6 +220,7 @@ const SECTIONS=[
     cssClass:'u-akademik',
     tables:[
       {id:'tf-seleksi', title:'Tarif Seleksi Ujian Masuk', ref:'PMK 126 Ps.2(1)(a)',
+        unitPengisi:'Bag. Akademik', unitIcon:'fa-graduation-cap', unitColor:'#2563eb',
         headers:['No','Jenis Seleksi','Satuan',...ALL_YEARS,'Ceiling PMK'],
         rows:[
           ['1','SNBT/UTBK-SNBT','Rp/peserta',...ALL_YEARS.map(()=>'...'),''],
@@ -225,10 +229,12 @@ const SECTIONS=[
           ['4','Seleksi Pascasarjana','Rp/peserta',...ALL_YEARS.map(()=>'...'),''],
         ]},
       {id:'tf-ukt', title:'UKT per Program Studi — 5 Kelompok (KMA 498/2024)', ref:'PMK 126 Ps.2(1)(b)',
+        unitPengisi:'Bag. Keuangan + Akademik', unitIcon:'fa-coins', unitColor:'#dc2626',
         headers:['No','Program Studi','Kel.','UKT 2025 (Rp)','Ceiling PMK (Rp)','Proyeksi 2026','Proyeksi 2027','Proyeksi 2028','Proyeksi 2029','Status'],
         rows:[]  // dynamically generated
       },
       {id:'tf-pasca', title:'Biaya Pendidikan Pascasarjana', ref:'PMK 126 Ps.2(1)(c)',
+        unitPengisi:'Pascasarjana', unitIcon:'fa-user-graduate', unitColor:'#d97706',
         headers:['No','Program','Jenjang','Satuan',...ALL_YEARS,'Ceiling PMK'],
         rows:[
           ['1','Magister Hukum Keluarga','S2','Rp/smt',...ALL_YEARS.map(()=>'...'),''],
@@ -237,6 +243,7 @@ const SECTIONS=[
           ['4','Program Doktor (jika ada)','S3','Rp/smt',...ALL_YEARS.map(()=>'...'),''],
         ]},
       {id:'tf-ipi', title:'Iuran Pengembangan Institusi', ref:'PMK 126 Ps.2(1)(d)',
+        unitPengisi:'Bag. Keuangan', unitIcon:'fa-coins', unitColor:'#dc2626',
         headers:['No','Jenis Iuran','Satuan',...ALL_YEARS,'Ceiling PMK'],
         rows:[
           ['1','Iuran Pengembangan Institusi - Reguler','Rp/mhs',...ALL_YEARS.map(()=>'...'),''],
@@ -408,10 +415,16 @@ function renderTable(t,section){
     <div class="tbl-card-head" style="border-left:3px solid ${section.color}">
       <i class="fa-solid ${section.icon}" style="color:${section.color}"></i>
       <span class="tbl-card-title">${t.title}</span>`;
-  if(t.unitPengisi) html+=`<span style="font-size:0.6rem;color:${t.unitColor||'var(--muted)'};margin-left:0.5rem">
-    <i class="fa-solid ${t.unitIcon||'fa-user'}"></i> ${t.unitPengisi}</span>`;
   html+=`<span class="tbl-card-ref">${t.ref}</span>
-    </div><div class="tbl-card-body">
+    </div>`;
+  if(t.unitPengisi){
+    html+=`<div class="unit-badge-row">
+      <span class="unit-badge" style="color:${t.unitColor||'var(--muted)'};border-color:${t.unitColor||'var(--border)'};background:${t.unitColor||'var(--muted)'}11">
+        <i class="fa-solid ${t.unitIcon||'fa-user'}"></i> Pengisi: ${t.unitPengisi}
+      </span>
+    </div>`;
+  }
+  html+=`<div class="tbl-card-body">
     <table class="data-tbl" id="${t.id}"><thead><tr>`;
   t.headers.forEach((h,hi)=>{
     const isCeiling=h.includes('Ceiling');
