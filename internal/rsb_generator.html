@@ -1430,13 +1430,36 @@ window.addEventListener('DOMContentLoaded',()=>{
    SYNC: Lampiran I (master) → BAB II (computed view)
 ============================================================ */
 function syncFromLampiran(){
+  // Universal cell value reader/writer for input-based tables
+  function getCellValue(td){
+    if(!td)return '';
+    const inp=td.querySelector('input.cell-input,input.cell-custom');
+    if(inp)return inp.value.trim();
+    const sel=td.querySelector('select.cell-select');
+    if(sel){
+      if(sel.value==='__custom'){
+        const ci=td.querySelector('input.cell-custom');
+        return ci?ci.value.trim():'';
+      }
+      return sel.value.trim();
+    }
+    return td.textContent.trim();
+  }
+  function setCellValue(td,val){
+    if(!td)return;
+    const inp=td.querySelector('input.cell-input,input.cell-custom');
+    if(inp){inp.value=val;return;}
+    const sel=td.querySelector('select.cell-select');
+    if(sel){sel.value=val;return;}
+    td.textContent=val;
+  }
   function readTable(tblId){
     const tbl=document.getElementById(tblId);
     if(!tbl)return[];
     const rows=[];
     tbl.querySelectorAll('tbody tr').forEach(tr=>{
       const cells=[];
-      tr.querySelectorAll('td').forEach(td=>cells.push(td.textContent.trim()));
+      tr.querySelectorAll('td').forEach(td=>cells.push(getCellValue(td)));
       rows.push(cells);
     });
     return rows;
@@ -1650,29 +1673,43 @@ function autoImportData(){
 ============================================================ */
 function syncLampiran(){
   let changes=0;
+  // Universal cell value reader/writer for input-based tables
+  function gv(td){
+    if(!td)return '';
+    const inp=td.querySelector('input.cell-input,input.cell-custom');
+    if(inp)return inp.value.trim();
+    const sel=td.querySelector('select.cell-select');
+    if(sel){
+      if(sel.value==='__custom'){const ci=td.querySelector('input.cell-custom');return ci?ci.value.trim():'';}
+      return sel.value.trim();
+    }
+    return td.textContent.trim();
+  }
+  function sv(td,val){
+    if(!td)return;
+    const inp=td.querySelector('input.cell-input,input.cell-custom');
+    if(inp){inp.value=val;return;}
+    td.textContent=val;
+  }
 
   // --- A. Lamp I → Lamp III: Copy 2024/2025 realisasi as baseline ---
-  // Lamp I tbl-keuangan row values → Lamp III tbl-proy-pnbp "Realisasi 2024"
   const tblKeu=document.getElementById('tbl-keuangan');
   const tblPnbp=document.getElementById('tbl-proy-pnbp');
   if(tblKeu && tblPnbp){
-    // Map keuangan indicators to PNBP rows by name matching
     const keuRows=tblKeu.querySelectorAll('tbody tr');
     const pnbpRows=tblPnbp.querySelectorAll('tbody tr');
-    // Copy total PNBP from last year column of keuangan
     keuRows.forEach(kr=>{
       const cells=kr.querySelectorAll('td');
       if(cells.length<2)return;
-      const label=(cells[1]?.textContent||'').trim().toLowerCase();
+      const label=gv(cells[1]).toLowerCase();
       if(label.includes('total pnbp')||label.includes('pendapatan pnbp')){
-        const lastVal=(cells[cells.length-2]?.textContent||'').trim();
-        // Put in PNBP total row
+        const lastVal=gv(cells[cells.length-2]);
         pnbpRows.forEach(pr=>{
           const pcells=pr.querySelectorAll('td');
           if(pcells.length<2)return;
-          const plabel=(pcells[0]?.textContent||'').trim();
-          if(plabel===''&&(pcells[1]?.textContent||'').includes('TOTAL')){
-            if(pcells[2]&&lastVal!=='...'){pcells[2].textContent=lastVal;changes++;}
+          const plabel=gv(pcells[0]);
+          if(plabel===''&&gv(pcells[1]).includes('TOTAL')){
+            if(pcells[2]&&lastVal!=='...'){sv(pcells[2],lastVal);changes++;}
           }
         });
       }
@@ -1689,21 +1726,20 @@ function syncLampiran(){
     layRows.forEach(r=>{
       const cells=r.querySelectorAll('td');
       if(cells.length<3)return;
-      const label=(cells[1]?.textContent||'').trim().toLowerCase();
-      const lastVal=(cells[cells.length-2]?.textContent||'').trim();
+      const label=gv(cells[1]).toLowerCase();
+      const lastVal=gv(cells[cells.length-2]);
       if(label&&lastVal&&lastVal!=='...')layMap[label]=lastVal;
     });
     volRows.forEach(r=>{
       const cells=r.querySelectorAll('td');
       if(cells.length<3)return;
-      const label=(cells[1]?.textContent||'').trim().toLowerCase();
-      // Match by partial name
+      const label=gv(cells[1]).toLowerCase();
       for(const[k,v] of Object.entries(layMap)){
         if(label.includes('mahasiswa')&&k.includes('mahasiswa')){
-          if(cells[2]&&cells[2].textContent==='...')cells[2].textContent=v;changes++;break;
+          if(cells[2]&&gv(cells[2])==='...'){sv(cells[2],v);changes++;}break;
         }
         if(label.includes('program studi')&&k.includes('program studi')){
-          if(cells[2]&&cells[2].textContent==='...')cells[2].textContent=v;changes++;break;
+          if(cells[2]&&gv(cells[2])==='...'){sv(cells[2],v);changes++;}break;
         }
       }
     });
@@ -1711,28 +1747,24 @@ function syncLampiran(){
 
   // --- C. Lamp II targets → Lamp III volume BLU rows ---
   const tblSasaran=document.getElementById('tbl-sasaran');
-  const tblProgkeg=document.getElementById('tbl-progkeg');
   if(tblSasaran && tblVol){
     const sasRows=tblSasaran.querySelectorAll('tbody tr');
     const volRows2=tblVol.querySelectorAll('tbody tr');
-    // Map sasaran targets to volume items
     sasRows.forEach(sr=>{
       const sc=sr.querySelectorAll('td');
       if(sc.length<5)return;
-      const ind=(sc[3]?.textContent||'').trim().toLowerCase();
+      const ind=gv(sc[3]).toLowerCase();
       const targets=[];
-      for(let i=5;i<sc.length;i++)targets.push((sc[i]?.textContent||'').trim());
+      for(let i=5;i<sc.length;i++)targets.push(gv(sc[i]));
       volRows2.forEach(vr=>{
         const vc=vr.querySelectorAll('td');
         if(vc.length<3)return;
-        const vlabel=(vc[1]?.textContent||'').trim().toLowerCase();
-        // Match LSP peserta
+        const vlabel=gv(vc[1]).toLowerCase();
         if(vlabel.includes('sertifikasi lsp')&&ind.includes('sertifikasi')){
-          // Copy "Setelah BLU" targets (last 5 columns)
           const startCol=vc.length-5;
           targets.forEach((t,i)=>{
-            if(startCol+i<vc.length&&t!=='...'&&vc[startCol+i].textContent==='...'){
-              vc[startCol+i].textContent=t;changes++;
+            if(startCol+i<vc.length&&t!=='...'&&gv(vc[startCol+i])==='...'){
+              sv(vc[startCol+i],t);changes++;
             }
           });
         }
@@ -1743,39 +1775,15 @@ function syncLampiran(){
   // --- D. Auto-calc Proporsi PNBP (l3e) from l3c and l3d ---
   const tblPropor=document.getElementById('tbl-proporsi');
   if(tblPnbp && tblPropor){
-    // Get PNBP totals and Belanja totals
-    const pnbpTotal={},belanjaTotal={};
-    const tblBelanja=document.getElementById('tbl-proy-belanja');
-    
-    // Helper: get total row values
-    function getTotalRow(tbl,scenario){
-      if(!tbl)return {};
-      const rows=tbl.querySelectorAll('tbody tr');
-      const result={};
-      rows.forEach(r=>{
-        const cells=r.querySelectorAll('td');
-        const first=(cells[0]?.textContent||'').trim();
-        if(first===''||(cells[1]?.textContent||'').includes('TOTAL')){
-          // This is total row. Read values
-          for(let i=2;i<cells.length;i++){
-            const v=parseFloat((cells[i]?.textContent||'0').replace(/[,.]/g,''));
-            if(!isNaN(v))result[i]=v;
-          }
-        }
-      });
-      return result;
-    }
-
-    // Auto-calc when both PNBP and Belanja totals are filled
     const pRows=tblPropor.querySelectorAll('tbody tr');
     pRows.forEach(r=>{
       const cells=r.querySelectorAll('td');
       if(cells.length<6)return;
-      const totalBel=parseFloat((cells[2]?.textContent||'0').replace(/[,.]/g,''));
-      const totalPnbp=parseFloat((cells[3]?.textContent||'0').replace(/[,.]/g,''));
+      const totalBel=parseFloat((gv(cells[2])||'0').replace(/[,.]/g,''));
+      const totalPnbp=parseFloat((gv(cells[3])||'0').replace(/[,.]/g,''));
       if(totalBel>0&&totalPnbp>0){
         const proporsi=((totalPnbp/totalBel)*100).toFixed(1);
-        if(cells[5])cells[5].textContent=proporsi+'%';
+        sv(cells[5],proporsi+'%');
         changes++;
       }
     });
@@ -1783,9 +1791,9 @@ function syncLampiran(){
 
   if(changes>0){
     markDirty();
-    showToast('<i class="fa-solid fa-circle-check"></i> Sync Lampiran berhasil! '+changes+' data diperbarui');
+    showToast('Sync Lampiran berhasil! '+changes+' data diperbarui');
   } else {
-    showToast('<i class="fa-solid fa-circle-check"></i> Sync selesai. Tidak ada data baru untuk disinkronkan.');
+    showToast('Sync selesai. Tidak ada data baru untuk disinkronkan.');
   }
 }
 
