@@ -11,15 +11,6 @@
 <style>
 /* ===== THEME ===== */
 :root{
-  --bg:#f1f5f9;--surface:#fff;--card:rgba(255,255,255,0.97);
-  --text:#0f172a;--muted:#64748b;--accent:#2563eb;
-  --border:rgba(0,0,0,0.08);--green:#16a34a;--amber:#d97706;
-  --red:#dc2626;--purple:#7c3aed;--cyan:#0891b2;--teal:#0d9488;
-  --editor-bg:rgba(241,245,249,0.8);--editor-focus:rgba(37,99,235,0.06);
-  --tbl-head:rgba(37,99,235,0.06);--tbl-alt:rgba(0,0,0,0.02);
-  --tbl-border:rgba(0,0,0,0.08);
-}
-[data-theme="light"]{
   --bg:#0f172a;--surface:#1e293b;--card:rgba(30,41,59,0.95);
   --text:#f8fafc;--muted:#94a3b8;--accent:#3b82f6;
   --border:rgba(255,255,255,0.08);--green:#22c55e;--amber:#f59e0b;
@@ -27,6 +18,15 @@
   --editor-bg:rgba(15,23,42,0.6);--editor-focus:rgba(59,130,246,0.12);
   --tbl-head:rgba(59,130,246,0.08);--tbl-alt:rgba(255,255,255,0.015);
   --tbl-border:rgba(255,255,255,0.06);
+}
+[data-theme="dark"]{
+  --bg:#f1f5f9;--surface:#fff;--card:rgba(255,255,255,0.97);
+  --text:#0f172a;--muted:#64748b;--accent:#2563eb;
+  --border:rgba(0,0,0,0.08);--green:#16a34a;--amber:#d97706;
+  --red:#dc2626;--purple:#7c3aed;--cyan:#0891b2;--teal:#0d9488;
+  --editor-bg:rgba(241,245,249,0.8);--editor-focus:rgba(37,99,235,0.06);
+  --tbl-head:rgba(37,99,235,0.06);--tbl-alt:rgba(0,0,0,0.02);
+  --tbl-border:rgba(0,0,0,0.08);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7;}
@@ -505,8 +505,8 @@ const SECTIONS = [
   {
     id:'lamp1', num:'LAMPIRAN I', title:'Evaluasi Kinerja Tahun Berjalan', limit:'Kinerja aspek layanan, keuangan, SDM, sarpras (PER-11/PB/2025)', cls:'cyan',
     components:[
-      { id:'l1a', letter:'', title:'\ud83d\udcca Data Kinerja Layanan Pendidikan (5 Tahun)', type:'rte+table',
-        template:'<p><b>\u26a0\ufe0f Tabel ini adalah MASTER DATA.</b> Isi data per tahun di bawah, lalu klik <b>\ud83d\udd04 Sync ke BAB II</b> di sidebar untuk otomatis mengisi tabel ringkasan di BAB II.</p>',
+      { id:'l1a', letter:'', title:'Data Kinerja Layanan Pendidikan (5 Tahun)', type:'rte+table',
+        template:'<p><b>MASTER DATA. Tabel ini adalah MASTER DATA.</b> Isi data per tahun di bawah, lalu klik <b>Sync ke BAB II</b> di sidebar untuk otomatis mengisi tabel ringkasan di BAB II.</p>',
         placeholder:'Narasi kinerja aspek layanan...',
         table:{ id:'tbl-layanan',
           headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
@@ -1475,8 +1475,8 @@ function syncFromLampiran(){
     if(target){target.innerHTML=html;synced++;}
   }
 
-  if(synced>0){markDirty();showToast('\u2705 '+synced+' tabel BAB II di-sync dari Lampiran I!');}
-  else showToast('\u26a0\ufe0f Isi data di Lampiran I dulu!');
+  if(synced>0){markDirty();showToast(''+synced+' tabel BAB II di-sync dari Lampiran I!');}
+  else showToast('Isi data di Lampiran I dulu!');
 }
 
 /* ============================================================
@@ -1536,16 +1536,16 @@ function autoImportData(){
     html=html.replace(/Kuadran \.\.\.<\/b>/g,'Kuadran '+quad+'</b>');
     html=html.replace(/strategi <b>\.\.\.<\/b>/g,'strategi <b>'+quad+'</b>');
     rteSwot.innerHTML=html;
-    report.push('\u2705 IFAS/EFAS: IFE='+ife+', EFE='+efe+' \u2192 Kuadran '+quad);
+    report.push('IFAS/EFAS: IFE='+ife+', EFE='+efe+' \u2192 Kuadran '+quad);
   }
   try{
     const cd=JSON.parse(localStorage.getItem('rsb_dokumen_data_v3')||'{}');
-    if(cd.scores)report.push('\u2705 Checklist: Total='+(cd.scores.kinerja+cd.scores.renstra+cd.scores.proyeksi)+'/12');
-    else report.push('\u26a0\ufe0f Checklist belum ada skor');
-  }catch(e){report.push('\u26a0\ufe0f Checklist: belum tersimpan');}
+    if(cd.scores)report.push('Checklist: Total='+(cd.scores.kinerja+cd.scores.renstra+cd.scores.proyeksi)+'/12');
+    else report.push('Checklist belum ada skor');
+  }catch(e){report.push('Checklist: belum tersimpan');}
   markDirty();
-  alert('\ud83d\udce5 Import Report:\n\n'+report.join('\n')+'\n\nSemua data bisa diedit manual.');
-  showToast('\u2705 Data diimport!');
+  alert(' Import Report:\n\n'+report.join('\n')+'\n\nSemua data bisa diedit manual.');
+  showToast('Data berhasil diimport!');
 }
 
 
@@ -1808,8 +1808,8 @@ async function exportDOCX(){
     });
     const blob=await Packer.toBlob(doc);
     saveAs(blob,`RSB_BLU_UIN_Ponorogo_2025-2029_${new Date().toISOString().slice(0,10)}.docx`);
-    showToast('\u2705 DOCX berhasil di-export!');
-  }catch(err){console.error('DOCX export error:',err);showToast('\u274c Gagal export: '+err.message);}
+    showToast('DOCX berhasil di-export!');
+  }catch(err){console.error('DOCX export error:',err);showToast('Gagal export: '+err.message);}
 }
 
 </script>

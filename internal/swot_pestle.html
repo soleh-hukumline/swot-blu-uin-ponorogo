@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="dark">
+<html lang="id" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -893,7 +893,7 @@ header h1 span{color:var(--accent);}
 <script>
 function toggleTheme(){
   const h=document.documentElement;
-  const d=h.getAttribute('data-theme')==='dark';
+  const d=h.getAttribute('data-theme')!=='dark';
   h.setAttribute('data-theme',d?'light':'dark');
   document.getElementById('themeToggle').textContent=d?'🌙 Tema':'☀️ Tema';
   buildDimensionCharts();

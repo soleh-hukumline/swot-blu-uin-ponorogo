@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="dark">
+<html lang="id" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,18 +9,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0f172a;--surface:#1e293b;--card:rgba(30,41,59,0.95);
-  --text:#f8fafc;--muted:#94a3b8;--accent:#3b82f6;
-  --border:rgba(255,255,255,0.08);--green:#22c55e;--amber:#f59e0b;
-  --red:#ef4444;--purple:#a78bfa;--cyan:#06b6d4;--orange:#f97316;
-  --opt:#22c55e;--new:#3b82f6;--future:#a78bfa;
-}
-[data-theme="light"]{
   --bg:#f1f5f9;--surface:#fff;--card:rgba(255,255,255,0.97);
   --text:#0f172a;--muted:#64748b;--border:rgba(0,0,0,0.09);
   --green:#16a34a;--amber:#d97706;--red:#dc2626;--purple:#7c3aed;
   --cyan:#0891b2;--orange:#ea580c;--accent:#2563eb;
   --opt:#16a34a;--new:#2563eb;--future:#7c3aed;
+}
+[data-theme="dark"]{
+  --bg:#0f172a;--surface:#1e293b;--card:rgba(30,41,59,0.95);
+  --text:#f8fafc;--muted:#94a3b8;--accent:#3b82f6;
+  --border:rgba(255,255,255,0.08);--green:#22c55e;--amber:#f59e0b;
+  --red:#ef4444;--purple:#a78bfa;--cyan:#06b6d4;--orange:#f97316;
+  --opt:#22c55e;--new:#3b82f6;--future:#a78bfa;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
@@ -1187,7 +1187,7 @@ header h1 span{color:var(--accent);}
 <script>
 function toggleTheme(){
   const h=document.documentElement;
-  const d=h.getAttribute('data-theme')==='dark';
+  const d=h.getAttribute('data-theme')!=='dark';
   h.setAttribute('data-theme',d?'light':'dark');
   document.getElementById('themeToggle').textContent=d?'🌙 Tema':'☀️ Tema';
 }
