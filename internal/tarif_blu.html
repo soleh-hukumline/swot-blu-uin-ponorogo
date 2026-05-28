@@ -163,10 +163,15 @@ table.data-tbl td.col-act{padding:0;text-align:center;border:1px solid var(--bor
 .modal-actions .btn-create{background:linear-gradient(135deg,#2563eb,#3b82f6);color:#fff;}
 .modal-actions .btn-create:hover{box-shadow:0 3px 12px rgba(37,99,235,0.3);}
 /* Add category button */
-.add-category-btn{display:flex;align-items:center;justify-content:center;gap:0.4rem;width:100%;
-  padding:0.8rem;margin-top:0.8rem;border:2px dashed var(--border);border-radius:10px;background:transparent;
-  color:var(--muted);font-size:0.75rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.2s;}
-.add-category-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--editor-focus);}
+.add-category-btn{display:flex;align-items:center;justify-content:center;gap:0.5rem;width:100%;
+  padding:1rem;margin-top:1rem;border:2px dashed var(--accent);border-radius:12px;
+  background:linear-gradient(135deg,rgba(37,99,235,0.05),rgba(124,58,237,0.05));
+  color:var(--accent);font-size:0.85rem;font-weight:700;font-family:'Inter',sans-serif;
+  cursor:pointer;transition:all 0.25s;letter-spacing:0.3px;}
+.add-category-btn:hover{border-style:solid;background:linear-gradient(135deg,rgba(37,99,235,0.12),rgba(124,58,237,0.12));
+  box-shadow:0 4px 16px rgba(37,99,235,0.15);transform:translateY(-1px);}
+.add-category-btn i{font-size:1rem;background:var(--accent);color:#fff;width:24px;height:24px;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;}
 /* Delete table button */
 .tbl-delete-btn{margin-left:0.4rem;background:none;border:none;color:#cbd5e1;cursor:pointer;
   font-size:0.65rem;padding:0.2rem 0.4rem;border-radius:4px;transition:all 0.15s;}
