@@ -465,7 +465,7 @@ function renderComplianceDashboard(){
       <div class="section-name">Compliance Dashboard</div>
       <div class="section-desc">Validasi tarif aktual vs ceiling PMK 126/2024. Status otomatis berubah saat data terisi.</div>
       <div class="section-badge" style="background:#ecfdf5;color:#059669">
-        <i class="fa-solid fa-shield-check"></i> Auto-Validasi Real-time
+        <i class="fa-solid fa-shield-halved"></i> Auto-Validasi Real-time
       </div>
     </div>
     <div class="compliance-grid" id="compGrid">
@@ -727,17 +727,19 @@ async function loadData(){
   // Try API first
   try{
     const res=await fetch(API_URL);
-    const json=await res.json();
-    if(json.ok&&json.data){
-      const allData={};
-      Object.keys(json.data).forEach(key=>{
-        if(key.startsWith('tarif-')&&json.data[key]&&json.data[key].tables){
-          Object.assign(allData,json.data[key].tables);
+    if(res.ok){
+      const json=await res.json();
+      if(json&&json.ok&&json.data){
+        const allData={};
+        Object.keys(json.data).forEach(key=>{
+          if(key.startsWith('tarif-')&&json.data[key]&&json.data[key].tables){
+            Object.assign(allData,json.data[key].tables);
+          }
+        });
+        if(Object.keys(allData).length>0){
+          applyData(allData);
+          return;
         }
-      });
-      if(Object.keys(allData).length>0){
-        applyData(allData);
-        return;
       }
     }
   }catch(e){console.warn('API load failed, trying localStorage:',e);}
@@ -747,7 +749,7 @@ async function loadData(){
     const raw=localStorage.getItem('tarif_blu_data');
     if(raw){
       const parsed=JSON.parse(raw);
-      if(parsed.tables)applyData(parsed.tables);
+      if(parsed&&parsed.tables)applyData(parsed.tables);
     }
   }catch(e){console.warn('localStorage load failed:',e);}
 }
@@ -859,9 +861,11 @@ if(isAdmin){
 window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});
 
 // Render & load
-renderSidebar();
-renderMain();
-loadData().then(()=>{updateProgress();updateCompliance();});
+try{
+  renderSidebar();
+  renderMain();
+  loadData().then(()=>{updateProgress();updateCompliance();}).catch(e=>console.warn('loadData error:',e));
+}catch(e){console.error('Render error:',e);document.getElementById('mainContent').innerHTML='<div style="padding:2rem;color:red">Error: '+e.message+'</div>';}
 </script>
 </body>
 </html>
