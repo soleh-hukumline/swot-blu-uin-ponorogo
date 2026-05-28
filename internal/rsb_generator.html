@@ -268,70 +268,20 @@ const SECTIONS = [
         template:'<h3>1. Evaluasi Capaian Kinerja Periode 2020–2024</h3><p>Evaluasi terhadap capaian kinerja UIN Ponorogo selama 5 tahun terakhir (2020–2024) menunjukkan tren positif di beberapa aspek, namun masih terdapat gap yang perlu diperbaiki.</p><h3>A. Aspek Layanan Pendidikan</h3><p>Jumlah mahasiswa aktif meningkat dari 8.500 (2020) menjadi 10.182 (2024) atau pertumbuhan rata-rata 4,7% per tahun. Akreditasi institusi naik ke peringkat "Unggul" dari BAN-PT. Jumlah prodi terakreditasi "Unggul" meningkat dari 3 menjadi 11 prodi (37,9%). Namun, tingkat kelulusan tepat waktu masih 62,26% dan perlu ditingkatkan.</p><h3>B. Aspek Keuangan</h3><p>Pendapatan PNBP tumbuh rata-rata 8,3% per tahun, terutama dari UKT mahasiswa baru dan sewa fasilitas. Realisasi belanja rata-rata mencapai 94,5% dari pagu. Namun, ketergantungan pada Rupiah Murni (RM) masih tinggi dan proporsi PNBP terhadap total belanja perlu ditingkatkan.</p><h3>C. Aspek SDM</h3><p>Jumlah dosen meningkat dari 290 menjadi 329 orang. Dosen bergelar S3 naik dari 21% menjadi 29,67%. Guru Besar bertambah dari 8 menjadi 15 orang. Namun, 43,5% dosen masih berstatus Asisten Ahli dan rasio dosen:mahasiswa 1:44 masih di atas standar ideal 1:30.</p><h3>D. Aspek Sarana dan Prasarana</h3><p>Infrastruktur berkembang signifikan melalui dana SBSN, termasuk gedung perkuliahan baru, laboratorium, dan fasilitas olahraga. Total nilai aset meningkat. Namun, fasilitas digital dan smart campus masih perlu dikembangkan.</p><h3>2. Hambatan dan Kendala</h3><ol><li>Status Satker (belum BLU) membatasi fleksibilitas pengelolaan keuangan dan PNBP.</li><li>Kebijakan efisiensi anggaran nasional (Inpres 1/2025) mengurangi alokasi belanja.</li><li>Keterbatasan rekrutmen dosen PNS baru dari kuota pusat.</li><li>Proses transformasi dari IAIN ke UIN memerlukan adaptasi organisasi dan tata kelola.</li><li>Persaingan ketat antar PTKIN dalam perebutan mahasiswa berkualitas.</li></ol>',
         placeholder:'Tuliskan evaluasi capaian kinerja periode sebelumnya dan hambatan...'
       },
-      { id:'b2a1', letter:'', title:'📊 Kinerja Aspek Layanan Pendidikan',
-        type:'table',
-        table:{
-          id:'tbl-ev-layanan',
-          headers:['No','Indikator Kinerja','Satuan','2020','2021','2022','2023','Target 2024','Realisasi 2024','Capaian (%)','Keterangan'],
-          rows:[
-            ['1','Jumlah mahasiswa aktif','Orang','8.500','8.920','9.200','9.450','10.000','10.182','101,8%','Pertumbuhan 4,7%/tahun'],
-            ['2','Jumlah mahasiswa baru','Orang','...','...','...','...','3.200','3.356','104,9%','Peminat meningkat'],
-            ['3','Jumlah lulusan','Orang','...','...','...','...','...','...','...',''],
-            ['4','Jumlah program studi','Prodi','22','24','26','27','28','28','100%','Bertambah 6 prodi'],
-            ['5','Prodi terakreditasi Unggul','Prodi','3','4','6','8','10','11','110%','37,9% dari total'],
-            ['6','Prodi terakreditasi Baik Sekali','Prodi','...','...','...','...','8','8','100%','27,6% dari total'],
-            ['7','Akreditasi institusi','Peringkat','B','B','Unggul','Unggul','Unggul','Unggul','100%','Naik ke Unggul 2022'],
-            ['8','Tingkat kelulusan tepat waktu','%','58','59,5','60','61','65','62,26','95,8%','Perlu peningkatan'],
-            ['9','IPK rata-rata lulusan','Nilai','3,45','3,47','3,48','3,50','3,50','3,52','100,6%','Stabil baik'],
-            ['10','Masa tunggu kerja lulusan','Bulan','9,2','8,8','8,5','8,0','< 8','7,6','105,3%','Tren membaik'],
-            ['11','Kepuasan mahasiswa (IKM)','%','72','74','75','77','80','78,5','98,1%','Survei online'],
-            ['12','Peserta RPL (Rekognisi Pembelajaran Lampau)','Orang','—','—','...','...','...','...','...','Inovasi akses pendidikan'],
-            ['13','Peserta PPG (Profesi Guru)','Orang','...','...','...','...','...','...','...','Layanan sertifikasi pendidikan'],
-            ['14','Mahasiswa Ma\'had terintegrasi kurikulum','Orang','...','...','...','...','...','...','...','Keunikan model pendidikan'],
-          ]
-        }
+      { id:'b2a1', letter:'', title:'📊 Ringkasan Kinerja Layanan Pendidikan',
+        type:'rte',
+        template:'<p><em>🔄 Tabel ringkasan otomatis dari data Lampiran I. Klik <b>🔄 Sync ke BAB II</b> di sidebar.</em></p><div id="sync-layanan"></div>',
+        placeholder:'Klik Sync ke BAB II untuk generate otomatis...'
       },
-      { id:'b2a2', letter:'', title:'💰 Kinerja Aspek Keuangan',
-        type:'table',
-        table:{
-          id:'tbl-ev-keuangan',
-          headers:['No','Indikator Kinerja','Satuan','2020','2021','2022','2023','Target 2024','Realisasi 2024','Capaian (%)','Keterangan'],
-          rows:[
-            ['1','Pendapatan PNBP total','Rp Juta','...','...','...','...','...','...','...',''],
-            ['2','— UKT/SPP','Rp Juta','...','...','...','...','...','...','...','Sumber utama PNBP'],
-            ['3','— Asrama Ma\'had','Rp Juta','...','...','...','...','...','...','...',''],
-            ['4','— Sewa Gedung & Aula','Rp Juta','...','...','...','...','...','...','...',''],
-            ['5','— Sewa Lapangan','Rp Juta','...','...','...','...','...','...','...','Kampus II'],
-            ['6','— PPG','Rp Juta','...','...','...','...','...','...','...','Profesi guru'],
-            ['7','— PNBP lainnya','Rp Juta','...','...','...','...','...','...','...','Tambah baris jika ada'],
-            ['8','Pagu belanja total','Rp Juta','...','...','...','...','...','...','...',''],
-            ['9','Realisasi belanja','%','92','93','94','94','95','94,5','99,5%','Stabil baik'],
-            ['10','Belanja pegawai (51)','Rp Juta','...','...','...','...','...','...','...',''],
-            ['11','Belanja barang (52)','Rp Juta','...','...','...','...','...','...','...',''],
-            ['12','Belanja modal (53)','Rp Juta','...','...','...','...','...','...','...',''],
-            ['13','Proporsi PNBP/total belanja','%','...','...','...','...','...','...','...','Perlu ditingkatkan'],
-            ['14','Nilai SAKIP','Nilai','68','70','72','75','80','78','97,5%','BB, target A'],
-          ]
-        }
+      { id:'b2a2', letter:'', title:'💰 Ringkasan Kinerja Keuangan',
+        type:'rte',
+        template:'<p><em>🔄 Tabel ringkasan otomatis dari data Lampiran I. Klik <b>🔄 Sync ke BAB II</b> di sidebar.</em></p><div id="sync-keuangan"></div>',
+        placeholder:'Klik Sync ke BAB II untuk generate otomatis...'
       },
-      { id:'b2a3', letter:'', title:'👥 Kinerja Aspek SDM',
-        type:'table',
-        table:{
-          id:'tbl-ev-sdm',
-          headers:['No','Indikator Kinerja','Satuan','2020','2021','2022','2023','Target 2024','Realisasi 2024','Capaian (%)','Keterangan'],
-          rows:[
-            ['1','Jumlah dosen tetap (PNS)','Orang','290','300','310','320','330','329','99,7%','Bertambah 39 orang'],
-            ['2','Dosen S3 (Doktor)','Orang','61','65','70','75','...','81','...','Dari 21% ke 24,6%'],
-            ['3','Dosen S3','%','21,0','21,7','22,6','23,4','30','29,67','98,9%','Target 40% (2029)'],
-            ['4','Guru Besar (Profesor)','Orang','8','9','10','12','15','15','100%','Bertambah 7 orang'],
-            ['5','Lektor Kepala','Orang','35','38','40','43','50','47','94%','Perlu percepatan'],
-            ['6','Lektor','Orang','110','115','118','120','...','123','...',''],
-            ['7','Asisten Ahli','Orang','136','137','141','143','...','143','...','43,5%, prioritas naik'],
-            ['8','Rasio dosen:mahasiswa','Rasio','1:29','1:30','1:30','1:30','1:35','1:44','77,3%','Mhs naik lebih cepat'],
-            ['9','Dosen bersertifikat pendidik','%','55','58','62','65','75','70','93,3%','Target 85% (2029)'],
-            ['10','Tenaga kependidikan','Orang','150','152','155','158','170','162','95,3%','PNS + PPNPN'],
-          ]
-        }
+      { id:'b2a3', letter:'', title:'👥 Ringkasan Kinerja SDM',
+        type:'rte',
+        template:'<p><em>🔄 Tabel ringkasan otomatis dari data Lampiran I. Klik <b>🔄 Sync ke BAB II</b> di sidebar.</em></p><div id="sync-sdm"></div>',
+        placeholder:'Klik Sync ke BAB II untuk generate otomatis...'
       },
       { id:'b2a4', letter:'', title:'🔬 Kinerja Aspek Penelitian & Publikasi',
         type:'table',
@@ -508,27 +458,27 @@ const SECTIONS = [
     ]
   },
   {
-    id:'lamp1', num:'LAMPIRAN I', title:'Evaluasi Kinerja Tahun Berjalan', limit:'', cls:'cyan',
+    id:'lamp1', num:'LAMPIRAN I', title:'Evaluasi Kinerja 5 Tahun (2020\u20132024)', limit:'Data ini menjadi sumber otomatis untuk tabel BAB II', cls:'cyan',
     components:[
-      { id:'l1a', letter:'', title:'Kinerja Aspek Layanan', type:'rte+table',
-        template:'<p>Kinerja aspek layanan pendidikan UIN Ponorogo tahun berjalan (2024) meliputi penyelenggaraan pendidikan, penelitian, dan pengabdian masyarakat. Berikut data target dan realisasi kinerja layanan:</p>',
+      { id:'l1a', letter:'', title:'\ud83d\udcca Data Kinerja Layanan Pendidikan (5 Tahun)', type:'rte+table',
+        template:'<p><b>\u26a0\ufe0f Tabel ini adalah MASTER DATA.</b> Isi data per tahun di bawah, lalu klik <b>\ud83d\udd04 Sync ke BAB II</b> di sidebar untuk otomatis mengisi tabel ringkasan di BAB II.</p>',
         placeholder:'Narasi kinerja aspek layanan...',
         table:{ id:'tbl-layanan',
-          headers:['No','Indikator Layanan','Satuan','Target 2024','Realisasi 2024','Capaian (%)','Keterangan'],
-          rows:[['1','Jumlah mahasiswa aktif','Orang','10.000','10.182','101,8%','Meningkat dari 9.450 (2023)'],
-            ['2','Jumlah mahasiswa baru','Orang','3.200','3.356','104,9%','Peminat meningkat 12%'],
-            ['3','Jumlah lulusan','Orang','...','...','...',''],
-            ['4','Tingkat kelulusan tepat waktu','%','65','62,26','95,8%','Perlu program percepatan'],
-            ['5','IPK rata-rata lulusan','Nilai','3,50','3,52','100,6%','Baik'],
-            ['6','Masa tunggu kerja lulusan','Bulan','< 8','7,6','105,3%','Tracer study 2024'],
-            ['7','Prodi terakreditasi Unggul','Prodi','10','11','110%','37,9% dari total prodi'],
-            ['8','Prodi terakreditasi Baik Sekali','Prodi','8','8','100%','27,6% dari total prodi'],
-            ['9','Jumlah MoU kerjasama aktif','MoU','250','240','96%','Domestik & internasional'],
-            ['10','Kepuasan mahasiswa (IKM)','%','80','78,5','98,1%','Perlu peningkatan layanan digital'],
-            ['11','Jumlah program studi','Prodi','28','28','100%','S1:22, S2:5, S3:1'],
-            ['12','Peserta RPL','Orang','...','...','...','Inovasi akses pendidikan'],
-            ['13','Peserta PPG','Orang','...','...','...','Sertifikasi profesi guru'],
-            ['14','Mahasiswa Ma\'had terintegrasi','Orang','...','...','...','Model pendidikan khas'],
+          headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024'],
+          rows:[['1','Jumlah mahasiswa aktif','Orang','8.500','8.920','9.200','9.450','10.182'],
+            ['2','Jumlah mahasiswa baru','Orang','...','...','...','...','3.356'],
+            ['3','Jumlah lulusan','Orang','...','...','...','...','...'],
+            ['4','Jumlah program studi','Prodi','22','24','26','27','28'],
+            ['5','Prodi akreditasi Unggul','Prodi','3','4','6','8','11'],
+            ['6','Prodi akreditasi Baik Sekali','Prodi','...','...','...','...','8'],
+            ['7','Tingkat kelulusan tepat waktu','%','58','59,5','60','61','62,26'],
+            ['8','IPK rata-rata lulusan','Nilai','3,45','3,47','3,48','3,50','3,52'],
+            ['9','Masa tunggu kerja lulusan','Bulan','9,2','8,8','8,5','8,0','7,6'],
+            ['10','Kepuasan mahasiswa (IKM)','%','72','74','75','77','78,5'],
+            ['11','MoU kerjasama aktif','MoU','...','...','...','...','240'],
+            ['12','Peserta RPL','Orang','\u2014','\u2014','...','...','...'],
+            ['13','Peserta PPG','Orang','...','...','...','...','...'],
+            ['14','Mahasiswa Ma\'had terintegrasi','Orang','...','...','...','...','...'],
           ]}},
       { id:'l1b', letter:'', title:'Kinerja Aspek Keuangan', type:'rte+table',
         template:'<p>Kinerja aspek keuangan mencakup realisasi pendapatan dan belanja. Berikut data keuangan tahun berjalan:</p>',
@@ -1118,6 +1068,103 @@ window.addEventListener('DOMContentLoaded',()=>{
 });
 
 
+
+/* ============================================================
+   SYNC: Lampiran I (master) → BAB II (computed view)
+============================================================ */
+function syncFromLampiran(){
+  function readTable(tblId){
+    const tbl=document.getElementById(tblId);
+    if(!tbl)return[];
+    const rows=[];
+    tbl.querySelectorAll('tbody tr').forEach(tr=>{
+      const cells=[];
+      tr.querySelectorAll('td').forEach(td=>cells.push(td.textContent.trim()));
+      rows.push(cells);
+    });
+    return rows;
+  }
+  function calcTrend(v2020,v2024){
+    const a=parseFloat(String(v2020).replace(/[^\d.,-]/g,'').replace(',','.'));
+    const b=parseFloat(String(v2024).replace(/[^\d.,-]/g,'').replace(',','.'));
+    if(isNaN(a)||isNaN(b)||a===0)return{tren:'\u2014',pct:'\u2014'};
+    const pct=((b-a)/Math.abs(a)*100).toFixed(1);
+    return{tren:b>a?'\u2191':b<a?'\u2193':'\u2192',pct:pct+'%'};
+  }
+  function makeHtmlTable(title,headers,rows){
+    let h='<h3>'+title+'</h3><table style="width:100%;border-collapse:collapse;margin:8px 0;font-size:0.85rem;">';
+    h+='<thead><tr>'+headers.map(hd=>'<th style="border:1px solid var(--border);padding:6px 8px;background:rgba(59,130,246,0.1);font-weight:600;text-align:left;">'+hd+'</th>').join('')+'</tr></thead><tbody>';
+    rows.forEach(r=>{
+      h+='<tr>'+r.map(c=>'<td style="border:1px solid var(--border);padding:4px 8px;">'+c+'</td>').join('')+'</tr>';
+    });
+    h+='</tbody></table>';
+    return h;
+  }
+  let synced=0;
+
+  // Sync Layanan
+  const layData=readTable('tbl-layanan');
+  if(layData.length){
+    const sumRows=[];
+    layData.forEach((r,i)=>{
+      if(!r[0]||r[0]==='')return; // skip headers
+      const nm=r[1]||'',sat=r[2]||'',v20=r[3]||'\u2014',v24=r[7]||r[r.length-1]||'\u2014';
+      const{tren,pct}=calcTrend(v20,v24);
+      sumRows.push([String(i+1),nm,sat,v20,v24,tren,pct]);
+    });
+    const html=makeHtmlTable('Ringkasan Kinerja Layanan Pendidikan (2020 \u2192 2024)',
+      ['No','Indikator','Satuan','Baseline 2020','Capaian 2024','Tren','Pertumbuhan'],sumRows);
+    const target=document.getElementById('sync-layanan')||document.getElementById('rte-b2a1');
+    if(target){
+      if(target.id==='sync-layanan')target.innerHTML=html;
+      else{const d=target.querySelector('#sync-layanan');if(d)d.innerHTML=html;else target.innerHTML+=html;}
+      synced++;
+    }
+  }
+
+  // Sync Keuangan
+  const keuData=readTable('tbl-keuangan');
+  if(keuData.length){
+    const sumRows=[];
+    keuData.forEach((r,i)=>{
+      if(!r[0]||r[0]==='')return;
+      const nm=r[1]||'',sat=r[2]||'',v20=r[3]||'\u2014',v24=r[7]||r[r.length-1]||'\u2014';
+      const{tren,pct}=calcTrend(v20,v24);
+      sumRows.push([String(i+1),nm,sat,v20,v24,tren,pct]);
+    });
+    const html=makeHtmlTable('Ringkasan Kinerja Keuangan (2020 \u2192 2024)',
+      ['No','Uraian','Satuan','Baseline 2020','Capaian 2024','Tren','Pertumbuhan'],sumRows);
+    const target=document.getElementById('sync-keuangan')||document.getElementById('rte-b2a2');
+    if(target){
+      if(target.id==='sync-keuangan')target.innerHTML=html;
+      else{const d=target.querySelector('#sync-keuangan');if(d)d.innerHTML=html;else target.innerHTML+=html;}
+      synced++;
+    }
+  }
+
+  // Sync SDM
+  const sdmData=readTable('tbl-sdm');
+  if(sdmData.length){
+    const sumRows=[];
+    sdmData.forEach((r,i)=>{
+      if(!r[0]||r[0]==='')return;
+      const nm=r[1]||'',sat=r[2]||'',v20=r[3]||'\u2014',v24=r[7]||r[r.length-1]||'\u2014';
+      const{tren,pct}=calcTrend(v20,v24);
+      sumRows.push([String(i+1),nm,sat,v20,v24,tren,pct]);
+    });
+    const html=makeHtmlTable('Ringkasan Kinerja SDM (2020 \u2192 2024)',
+      ['No','Indikator SDM','Satuan','Baseline 2020','Capaian 2024','Tren','Pertumbuhan'],sumRows);
+    const target=document.getElementById('sync-sdm')||document.getElementById('rte-b2a3');
+    if(target){
+      if(target.id==='sync-sdm')target.innerHTML=html;
+      else{const d=target.querySelector('#sync-sdm');if(d)d.innerHTML=html;else target.innerHTML+=html;}
+      synced++;
+    }
+  }
+
+  if(synced>0){markDirty();showToast('\u2705 '+synced+' tabel BAB II di-sync dari Lampiran I!');}
+  else showToast('\u26a0\ufe0f Isi data di Lampiran I dulu!');
+}
 
 /* ============================================================
    AUTO-IMPORT: IFAS/EFAS data + Checklist scores
