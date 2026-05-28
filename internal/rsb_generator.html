@@ -158,7 +158,7 @@ header h1 span{color:var(--accent);}
 table.editable{width:100%;border-collapse:collapse;font-size:0.78rem;border:1px solid #d0d7de;}
 table.editable th{background:#f6f8fa;color:#24292f;font-weight:600;font-size:0.65rem;
   text-transform:uppercase;letter-spacing:0.5px;padding:0.5rem 0.6rem;text-align:left;
-  border:1px solid #d0d7de;white-space:nowrap;position:sticky;top:0;z-index:1;}
+  border:1px solid #d0d7de;white-space:normal;position:sticky;top:0;z-index:1;}
 table.editable td{padding:0;border:1px solid #d0d7de;vertical-align:top;}
 table.editable tr:nth-child(even){background:#f6f8fa;}
 table.editable tr:hover{background:#eef3ff;}
@@ -170,7 +170,8 @@ table.editable td[contenteditable]:empty::before{content:attr(data-ph);color:var
 table.editable tr:hover .row-del{opacity:1;}
 .row-del:hover{background:rgba(239,68,68,0.15);color:var(--red);}
 .cell-select{width:100%;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:4px;
-  padding:0.25rem 0.3rem;font-size:0.65rem;font-family:'Inter',sans-serif;cursor:pointer;}
+  padding:0.25rem 0.3rem;font-size:0.65rem;font-family:'Inter',sans-serif;cursor:pointer;
+  white-space:normal;word-break:break-word;}
 .cell-select:focus{border-color:var(--accent);outline:none;}
 .cell-custom{width:100%;background:var(--editor-bg);color:var(--text);border:1px solid var(--border);border-radius:4px;
   padding:0.25rem 0.3rem;font-size:0.65rem;font-family:'Inter',sans-serif;margin-top:0.2rem;}
@@ -178,7 +179,7 @@ table.editable tr:hover .row-del{opacity:1;}
 /* Input-based table cells */
 .cell-input{width:100%;background:transparent;color:#24292f;border:none;border-radius:0;
   padding:0.45rem 0.5rem;font-size:0.75rem;font-family:'Inter',sans-serif;transition:all 0.1s;box-sizing:border-box;
-  height:100%;display:block;}
+  height:100%;display:block;white-space:normal;overflow:hidden;text-overflow:ellipsis;}
 .cell-input:hover{background:#f0f6ff;}
 .cell-input:focus{outline:2px solid #1a73e8;outline-offset:-2px;background:#fff;z-index:1;position:relative;}
 .cell-label{font-weight:500;color:#24292f;}
@@ -217,7 +218,9 @@ table.editable tr:hover .row-del{opacity:1;}
 
 /* Matriks keterkaitan (Lampiran IV) - cascading */
 .tbl-matriks th{background:#e8f0fe;color:#1a73e8;font-size:0.58rem;border:1px solid #c2d5f0;}
-.tbl-matriks td{vertical-align:top;font-size:0.65rem;line-height:1.4;}
+.tbl-matriks td{vertical-align:top;font-size:0.65rem;line-height:1.4;min-width:120px;}
+.tbl-matriks .cell-input{white-space:normal;word-break:break-word;min-height:2.4rem;}
+.tbl-matriks .cell-select{white-space:normal;word-break:break-word;font-size:0.62rem;min-height:2rem;}
 
 
 [data-theme="dark"] .tbl-data th{background:linear-gradient(135deg,#1e3a5f,#1e293b);color:#fff;border-bottom-color:rgba(255,255,255,0.1);}
