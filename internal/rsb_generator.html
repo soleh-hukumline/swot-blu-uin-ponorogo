@@ -700,7 +700,7 @@ async function aiGenerateRingkasan(){
   if(!cfg.apiKey){showAISettings();return;}
   
   // Navigate to Ringkasan section first
-  navigateTo('ringkasan');
+  goTo('ringkasan');
 
   // Collect ALL content for ringkasan (needs long context model)
   let allData='';
@@ -718,7 +718,7 @@ async function aiGenerateRingkasan(){
 
   const prompt=`Data dari seluruh dokumen RSB BLU UIN Ponorogo 2025-2029:\n${allData}\n\nTugas: Tulis Ringkasan Eksekutif RSB BLU yang komprehensif. Struktur:\n1. Latar Belakang (transformasi IAIN→UIN, konteks BLU)\n2. Visi, Misi, dan Arah Strategis\n3. Evaluasi Kinerja 2020-2024 (ringkas)\n4. Target Strategis 5 Tahun (angka kunci)\n5. Program Prioritas dan Rencana Bisnis\n6. Proyeksi Keuangan\nMax 800 kata. Format HTML.`;
   
-  const editorId=document.getElementById('rte-r1')?'rte-r1':document.getElementById('ed-r1')?'ed-r1':null;
+  const editorId=document.getElementById('rte-rex')?'rte-rex':document.getElementById('ed-rex')?'ed-rex':null;
   if(!editorId){showToast('Editor Ringkasan tidak ditemukan');return;}
   
   // Use ringkasan model (long context, synthesis)
@@ -1845,30 +1845,31 @@ async function autoSyncFromDC(){
 /* ============================================================
    SYNC: Lampiran I (master) → BAB II (computed view)
 ============================================================ */
-function syncFromLampiran(){
-  // Universal cell value reader/writer for input-based tables
-  function getCellValue(td){
-    if(!td)return '';
-    const inp=td.querySelector('input.cell-input,input.cell-custom');
-    if(inp)return inp.value.trim();
-    const sel=td.querySelector('select.cell-select');
-    if(sel){
-      if(sel.value==='__custom'){
-        const ci=td.querySelector('input.cell-custom');
-        return ci?ci.value.trim():'';
-      }
-      return sel.value.trim();
+/* Universal cell value reader/writer for input-based tables */
+function getCellValue(td){
+  if(!td)return '';
+  const inp=td.querySelector('input.cell-input,input.cell-custom');
+  if(inp)return inp.value.trim();
+  const sel=td.querySelector('select.cell-select');
+  if(sel){
+    if(sel.value==='__custom'){
+      const ci=td.querySelector('input.cell-custom');
+      return ci?ci.value.trim():'';
     }
-    return td.textContent.trim();
+    return sel.value.trim();
   }
-  function setCellValue(td,val){
-    if(!td)return;
-    const inp=td.querySelector('input.cell-input,input.cell-custom');
-    if(inp){inp.value=val;return;}
-    const sel=td.querySelector('select.cell-select');
-    if(sel){sel.value=val;return;}
-    td.textContent=val;
-  }
+  return td.textContent.trim();
+}
+function setCellValue(td,val){
+  if(!td)return;
+  const inp=td.querySelector('input.cell-input,input.cell-custom');
+  if(inp){inp.value=val;return;}
+  const sel=td.querySelector('select.cell-select');
+  if(sel){sel.value=val;return;}
+  td.textContent=val;
+}
+
+function syncFromLampiran(){
   function readTable(tblId){
     const tbl=document.getElementById(tblId);
     if(!tbl)return[];
@@ -2377,9 +2378,9 @@ Maks 300 kata. Bahasa Indonesia.`;
 
   try{
     // Navigate to ringkasan to show results
-    navigateTo('ringkasan');
-    const edId=document.getElementById('rte-r1')?'rte-r1':
-               document.getElementById('ed-r1')?'ed-r1':null;
+    goTo('ringkasan');
+    const edId=document.getElementById('rte-rex')?'rte-rex':
+               document.getElementById('ed-rex')?'ed-rex':null;
     
     if(edId){
       const model=cfg.modelSync||'gpt-5-nano';

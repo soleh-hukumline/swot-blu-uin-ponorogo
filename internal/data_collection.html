@@ -657,35 +657,8 @@ function resetAll(){
   showToast('Data di-reset!');
 }
 
-function exportToGenerator(){
-  saveAll();
-  // Build flat export: array of {source, indicator, satuan, values:{2020:x,...}}
-  const exportData={timestamp:new Date().toISOString(), tables:{}};
-
-  UNITS.forEach(u=>{
-    u.tables.forEach(t=>{
-      const tbl=document.getElementById(t.id);
-      if(!tbl)return;
-      const hdrs=[...tbl.querySelectorAll('thead th')].map(th=>th.textContent.trim());
-      const rows=[];
-      tbl.querySelectorAll('tbody tr:not(.section-row)').forEach(tr=>{
-        const cells=[];
-        tr.querySelectorAll('.cell-input').forEach(inp=>cells.push(inp.value.trim()));
-        // Only export rows with at least 1 data cell filled
-        const dataVals=cells.slice(3);
-        if(dataVals.some(v=>v&&v!=='...'&&v!=='\u2014'))
-          rows.push({cells:cells, headers:hdrs});
-      });
-      if(rows.length>0) exportData.tables[t.id]={ref:t.ref, unit:u.name, rows:rows};
-    });
-  });
-
-  localStorage.setItem('rsb_dc_export',JSON.stringify(exportData));
-  showToast('<i class="fa-solid fa-circle-check"></i> Data di-export! Buka RSB Generator → klik "Import Data Unit".');
-}
-
-function exportCSV(){
-  saveAll();
+async function exportCSV(){
+  await saveAll();
   let csv='Unit,Tabel,'+['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'].join(',')+'\n';
   UNITS.forEach(u=>{
     u.tables.forEach(t=>{
@@ -716,8 +689,7 @@ if(isAdmin){
 }
 renderSidebar();
 renderMain();
-loadData();
-updateProgress();
+loadData().then(()=>updateProgress());
 </script>
 </body>
 </html>
