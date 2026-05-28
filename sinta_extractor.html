@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>SINTA Q1-Q4 Data Extractor</title>
+<style>
+  body { font-family: 'Segoe UI', sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; background: #0f172a; color: #e2e8f0; }
+  h1 { color: #38bdf8; font-size: 1.4rem; }
+  .step { background: #1e293b; border-radius: 10px; padding: 16px; margin: 16px 0; border-left: 4px solid #38bdf8; }
+  .step h3 { color: #38bdf8; margin: 0 0 8px 0; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .bookmarklet { display: inline-block; background: #0ea5e9; color: white; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; cursor: pointer; margin: 8px 4px; font-size: 0.85rem; }
+  .bookmarklet:hover { background: #0284c7; }
+  code { background: #0f172a; border: 1px solid #334155; border-radius: 4px; padding: 2px 6px; font-size: 0.8rem; color: #94a3b8; }
+  textarea { width: 100%; min-height: 200px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #e2e8f0; padding: 12px; font-family: monospace; font-size: 0.78rem; margin-top: 8px; }
+  .url-list { background: #0f172a; border-radius: 6px; padding: 12px; font-size: 0.78rem; line-height: 2; }
+  .url-list a { color: #38bdf8; display: block; margin-bottom: 4px; }
+  button { background: #22c55e; color: white; border: none; border-radius: 8px; padding: 10px 20px; cursor: pointer; font-weight: 700; font-size: 0.9rem; }
+  button:hover { background: #16a34a; }
+  .result-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.82rem; }
+  .result-table th { background: #1e3a5f; padding: 6px 10px; text-align: center; }
+  .result-table td { padding: 6px 10px; border-bottom: 1px solid #1e293b; text-align: center; }
+  #outputJS { display: none; }
+  .alert { background: #451a03; border: 1px solid #f97316; border-radius: 8px; padding: 12px; margin: 10px 0; color: #fed7aa; font-size: 0.85rem; }
+</style>
+</head>
+<body>
+
+<h1>🔬 SINTA Q1-Q4 Extractor — UIN Ponorogo BLU</h1>
+<p style="color:#94a3b8; font-size:0.85rem;">Tool untuk mengambil data kuartil Scopus langsung dari SINTA. Jalankan dari browser Anda yang sudah bisa mengakses SINTA.</p>
+
+<div class="step">
+  <h3>Step 1 — Drag Bookmarklet ke Bookmark Bar</h3>
+  <p style="font-size:0.85rem; color:#94a3b8;">Drag tombol ini ke toolbar bookmark browser Anda (atau klik kanan → Bookmark Link):</p>
+  <a class="bookmarklet" href="javascript:(function(){var q=[0,0,0,0];document.querySelectorAll('div[style]').forEach(function(el){var t=el.innerText||'';var m;if(m=t.match(/Q([1-4]):\s*(\d+)/)){q[parseInt(m[1])-1]=parseInt(m[2])}});var all=document.querySelectorAll('.stat-table td');var nums=[];all.forEach(function(td){var n=td.innerText.replace(/[.\s]/g,'').replace(',','.');if(!isNaN(parseFloat(n))&&n.length>0)nums.push(parseFloat(n))});var id=window.location.pathname.split('/').pop();var r={id:id,url:window.location.href,q1:q[0],q2:q[1],q3:q[2],q4:q[3],scopus_docs:nums[0]||0,scopus_cit:nums[2]||0,gscholar_docs:nums[1]||0,gscholar_cit:nums[3]||0};window.sintaExtracted=r;var s=JSON.stringify(r,null,2);navigator.clipboard.writeText(s).then(function(){alert('✅ Data ter-copy ke clipboard!\n\nID: '+id+'\nQ1='+q[0]+' Q2='+q[1]+' Q3='+q[2]+' Q4='+q[3]+'\nScopus Docs='+nums[0]);}).catch(function(){prompt('Copy manual (Cmd+A, Cmd+C):',s);});})();">📋 SINTA Extractor</a>
+  
+  <div class="alert">
+    ℹ️ Jika tidak bisa drag, klik kanan tombol → <strong>Copy Link Address</strong> → buat bookmark baru → paste di URL-nya.
+  </div>
+</div>
+
+<div class="step">
+  <h3>Step 2 — Buka setiap URL SINTA lalu klik bookmarklet</h3>
+  <p style="font-size:0.85rem; color:#94a3b8;">Klik setiap link, tunggu halaman load, lalu klik bookmarklet "📋 SINTA Extractor". Data otomatis ter-copy. Paste ke kolom di Step 3.</p>
+  <div class="url-list">
+    <a href="https://sinta.kemdiktisaintek.go.id/affiliations/profile/400" target="_blank">1. UIN Jakarta (400)</a>
+    <a href="https://sinta.kemdiktisaintek.go.id/affiliations/profile/3511" target="_blank">2. UIN SGD Bandung (3511)</a>
+    <a href="https://sinta.kemdiktisaintek.go.id/affiliations/profile/3513" target="_blank">3. UIN Malang (3513)</a>
+    <a href="https://sinta.kemdiktisaintek.go.id/affiliations/profile/3512" target="_blank">4. UIN SUKA Yogyakarta (3512)</a>
+    <a href="https://sinta.kemdiktisaintek.go.id/affiliations/profile/3516" target="_blank">5. UIN SA Surabaya (3516)</a>
+    <a href="https://sinta.kemdiktisaintek.go.id/affiliations/profile/201" target="_blank">6. UIN Walisongo (201)</a>
+    <a href="https://sinta.kemdiktisaintek.go.id/affiliations/profile/190" target="_blank">7. UIN Surakarta (190)</a>
+    <a href="https://sinta.kemdiktisaintek.go.id/affiliations/profile/3531" target="_blank">8. UIN SATU Tulungagung (3531)</a>
+    <a href="https://sinta.kemdiktisaintek.go.id/affiliations/profile/8245003" target="_blank">9. UIN Cirebon (8245003)</a>
+    <a href="https://sinta.kemdiktisaintek.go.id/affiliations/profile/184" target="_blank">10. UIN Saizu Purwokerto (184)</a>
+    <a href="https://sinta.kemdiktisaintek.go.id/affiliations/profile/3557" target="_blank">11. UIN Jember (3557)</a>
+    <a href="https://sinta.kemdiktisaintek.go.id/affiliations/profile/188" target="_blank">12. UIN Salatiga (188)</a>
+    <a href="https://sinta.kemdiktisaintek.go.id/affiliations/profile/185" target="_blank">13. IAIN Kudus (185)</a>
+    <a href="https://sinta.kemdiktisaintek.go.id/affiliations/profile/8245308" target="_blank">14. UIN Ponorogo (8245308)</a>
+    <a href="https://sinta.kemdiktisaintek.go.id/affiliations/profile/8245246" target="_blank">15. UIN Madura (8245246)</a>
+    <a href="https://sinta.kemdiktisaintek.go.id/affiliations/profile/8245302" target="_blank">16. UIN Kediri (8245302)</a>
+  </div>
+</div>
+
+<div class="step">
+  <h3>Step 3 — Paste semua hasil ke sini (pisahkan dengan koma)</h3>
+  <p style="font-size:0.85rem; color:#94a3b8;">Paste satu per satu, pisahkan setiap JSON object dengan koma. Klik Proses ketika semua 16 sudah dipaste.</p>
+  <textarea id="pasteArea" placeholder='{"id":"400","url":"...","q1":526,"q2":138,...},
+{"id":"3511","url":"...","q1":352,...},
+...'></textarea>
+  <br>
+  <button onclick="processData()">⚙️ Proses & Generate sinta_data.js</button>
+</div>
+
+<div class="step" id="outputJS" style="display:none;">
+  <h3>Step 4 — Salin isi ini, simpan sebagai sinta_data.js</h3>
+  <textarea id="outputArea" readonly></textarea>
+</div>
+
+<script>
+// Data nama lengkap per sinta_id
+const nameMap = {
+  "400":     ["uin-jakarta",     "UIN Syarif Hidayatullah Jakarta",        "UIN Jakarta",   "https://sinta.kemdiktisaintek.go.id/affiliations/profile/400"],
+  "3511":    ["uin-bandung",     "UIN Sunan Gunung Djati Bandung",          "UIN SGD",       "https://sinta.kemdiktisaintek.go.id/affiliations/profile/3511"],
+  "3513":    ["uin-malang",      "UIN Maulana Malik Ibrahim Malang",        "UIN Malang",    "https://sinta.kemdiktisaintek.go.id/affiliations/profile/3513"],
+  "3512":    ["uin-suka",        "UIN Sunan Kalijaga Yogyakarta",           "UIN SUKA",      "https://sinta.kemdiktisaintek.go.id/affiliations/profile/3512"],
+  "3516":    ["uin-surabaya",    "UIN Sunan Ampel Surabaya",                "UIN SA",        "https://sinta.kemdiktisaintek.go.id/affiliations/profile/3516"],
+  "201":     ["uin-walisongo",   "UIN Walisongo Semarang",                  "UIN Walisongo", "https://sinta.kemdiktisaintek.go.id/affiliations/profile/201"],
+  "190":     ["uin-surakarta",   "UIN Raden Mas Said Surakarta",            "UIN Surakarta", "https://sinta.kemdiktisaintek.go.id/affiliations/profile/190"],
+  "3531":    ["uin-tulungagung", "UIN Sayyid Ali Rahmatullah Tulungagung",  "UIN SATU",      "https://sinta.kemdiktisaintek.go.id/affiliations/profile/3531"],
+  "8245003": ["uin-cirebon",     "UIN Syekh Nurjati Cirebon",               "UIN Cirebon",   "https://sinta.kemdiktisaintek.go.id/affiliations/profile/8245003"],
+  "184":     ["uin-purwokerto",  "UIN Saizu Purwokerto",                    "UIN Saizu",     "https://sinta.kemdiktisaintek.go.id/affiliations/profile/184"],
+  "3557":    ["uin-jember",      "UIN Kiai Haji Achmad Siddiq Jember",      "UIN Jember",    "https://sinta.kemdiktisaintek.go.id/affiliations/profile/3557"],
+  "188":     ["uin-salatiga",    "UIN Salatiga",                            "UIN Salatiga",  "https://sinta.kemdiktisaintek.go.id/affiliations/profile/188"],
+  "185":     ["iain-kudus",      "IAIN Kudus",                              "IAIN Kudus",    "https://sinta.kemdiktisaintek.go.id/affiliations/profile/185"],
+  "8245308": ["uin-ponorogo",    "UIN Kiai Ageng Muh. Besari Ponorogo",     "UIN Ponorogo",  "https://sinta.kemdiktisaintek.go.id/affiliations/profile/8245308"],
+  "8245246": ["uin-madura",      "UIN Madura Pamekasan",                    "UIN Madura",    "https://sinta.kemdiktisaintek.go.id/affiliations/profile/8245246"],
+  "8245302": ["iain-kediri",     "UIN Kediri",                              "UIN Kediri",    "https://sinta.kemdiktisaintek.go.id/affiliations/profile/8245302"],
+};
+// Existing data untuk fallback (Scopus docs, citations, GScholar, dll)
+const existing = {
+  "uin-jakarta":     {scopus_docs:3617,scopus_citations:26100,scopus_cpr:18.67,gscholar_docs:81125,gscholar_cpr:614.65,garuda_docs:0},
+  "uin-bandung":     {scopus_docs:2531,scopus_citations:12921,scopus_cpr:13.0, gscholar_docs:56421,gscholar_cpr:616.12,garuda_docs:0},
+  "uin-malang":      {scopus_docs:1966,scopus_citations:12963,scopus_cpr:17.15,gscholar_docs:44536,gscholar_cpr:432.01,garuda_docs:0},
+  "uin-suka":        {scopus_docs:1441,scopus_citations:9915, scopus_cpr:13.29,gscholar_docs:35229,gscholar_cpr:493.93,garuda_docs:0},
+  "uin-surabaya":    {scopus_docs:938, scopus_citations:4323, scopus_cpr:7.15, gscholar_docs:34413,gscholar_cpr:455.49,garuda_docs:0},
+  "uin-walisongo":   {scopus_docs:856, scopus_citations:4866, scopus_cpr:7.91, gscholar_docs:20379,gscholar_cpr:377.83,garuda_docs:5853},
+  "uin-surakarta":   {scopus_docs:491, scopus_citations:2317, scopus_cpr:5.58, gscholar_docs:20946,gscholar_cpr:264.72,garuda_docs:0},
+  "uin-tulungagung": {scopus_docs:398, scopus_citations:1844, scopus_cpr:3.49, gscholar_docs:26589,gscholar_cpr:374.29,garuda_docs:0},
+  "uin-cirebon":     {scopus_docs:291, scopus_citations:1129, scopus_cpr:2.69, gscholar_docs:11985,gscholar_cpr:211.72,garuda_docs:0},
+  "uin-purwokerto":  {scopus_docs:279, scopus_citations:1258, scopus_cpr:4.28, gscholar_docs:9125, gscholar_cpr:289.42,garuda_docs:0},
+  "uin-jember":      {scopus_docs:249, scopus_citations:1111, scopus_cpr:2.63, gscholar_docs:10219,gscholar_cpr:103.13,garuda_docs:0},
+  "uin-salatiga":    {scopus_docs:222, scopus_citations:1140, scopus_cpr:4.37, gscholar_docs:8035, gscholar_cpr:461.75,garuda_docs:0},
+  "iain-kudus":      {scopus_docs:186, scopus_citations:928,  scopus_cpr:2.97, gscholar_docs:10246,gscholar_cpr:273.59,garuda_docs:0},
+  "uin-ponorogo":    {scopus_docs:183, scopus_citations:690,  scopus_cpr:2.04, gscholar_docs:9348, gscholar_cpr:199.06,garuda_docs:0},
+  "uin-madura":      {scopus_docs:169, scopus_citations:625,  scopus_cpr:2.35, gscholar_docs:6100, gscholar_cpr:147.82,garuda_docs:0},
+  "iain-kediri":     {scopus_docs:153, scopus_citations:618,  scopus_cpr:1.96, gscholar_docs:9305, gscholar_cpr:189.56,garuda_docs:0},
+};
+
+function processData() {
+  const raw = document.getElementById('pasteArea').value.trim();
+  let items;
+  try {
+    items = JSON.parse('[' + raw.replace(/}\s*{/g, '},{') + ']');
+  } catch(e) {
+    alert('Format JSON tidak valid. Pastikan setiap objek dipisahkan koma.\nError: ' + e.message);
+    return;
+  }
+  
+  const processed = items.map(item => {
+    const id = String(item.id);
+    const meta = nameMap[id];
+    if (!meta) { console.warn('Unknown ID:', id); return null; }
+    const [inst_id, name, short, sinta_url] = meta;
+    const base = existing[inst_id] || {};
+    return {
+      id: inst_id, name, short,
+      sinta_id: id, sinta_url,
+      scopus_docs:      base.scopus_docs || 0,
+      scopus_citations: base.scopus_citations || 0,
+      scopus_cited_docs: 0,
+      scopus_cpr:       base.scopus_cpr || 0,
+      gscholar_docs:    base.gscholar_docs || 0,
+      gscholar_citations: 0,
+      gscholar_cited_docs: 0,
+      gscholar_cpr:     base.gscholar_cpr || 0,
+      garuda_docs:      base.garuda_docs || 0,
+      garuda_citations: 0,
+      garuda_cited_docs: 0,
+      q1: item.q1 || 0,
+      q2: item.q2 || 0,
+      q3: item.q3 || 0,
+      q4: item.q4 || 0,
+      researches: 0,
+      community_services: 0
+    };
+  }).filter(Boolean);
+
+  const js = 'const sintaData = ' + JSON.stringify(processed, null, 2) + ';\n';
+  document.getElementById('outputArea').value = js;
+  document.getElementById('outputJS').style.display = 'block';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+*.pyc
+
+# Secrets
+.env
+.env.*
+
+# Data PII / Sensitif
+simpeg_raw.html
+matriks_kinerja_raw.txt
+matriks_raw.html
+
+# Dokumen Rahasia
+*.docx
+*.pdf
+Draft RSB*
+Matriks Kinerja*
+
+# Script internal
+data_fetcher.py
+sinta_fetcher.py
+fetch_sinta_quartiles.py
+swot_makro_contoh.md
+
+# OS
+.DS_Store
+Thumbs.db
