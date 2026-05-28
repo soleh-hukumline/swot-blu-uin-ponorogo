@@ -518,22 +518,30 @@ function resetAll(){
 }
 
 function exportToGenerator(){
-  // Save current data, then copy to RSB Generator localStorage
   saveAll();
-  const raw=localStorage.getItem(SK);
-  if(!raw){showToast('Tidak ada data untuk di-export');return;}
-  const data=JSON.parse(raw);
-  // Map dc-* tables to rsb generator tbl-* tables
-  const mapping={
-    'dc-pnbp':'tbl-keuangan','dc-belanja':'tbl-keuangan',
-    'dc-layanan':'tbl-layanan','dc-sdm':'tbl-sdm',
-    'dc-riset':'tbl-riset','dc-sarpras':'tbl-sarpras','dc-pkm':'tbl-pkm',
-    'dc-proy-pnbp':'tbl-proy-pnbp','dc-proy-belanja':'tbl-proy-belanja',
-    'dc-vol':'tbl-proy-vol','dc-proporsi':'tbl-proporsi'
-  };
-  // Store export data for generator to import
-  localStorage.setItem('rsb_import_data',JSON.stringify({from:'data_collection',data:data,mapping:mapping,timestamp:new Date().toISOString()}));
-  showToast('<i class="fa-solid fa-circle-check"></i> Data siap di-import! Buka RSB Generator dan klik "Import Data".');
+  // Build flat export: array of {source, indicator, satuan, values:{2020:x,...}}
+  const exportData={timestamp:new Date().toISOString(), tables:{}};
+
+  UNITS.forEach(u=>{
+    u.tables.forEach(t=>{
+      const tbl=document.getElementById(t.id);
+      if(!tbl)return;
+      const hdrs=[...tbl.querySelectorAll('thead th')].map(th=>th.textContent.trim());
+      const rows=[];
+      tbl.querySelectorAll('tbody tr:not(.section-row)').forEach(tr=>{
+        const cells=[];
+        tr.querySelectorAll('.cell-input').forEach(inp=>cells.push(inp.value.trim()));
+        // Only export rows with at least 1 data cell filled
+        const dataVals=cells.slice(3);
+        if(dataVals.some(v=>v&&v!=='...'&&v!=='\u2014'))
+          rows.push({cells:cells, headers:hdrs});
+      });
+      if(rows.length>0) exportData.tables[t.id]={ref:t.ref, unit:u.name, rows:rows};
+    });
+  });
+
+  localStorage.setItem('rsb_dc_export',JSON.stringify(exportData));
+  showToast('<i class="fa-solid fa-circle-check"></i> Data di-export! Buka RSB Generator → klik "Import Data Unit".');
 }
 
 function exportCSV(){
