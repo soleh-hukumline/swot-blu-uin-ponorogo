@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Analisis BLU Institusional — UIN Ponorogo</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -110,8 +111,8 @@
     <header>
         <h1><span style="color:var(--accent);">BLU</span> Analytics</h1>
         <div class="header-controls" style="flex-wrap:wrap; gap:0.4rem;">
-            <a href="sinta.html" class="btn" style="text-decoration:none;padding:0.4rem 0.7rem;font-size:0.78rem;">🔬 SINTA</a>
-            <a href="internal/" class="btn" style="text-decoration:none;padding:0.4rem 0.7rem;font-size:0.78rem;">🔒 Internal</a>
+            <a href="sinta.html" class="btn" style="text-decoration:none;padding:0.4rem 0.7rem;font-size:0.78rem;"><i class='fa-solid fa-flask'></i> SINTA</a>
+            <a href="internal/" class="btn" style="text-decoration:none;padding:0.4rem 0.7rem;font-size:0.78rem;"><i class='fa-solid fa-lock'></i> Internal</a>
             <button class="btn" id="btnEditData" style="padding:0.4rem 0.7rem;font-size:0.78rem;">✏️ Data</button>
             <button class="btn" id="btnThemeToggle" style="padding:0.4rem 0.7rem;font-size:0.78rem;">☀️/🌙</button>
         </div>
@@ -218,7 +219,7 @@
                 <h3 style="font-size:0.85rem; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase; letter-spacing:1px;">Jabatan Fungsional Dosen</h3>
                 <div id="sdmJabatanChart"></div>
                 <div style="margin-top:0.8rem; text-align:right;">
-                    <a id="sdmSintaLink" href="#" target="_blank" class="btn primary" style="text-decoration:none; font-size:0.8rem;">🔬 Lihat di SINTA</a>
+                    <a id="sdmSintaLink" href="#" target="_blank" class="btn primary" style="text-decoration:none; font-size:0.8rem;"><i class='fa-solid fa-flask'></i> Lihat di SINTA</a>
                 </div>
             </div>
 

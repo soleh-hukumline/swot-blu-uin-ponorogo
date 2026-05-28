@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Checklist RSB — Rencana Strategi Bisnis BLU UIN Ponorogo</title>
 <meta name="description" content="Checklist penilaian dan kelengkapan dokumen RSB BLU UIN Kiai Ageng Muhammad Besari Ponorogo">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
@@ -334,18 +335,18 @@ header h1 span{color:var(--accent);}
 <body>
 
 <header>
-  <h1>☑️ Checklist <span>RSB</span></h1>
+  <h1><i class='fa-solid fa-list-check'></i> Checklist <span>RSB</span></h1>
   <div class="nav-links">
-    <a href="../index.html">🗺️ Dashboard</a>
-    <a href="../sinta.html">🔬 SINTA</a>
-    <a href="index.html">🔒 Internal</a>
-    <a href="swot_blu.html">⚡ SWOT-BLU</a>
-    <a href="swot_pestle.html">📋 PESTLE</a>
-    <a href="matriks.html">📑 IFAS/EFAS</a>
-    <a href="kinerja.html">📊 Kinerja</a>
-    <a href="rsb_peta.html">💼 Peta RSB</a>
-    <a href="rsb_checklist.html" class="active">☑️ Checklist</a>
-    <a href="rsb_generator.html">🔧 Generator</a>
+    <a href="../index.html"><i class='fa-solid fa-gauge'></i> Dashboard</a>
+    <a href="../sinta.html"><i class='fa-solid fa-flask'></i> SINTA</a>
+    <a href="index.html"><i class='fa-solid fa-lock'></i> Internal</a>
+    <a href="swot_blu.html"><i class='fa-solid fa-bolt'></i> SWOT-BLU</a>
+    <a href="swot_pestle.html"><i class='fa-solid fa-clipboard-list'></i> PESTLE</a>
+    <a href="matriks.html"><i class='fa-solid fa-table-columns'></i> IFAS/EFAS</a>
+    <a href="kinerja.html"><i class='fa-solid fa-chart-bar'></i> Kinerja</a>
+    <a href="rsb_peta.html"><i class='fa-solid fa-map'></i> Peta RSB</a>
+    <a href="rsb_checklist.html" class="active"><i class='fa-solid fa-list-check'></i> Checklist</a>
+    <a href="rsb_generator.html"><i class='fa-solid fa-gears'></i> Generator</a>
     <button class="theme-btn" id="themeToggle" onclick="toggleTheme()">☀️ Tema</button>
   </div>
 </header>
@@ -367,8 +368,8 @@ header h1 span{color:var(--accent);}
 <div class="status-bar" id="statusBar">
   <div class="status-item"><span class="status-dot saved" id="statusDot"></span><span id="statusText">Semua perubahan tersimpan</span></div>
   <div class="status-item">📅 Terakhir disimpan: <span id="lastSaved">-</span></div>
-  <div class="status-item">📊 Skor: <span id="totalScore" style="color:var(--accent);font-weight:700;">0/12</span></div>
-  <div class="status-item">📋 Dokumen: <span id="totalDocs" style="color:var(--cyan);font-weight:700;">0/0</span></div>
+  <div class="status-item"><i class='fa-solid fa-chart-bar'></i> Skor: <span id="totalScore" style="color:var(--accent);font-weight:700;">0/12</span></div>
+  <div class="status-item"><i class='fa-solid fa-clipboard-list'></i> Dokumen: <span id="totalDocs" style="color:var(--cyan);font-weight:700;">0/0</span></div>
 </div>
 
 <div class="page" id="pageContent"></div>
@@ -678,7 +679,7 @@ function renderSubDoc(secKey, critIdx, docIdx, doc) {
 function renderSummary() {
   return `
   <div class="summary-panel" id="summary-panel">
-    <div class="summary-title">📊 Ringkasan Penilaian RSB</div>
+    <div class="summary-title"><i class='fa-solid fa-chart-bar'></i> Ringkasan Penilaian RSB</div>
     <div class="progress-ring-wrap">
       <div class="progress-ring">
         <svg width="140" height="140">

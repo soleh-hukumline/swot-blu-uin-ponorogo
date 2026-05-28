@@ -22,16 +22,17 @@
   #outputJS { display: none; }
   .alert { background: #451a03; border: 1px solid #f97316; border-radius: 8px; padding: 12px; margin: 10px 0; color: #fed7aa; font-size: 0.85rem; }
 </style>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 
-<h1>🔬 SINTA Q1-Q4 Extractor — UIN Ponorogo BLU</h1>
+<h1><i class='fa-solid fa-flask'></i> SINTA Q1-Q4 Extractor — UIN Ponorogo BLU</h1>
 <p style="color:#94a3b8; font-size:0.85rem;">Tool untuk mengambil data kuartil Scopus langsung dari SINTA. Jalankan dari browser Anda yang sudah bisa mengakses SINTA.</p>
 
 <div class="step">
   <h3>Step 1 — Drag Bookmarklet ke Bookmark Bar</h3>
   <p style="font-size:0.85rem; color:#94a3b8;">Drag tombol ini ke toolbar bookmark browser Anda (atau klik kanan → Bookmark Link):</p>
-  <a class="bookmarklet" href="javascript:(function(){var q=[0,0,0,0];document.querySelectorAll('div[style]').forEach(function(el){var t=el.innerText||'';var m;if(m=t.match(/Q([1-4]):\s*(\d+)/)){q[parseInt(m[1])-1]=parseInt(m[2])}});var all=document.querySelectorAll('.stat-table td');var nums=[];all.forEach(function(td){var n=td.innerText.replace(/[.\s]/g,'').replace(',','.');if(!isNaN(parseFloat(n))&&n.length>0)nums.push(parseFloat(n))});var id=window.location.pathname.split('/').pop();var r={id:id,url:window.location.href,q1:q[0],q2:q[1],q3:q[2],q4:q[3],scopus_docs:nums[0]||0,scopus_cit:nums[2]||0,gscholar_docs:nums[1]||0,gscholar_cit:nums[3]||0};window.sintaExtracted=r;var s=JSON.stringify(r,null,2);navigator.clipboard.writeText(s).then(function(){alert('✅ Data ter-copy ke clipboard!\n\nID: '+id+'\nQ1='+q[0]+' Q2='+q[1]+' Q3='+q[2]+' Q4='+q[3]+'\nScopus Docs='+nums[0]);}).catch(function(){prompt('Copy manual (Cmd+A, Cmd+C):',s);});})();">📋 SINTA Extractor</a>
+  <a class="bookmarklet" href="javascript:(function(){var q=[0,0,0,0];document.querySelectorAll('div[style]').forEach(function(el){var t=el.innerText||'';var m;if(m=t.match(/Q([1-4]):\s*(\d+)/)){q[parseInt(m[1])-1]=parseInt(m[2])}});var all=document.querySelectorAll('.stat-table td');var nums=[];all.forEach(function(td){var n=td.innerText.replace(/[.\s]/g,'').replace(',','.');if(!isNaN(parseFloat(n))&&n.length>0)nums.push(parseFloat(n))});var id=window.location.pathname.split('/').pop();var r={id:id,url:window.location.href,q1:q[0],q2:q[1],q3:q[2],q4:q[3],scopus_docs:nums[0]||0,scopus_cit:nums[2]||0,gscholar_docs:nums[1]||0,gscholar_cit:nums[3]||0};window.sintaExtracted=r;var s=JSON.stringify(r,null,2);navigator.clipboard.writeText(s).then(function(){alert('✅ Data ter-copy ke clipboard!\n\nID: '+id+'\nQ1='+q[0]+' Q2='+q[1]+' Q3='+q[2]+' Q4='+q[3]+'\nScopus Docs='+nums[0]);}).catch(function(){prompt('Copy manual (Cmd+A, Cmd+C):',s);});})();"><i class='fa-solid fa-clipboard-list'></i> SINTA Extractor</a>
   
   <div class="alert">
     ℹ️ Jika tidak bisa drag, klik kanan tombol → <strong>Copy Link Address</strong> → buat bookmark baru → paste di URL-nya.
@@ -40,7 +41,7 @@
 
 <div class="step">
   <h3>Step 2 — Buka setiap URL SINTA lalu klik bookmarklet</h3>
-  <p style="font-size:0.85rem; color:#94a3b8;">Klik setiap link, tunggu halaman load, lalu klik bookmarklet "📋 SINTA Extractor". Data otomatis ter-copy. Paste ke kolom di Step 3.</p>
+  <p style="font-size:0.85rem; color:#94a3b8;">Klik setiap link, tunggu halaman load, lalu klik bookmarklet "<i class='fa-solid fa-clipboard-list'></i> SINTA Extractor". Data otomatis ter-copy. Paste ke kolom di Step 3.</p>
   <div class="url-list">
     <a href="https://sinta.kemdiktisaintek.go.id/affiliations/profile/400" target="_blank">1. UIN Jakarta (400)</a>
     <a href="https://sinta.kemdiktisaintek.go.id/affiliations/profile/3511" target="_blank">2. UIN SGD Bandung (3511)</a>

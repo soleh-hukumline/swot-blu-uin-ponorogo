@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Matriks IFAS & EFAS — UIN Kiai Ageng Muhammad Besari Ponorogo</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Merriweather:wght@700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -183,18 +184,18 @@ tr.sep-row td{background:rgba(255,255,255,0.03);padding:0.35rem 0.9rem;
 </head>
 <body>
 <header>
-  <h1>📑 Matriks <span>IFAS &amp; EFAS</span></h1>
+  <h1><i class='fa-solid fa-table-columns'></i> Matriks <span>IFAS &amp; EFAS</span></h1>
   <div class="nav-links">
-    <a href="../index.html">🗺️ Dashboard</a>
-    <a href="../sinta.html">🔬 SINTA</a>
-    <a href="index.html">🔒 Internal</a>
-    <a href="swot_blu.html">⚡ SWOT-BLU</a>
-    <a href="swot_pestle.html">📋 PESTLE</a>
-    <a href="matriks.html" class="active">📑 IFAS/EFAS</a>
-    <a href="kinerja.html">📊 Kinerja</a>
-    <a href="rsb_peta.html">💼 Peta RSB</a>
-    <a href="rsb_checklist.html">☑️ Checklist</a>
-    <a href="rsb_generator.html">🔧 Generator</a>
+    <a href="../index.html"><i class='fa-solid fa-gauge'></i> Dashboard</a>
+    <a href="../sinta.html"><i class='fa-solid fa-flask'></i> SINTA</a>
+    <a href="index.html"><i class='fa-solid fa-lock'></i> Internal</a>
+    <a href="swot_blu.html"><i class='fa-solid fa-bolt'></i> SWOT-BLU</a>
+    <a href="swot_pestle.html"><i class='fa-solid fa-clipboard-list'></i> PESTLE</a>
+    <a href="matriks.html" class="active"><i class='fa-solid fa-table-columns'></i> IFAS/EFAS</a>
+    <a href="kinerja.html"><i class='fa-solid fa-chart-bar'></i> Kinerja</a>
+    <a href="rsb_peta.html"><i class='fa-solid fa-map'></i> Peta RSB</a>
+    <a href="rsb_checklist.html"><i class='fa-solid fa-list-check'></i> Checklist</a>
+    <a href="rsb_generator.html"><i class='fa-solid fa-gears'></i> Generator</a>
     <button class="theme-btn" id="themeToggle" onclick="toggleTheme()">☀️ Tema</button>
   </div>
 </header>
@@ -240,7 +241,7 @@ tr.sep-row td{background:rgba(255,255,255,0.03);padding:0.35rem 0.9rem;
        TABEL IFAS
   ============================================================ -->
   <div class="sec-hdr">
-    <h3>📊 Matriks IFAS — Faktor Internal</h3>
+    <h3><i class='fa-solid fa-chart-bar'></i> Matriks IFAS — Faktor Internal</h3>
     <span class="badge badge-green">S = Strengths · W = Weaknesses</span>
   </div>
 
@@ -264,7 +265,7 @@ tr.sep-row td{background:rgba(255,255,255,0.03);padding:0.35rem 0.9rem;
        TABEL EFAS
   ============================================================ -->
   <div class="sec-hdr">
-    <h3>📊 Matriks EFAS — Faktor Eksternal</h3>
+    <h3><i class='fa-solid fa-chart-bar'></i> Matriks EFAS — Faktor Eksternal</h3>
     <span class="badge badge-blue">O = Opportunities · T = Threats</span>
   </div>
 
@@ -294,7 +295,7 @@ tr.sep-row td{background:rgba(255,255,255,0.03);padding:0.35rem 0.9rem;
       <div class="chart-inner"><canvas id="chartIE"></canvas></div>
     </div>
     <div class="chart-card">
-      <h4>📊 Perbandingan Skor Sub-Faktor IFAS &amp; EFAS</h4>
+      <h4><i class='fa-solid fa-chart-bar'></i> Perbandingan Skor Sub-Faktor IFAS &amp; EFAS</h4>
       <div class="chart-inner"><canvas id="chartBar"></canvas></div>
     </div>
   </div>
