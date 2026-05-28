@@ -140,8 +140,37 @@ table.data-tbl td.col-act{padding:0;text-align:center;border:1px solid var(--bor
 /* User label */
 .user-label{font-size:0.6rem;color:var(--muted);text-align:center;padding:0.4rem;background:var(--bg);border-radius:6px;margin-bottom:0.3rem;}
 /* Print & Responsive */
-@media print{header,.sidebar,.sb-actions,.toast{display:none!important;}.layout{grid-template-columns:1fr;}}
+@media print{header,.sidebar,.sb-actions,.toast,.modal-overlay{display:none!important;}.layout{grid-template-columns:1fr;}}
 @media(max-width:800px){.layout{grid-template-columns:1fr;}.sidebar{display:none;}}
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:500;
+  align-items:center;justify-content:center;backdrop-filter:blur(2px);}
+.modal-overlay.show{display:flex;}
+.modal-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;
+  width:90%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
+.modal-title{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:1rem;
+  display:flex;align-items:center;gap:0.5rem;}
+.modal-field{margin-bottom:0.8rem;}
+.modal-field label{display:block;font-size:0.7rem;font-weight:600;color:var(--muted);margin-bottom:0.3rem;}
+.modal-field input,.modal-field select{width:100%;padding:0.5rem 0.7rem;border:1px solid var(--border);
+  border-radius:8px;font-size:0.78rem;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);outline:none;}
+.modal-field input:focus,.modal-field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
+.modal-actions{display:flex;gap:0.5rem;justify-content:flex-end;margin-top:1rem;}
+.modal-actions button{padding:0.5rem 1.2rem;border-radius:8px;font-size:0.75rem;font-weight:600;
+  font-family:'Inter',sans-serif;cursor:pointer;border:none;transition:all 0.15s;}
+.modal-actions .btn-cancel{background:var(--bg);color:var(--text);border:1px solid var(--border);}
+.modal-actions .btn-cancel:hover{background:var(--editor-focus);}
+.modal-actions .btn-create{background:linear-gradient(135deg,#2563eb,#3b82f6);color:#fff;}
+.modal-actions .btn-create:hover{box-shadow:0 3px 12px rgba(37,99,235,0.3);}
+/* Add category button */
+.add-category-btn{display:flex;align-items:center;justify-content:center;gap:0.4rem;width:100%;
+  padding:0.8rem;margin-top:0.8rem;border:2px dashed var(--border);border-radius:10px;background:transparent;
+  color:var(--muted);font-size:0.75rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.2s;}
+.add-category-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--editor-focus);}
+/* Delete table button */
+.tbl-delete-btn{margin-left:0.4rem;background:none;border:none;color:#cbd5e1;cursor:pointer;
+  font-size:0.65rem;padding:0.2rem 0.4rem;border-radius:4px;transition:all 0.15s;}
+.tbl-delete-btn:hover{background:#fef2f2;color:var(--red);}
 </style>
 </head>
 <body>
@@ -172,12 +201,58 @@ table.data-tbl td.col-act{padding:0;text-align:center;border:1px solid var(--bor
 
 <div class="toast" id="toast"></div>
 
+<div class="modal-overlay" id="addModal">
+  <div class="modal-box">
+    <div class="modal-title"><i class="fa-solid fa-plus-circle"></i> Tambah Kategori Tarif Baru</div>
+    <input type="hidden" id="modal-section"/>
+    <div class="modal-field">
+      <label><i class="fa-solid fa-tag"></i> Nama Kategori Tarif</label>
+      <input type="text" id="modal-title" placeholder="Contoh: Tarif Wisuda & Yudisium"/>
+    </div>
+    <div class="modal-field">
+      <label><i class="fa-solid fa-users"></i> Unit Pengisi Data</label>
+      <input type="text" id="modal-unit" placeholder="Contoh: Bag. Akademik"/>
+    </div>
+    <div class="modal-field">
+      <label><i class="fa-solid fa-book"></i> Referensi PMK</label>
+      <input type="text" id="modal-ref" placeholder="Contoh: PMK 126 Ps.2(2)(i)" value="PMK 126 (custom)"/>
+    </div>
+    <div class="modal-field">
+      <label><i class="fa-solid fa-palette"></i> Ikon (Font Awesome)</label>
+      <select id="modal-icon">
+        <option value="fa-file-invoice">Dokumen</option>
+        <option value="fa-graduation-cap">Akademik</option>
+        <option value="fa-coins">Keuangan</option>
+        <option value="fa-building">Gedung</option>
+        <option value="fa-flask">Lab/Riset</option>
+        <option value="fa-server">IT</option>
+        <option value="fa-book">Perpustakaan</option>
+        <option value="fa-briefcase">Karier</option>
+        <option value="fa-heart-pulse">Kesehatan</option>
+        <option value="fa-certificate">Sertifikasi</option>
+        <option value="fa-truck">Logistik</option>
+        <option value="fa-handshake">Kerjasama</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeAddModal()"><i class="fa-solid fa-xmark"></i> Batal</button>
+      <button class="btn-create" onclick="createCustomTable()"><i class="fa-solid fa-plus"></i> Buat Kategori</button>
+    </div>
+  </div>
+</div>
 <script>
 /* ============================================================
    DATA DEFINITIONS — Tarif BLU per PMK 126/2024
 ============================================================ */
 const API_URL='/api/data';
 let dirty=false;
+
+// Custom tables storage (user-created categories)
+let customTables={}; // {custom_akademik: [...], custom_penunjang: [...]}
+try{
+  const saved=localStorage.getItem('tarif_custom_tables');
+  if(saved) customTables=JSON.parse(saved)||{};
+}catch(e){}
 
 const YEARS_HIST=['2020','2021','2022','2023','2024','2025'];
 const YEARS_PROJ=['2026','2027','2028','2029'];
@@ -404,6 +479,15 @@ function renderMain(){
     s.tables.forEach(t=>{
       html+=renderTable(t,s);
     });
+    // Render custom tables for this section
+    const customKey='custom_'+s.id;
+    (customTables[customKey]||[]).forEach((ct,ci)=>{
+      html+=renderTable(ct,s,ci,customKey);
+    });
+    // Add category button
+    html+=`<button class="add-category-btn" onclick="openAddModal('${s.id}')">
+      <i class="fa-solid fa-plus"></i> Tambah Kategori Tarif Baru
+    </button>`;
     html+=`</div>`;
   });
   // Compliance dashboard
@@ -411,14 +495,20 @@ function renderMain(){
   main.innerHTML=html;
 }
 
-function renderTable(t,section){
+function renderTable(t,section,customIdx,customKey){
   const isUKT=t.id==='tf-ukt';
-  let html=`<div class="tbl-card">
+  const isCustom=typeof customIdx==='number';
+  let html=`<div class="tbl-card" id="card-${t.id}">
     <div class="tbl-card-head" style="border-left:3px solid ${section.color}">
-      <i class="fa-solid ${section.icon}" style="color:${section.color}"></i>
+      <i class="fa-solid ${t.icon||section.icon}" style="color:${section.color}"></i>
       <span class="tbl-card-title">${t.title}</span>`;
-  html+=`<span class="tbl-card-ref">${t.ref}</span>
-    </div>`;
+  html+=`<span class="tbl-card-ref">${t.ref}</span>`;
+  if(isCustom){
+    html+=`<button class="tbl-delete-btn" onclick="deleteCustomTable('${customKey}',${customIdx})" title="Hapus kategori ini">
+      <i class="fa-solid fa-trash-can"></i> Hapus
+    </button>`;
+  }
+  html+=`</div>`;
   if(t.unitPengisi){
     html+=`<div class="unit-badge-row">
       <span class="unit-badge" style="color:${t.unitColor||'var(--muted)'};border-color:${t.unitColor||'var(--border)'};background:${t.unitColor||'var(--muted)'}11">
@@ -532,6 +622,81 @@ function renderComplianceDashboard(){
 }
 
 /* ============================================================
+   CUSTOM TABLE MANAGEMENT
+============================================================ */
+function openAddModal(sectionId){
+  document.getElementById('modal-section').value=sectionId;
+  document.getElementById('modal-title').value='';
+  document.getElementById('modal-unit').value='';
+  document.getElementById('modal-ref').value='PMK 126 (custom)';
+  document.getElementById('modal-icon').value='fa-file-invoice';
+  document.getElementById('addModal').classList.add('show');
+  setTimeout(()=>document.getElementById('modal-title').focus(),100);
+}
+function closeAddModal(){
+  document.getElementById('addModal').classList.remove('show');
+}
+
+function createCustomTable(){
+  const sectionId=document.getElementById('modal-section').value;
+  const title=document.getElementById('modal-title').value.trim();
+  const unit=document.getElementById('modal-unit').value.trim();
+  const ref=document.getElementById('modal-ref').value.trim();
+  const icon=document.getElementById('modal-icon').value;
+
+  if(!title){showToast('<i class="fa-solid fa-circle-exclamation"></i> Nama kategori harus diisi');return;}
+
+  const customKey='custom_'+sectionId;
+  if(!customTables[customKey]) customTables[customKey]=[];
+
+  const section=SECTIONS.find(s=>s.id===sectionId);
+  const newTable={
+    id:'tf-custom-'+Date.now(),
+    title:title,
+    ref:ref||'Custom',
+    icon:icon,
+    unitPengisi:unit||'Belum ditentukan',
+    unitIcon:icon,
+    unitColor:section?section.color:'#64748b',
+    headers:['No','Jenis Layanan','Satuan',...ALL_YEARS,'Ceiling PMK'],
+    rows:[
+      ['1','','Rp/...',...ALL_YEARS.map(()=>''),''],
+      ['2','','Rp/...',...ALL_YEARS.map(()=>''),''],
+      ['3','','Rp/...',...ALL_YEARS.map(()=>''),''],
+    ]
+  };
+
+  customTables[customKey].push(newTable);
+  saveCustomTables();
+  closeAddModal();
+
+  // Re-render
+  renderSidebar();
+  renderMain();
+  switchSection(sectionId);
+  showToast(`<i class="fa-solid fa-circle-check"></i> Kategori "${title}" ditambahkan`);
+  markDirty();
+}
+
+function deleteCustomTable(customKey,idx){
+  const tbl=customTables[customKey]?.[idx];
+  if(!tbl)return;
+  if(!confirm(`Hapus kategori "${tbl.title}"? Data di dalamnya akan hilang.`))return;
+  customTables[customKey].splice(idx,1);
+  saveCustomTables();
+  const sectionId=customKey.replace('custom_','');
+  renderSidebar();
+  renderMain();
+  switchSection(sectionId);
+  showToast(`<i class="fa-solid fa-trash-can"></i> Kategori "${tbl.title}" dihapus`);
+  markDirty();
+}
+
+function saveCustomTables(){
+  localStorage.setItem('tarif_custom_tables',JSON.stringify(customTables));
+}
+
+/* ============================================================
    NAVIGATION
 ============================================================ */
 function switchSection(id){
@@ -593,7 +758,10 @@ function updateCompliance(){
   const details=[];
 
   SECTIONS.forEach(s=>{
-    s.tables.forEach(t=>{
+    const allTables=[...s.tables];
+    const customKey='custom_'+s.id;
+    (customTables[customKey]||[]).forEach(ct=>allTables.push(ct));
+    allTables.forEach(t=>{
       if(t.id==='tf-ukt')return; // UKT handled separately
       const tbl=document.getElementById(t.id);
       if(!tbl)return;
@@ -704,21 +872,24 @@ function showToast(msg){
 }
 
 async function saveAll(silent=false){
-  // Collect all table data
+  // Collect all table data (built-in + custom)
   const allData={};
-  SECTIONS.forEach(s=>{
-    s.tables.forEach(t=>{
-      const tbl=document.getElementById(t.id);
-      if(!tbl)return;
-      const rows=[];
-      tbl.querySelectorAll('tbody tr').forEach(tr=>{
-        if(tr.classList.contains('section-row'))return;
-        const cells=[];
-        tr.querySelectorAll('.cell-input').forEach(inp=>cells.push(inp.value));
-        rows.push(cells);
-      });
-      allData[t.id]={title:t.title,ref:t.ref,rows};
+  const collectTable=(t)=>{
+    const tbl=document.getElementById(t.id);
+    if(!tbl)return;
+    const rows=[];
+    tbl.querySelectorAll('tbody tr').forEach(tr=>{
+      if(tr.classList.contains('section-row'))return;
+      const cells=[];
+      tr.querySelectorAll('.cell-input').forEach(inp=>cells.push(inp.value));
+      rows.push(cells);
     });
+    allData[t.id]={title:t.title,ref:t.ref,unitPengisi:t.unitPengisi||'',rows};
+  };
+  SECTIONS.forEach(s=>{
+    s.tables.forEach(collectTable);
+    const customKey='custom_'+s.id;
+    (customTables[customKey]||[]).forEach(collectTable);
   });
 
   // Save to localStorage
@@ -730,10 +901,12 @@ async function saveAll(silent=false){
     const promises=SECTIONS.map(s=>{
       const sectionData={};
       s.tables.forEach(t=>{if(allData[t.id])sectionData[t.id]=allData[t.id];});
+      const customKey='custom_'+s.id;
+      (customTables[customKey]||[]).forEach(t=>{if(allData[t.id])sectionData[t.id]=allData[t.id];});
       return fetch(API_URL,{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({unitId:'tarif-'+s.id,tables:sectionData})
+        body:JSON.stringify({unitId:'tarif-'+s.id,tables:sectionData,customTables:customTables[customKey]||[]})
       });
     });
     await Promise.all(promises);
