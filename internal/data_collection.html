@@ -164,6 +164,10 @@ table.data-tbl td.col-act{padding:0;text-align:center;border:1px solid #d0d7de;}
     <a href="data_collection.html" class="active"><i class='fa-solid fa-clipboard-list'></i> Data Collection</a>
     <a href="tarif_blu.html"><i class='fa-solid fa-file-invoice-dollar'></i> Tarif BLU</a>
   </nav>
+  <nav class="nav-links" id="staffNav" style="display:none">
+    <a href="data_collection.html" class="active"><i class="fa-solid fa-clipboard-list"></i> Data Collection</a>
+    <a href="tarif_blu.html"><i class="fa-solid fa-file-invoice-dollar"></i> Tarif BLU</a>
+  </nav>
   <div id="userLabel" style="margin-left:auto;font-size:0.6rem;color:#94a3b8;"><i class="fa-solid fa-university"></i> UIN Ponorogo</div>
 </header>
 
@@ -869,12 +873,26 @@ function deleteCustomDcTable(customKey,idx){
   markDirty();
 }
 
-// Init
-const isAdmin=(()=>{try{const c=JSON.parse(localStorage.getItem('rsb_ai_config')||'{}');return!!c.apiKey;}catch(e){return false;}})();
-if(isAdmin){
-  document.getElementById('adminNav').style.display='flex';
-  document.getElementById('userLabel').style.display='none';
-}
+// Role-based nav detection via Cloudflare Access
+(async function detectRole(){
+  let email='';
+  try{
+    const res=await fetch('/cdn-cgi/access/get-identity');
+    if(res.ok){const id=await res.json();email=(id.email||'').toLowerCase();}
+  }catch(e){}
+  if(!email){
+    try{const c=JSON.parse(localStorage.getItem('rsb_ai_config')||'{}');if(c.apiKey)email='wahid@uinponorogo.ac.id';}catch(e){}
+  }
+  const isAdmin=email==='wahid@uinponorogo.ac.id';
+  const isStaff=!isAdmin && email.endsWith('@uinponorogo.ac.id');
+  if(isAdmin){
+    document.getElementById('adminNav').style.display='flex';
+    document.getElementById('userLabel').innerHTML='<i class="fa-solid fa-shield-halved"></i> Admin: '+email;
+  } else if(isStaff){
+    document.getElementById('staffNav').style.display='flex';
+    document.getElementById('userLabel').innerHTML='<i class="fa-solid fa-user"></i> '+email;
+  }
+})();
 renderSidebar();
 renderMain();
 loadData().then(()=>updateProgress());

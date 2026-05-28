@@ -192,6 +192,10 @@ table.data-tbl td.col-act{padding:0;text-align:center;border:1px solid var(--bor
     <a href="data_collection.html"><i class="fa-solid fa-clipboard-list"></i> Data Unit</a>
     <a href="tarif_blu.html" class="active"><i class="fa-solid fa-file-invoice-dollar"></i> Tarif BLU</a>
   </nav>
+  <nav class="nav-links" id="staffNav" style="display:none">
+    <a href="data_collection.html"><i class="fa-solid fa-clipboard-list"></i> Data Collection</a>
+    <a href="tarif_blu.html" class="active"><i class="fa-solid fa-file-invoice-dollar"></i> Tarif BLU</a>
+  </nav>
   <div class="header-actions">
     <button class="theme-btn" onclick="toggleTheme()" title="Toggle tema">
       <i class="fa-solid fa-sun" id="theme-icon"></i>
@@ -1054,14 +1058,27 @@ if(savedTheme){
 const thIcon=document.getElementById('theme-icon');
 if(thIcon)thIcon.className=document.documentElement.getAttribute('data-theme')==='dark'?'fa-solid fa-moon':'fa-solid fa-sun';
 
-// Admin detection
-const isAdmin=(()=>{
-  try{const c=JSON.parse(localStorage.getItem('rsb_ai_config')||'{}');return!!c.apiKey;}catch(e){return false;}
+// Role-based nav detection via Cloudflare Access
+(async function detectRole(){
+  let email='';
+  try{
+    const res=await fetch('/cdn-cgi/access/get-identity');
+    if(res.ok){const id=await res.json();email=(id.email||'').toLowerCase();}
+  }catch(e){}
+  // Fallback: check localStorage
+  if(!email){
+    try{const c=JSON.parse(localStorage.getItem('rsb_ai_config')||'{}');if(c.apiKey)email='wahid@uinponorogo.ac.id';}catch(e){}
+  }
+  const isAdmin=email==='wahid@uinponorogo.ac.id';
+  const isStaff=!isAdmin && email.endsWith('@uinponorogo.ac.id');
+  if(isAdmin){
+    document.getElementById('adminNav').style.display='flex';
+    document.getElementById('userLabel').innerHTML='<i class="fa-solid fa-shield-halved"></i> Admin: '+email;
+  } else if(isStaff){
+    document.getElementById('staffNav').style.display='flex';
+    document.getElementById('userLabel').innerHTML='<i class="fa-solid fa-user"></i> '+email;
+  }
 })();
-if(isAdmin){
-  document.getElementById('adminNav').style.display='flex';
-  document.getElementById('userLabel').style.display='none';
-}
 
 // Beforeunload
 window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});
