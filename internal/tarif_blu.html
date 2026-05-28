@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Tarif Layanan BLU — PMK 126/2024 | UIN Ponorogo</title>
+<meta name="description" content="Pengelolaan tarif layanan BLU UIN Ponorogo sesuai PMK 126/PMK.05/2024"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+<style>
+:root{--bg:#f8fafc;--card:#fff;--text:#1e293b;--muted:#94a3b8;--border:#e2e8f0;--accent:#2563eb;
+  --green:#16a34a;--red:#dc2626;--amber:#d97706;--purple:#7c3aed;--cyan:#0891b2;
+  --tbl-head:#f6f8fa;--editor-focus:#e8f0fe;--ceiling-bg:#fffbeb;}
+[data-theme="dark"]{--bg:#0f172a;--card:#1e293b;--text:#e2e8f0;--muted:#64748b;--border:#334155;--accent:#60a5fa;
+  --green:#4ade80;--red:#f87171;--amber:#fbbf24;--purple:#a78bfa;--cyan:#22d3ee;
+  --tbl-head:#1e293b;--editor-focus:#1e3a5f;--ceiling-bg:#422006;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:0.82rem;line-height:1.6;}
+/* Layout */
+.layout{display:grid;grid-template-columns:270px 1fr;min-height:100vh;}
+header{grid-column:1/-1;display:flex;align-items:center;padding:0.5rem 1.2rem;background:var(--card);
+  border-bottom:1px solid var(--border);gap:0.8rem;position:sticky;top:0;z-index:100;}
+.logo{font-size:0.9rem;font-weight:800;background:linear-gradient(135deg,#2563eb,#7c3aed);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;}
+.logo-sub{font-size:0.6rem;color:var(--muted);font-weight:500;}
+.nav-links{display:flex;gap:0.3rem;margin-left:auto;flex-wrap:wrap;}
+.nav-links a{padding:0.3rem 0.6rem;border-radius:6px;font-size:0.65rem;color:var(--muted);
+  text-decoration:none;font-weight:500;transition:all 0.15s;}
+.nav-links a:hover{background:var(--editor-focus);color:var(--accent);}
+.nav-links a.active{background:var(--editor-focus);color:var(--accent);font-weight:600;}
+.header-actions{display:flex;gap:0.4rem;align-items:center;}
+.theme-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:0.3rem 0.5rem;
+  cursor:pointer;color:var(--muted);font-size:0.7rem;transition:all 0.15s;}
+.theme-btn:hover{color:var(--accent);border-color:var(--accent);}
+/* Sidebar */
+.sidebar{overflow-y:auto;padding:0.5rem 0.4rem;background:var(--card);border-right:1px solid var(--border);
+  position:sticky;top:45px;height:calc(100vh - 45px);display:flex;flex-direction:column;}
+.sb-group-header{font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:1.8px;color:var(--muted);
+  padding:0.5rem 0.5rem 0.25rem;display:flex;align-items:center;gap:0.4rem;border-bottom:1px solid var(--border);margin-bottom:0.3rem;}
+.sb-group-header:not(:first-child){margin-top:0.4rem;}
+.sb-item{display:flex;align-items:center;gap:0.35rem;padding:0.3rem 0.5rem;border-radius:8px;
+  font-size:0.7rem;color:var(--text);cursor:pointer;transition:all 0.15s;border:1px solid transparent;
+  margin-bottom:1px;text-decoration:none;border-left:3px solid transparent;}
+.sb-item:hover{background:var(--editor-focus);color:var(--accent);}
+.sb-item.active{background:var(--editor-focus);color:var(--accent);border-left-color:var(--accent);font-weight:600;box-shadow:0 1px 3px rgba(26,115,232,0.1);}
+/* Unit color codes */
+.sb-item.u-keuangan{border-left-color:#dc2626;}.sb-item.u-keuangan.active,.sb-item.u-keuangan:hover{background:#fef2f2;color:#dc2626;}
+.sb-item.u-akademik{border-left-color:#2563eb;}.sb-item.u-akademik.active,.sb-item.u-akademik:hover{background:#eff6ff;color:#2563eb;}
+.sb-item.u-pascasarjana{border-left-color:#d97706;}.sb-item.u-pascasarjana.active,.sb-item.u-pascasarjana:hover{background:#fffbeb;color:#d97706;}
+.sb-item.u-lp2m{border-left-color:#16a34a;}.sb-item.u-lp2m.active,.sb-item.u-lp2m:hover{background:#f0fdf4;color:#16a34a;}
+.sb-item.u-umum{border-left-color:#0891b2;}.sb-item.u-umum.active,.sb-item.u-umum:hover{background:#ecfeff;color:#0891b2;}
+.sb-item.u-perpustakaan{border-left-color:#9333ea;}.sb-item.u-perpustakaan.active,.sb-item.u-perpustakaan:hover{background:#faf5ff;color:#9333ea;}
+.sb-item.u-ptipd{border-left-color:#0284c7;}.sb-item.u-ptipd.active,.sb-item.u-ptipd:hover{background:#f0f9ff;color:#0284c7;}
+.sb-item.u-karier{border-left-color:#ea580c;}.sb-item.u-karier.active,.sb-item.u-karier:hover{background:#fff7ed;color:#ea580c;}
+.sb-item.u-compliance{border-left-color:#059669;}.sb-item.u-compliance.active,.sb-item.u-compliance:hover{background:#ecfdf5;color:#059669;}
+/* Main */
+.main{overflow-y:auto;padding:1.5rem 2rem;height:calc(100vh - 45px);}
+.section-block{display:none;}
+.section-block.active{display:block;}
+.section-head{margin-bottom:1.2rem;padding:1rem 1.2rem;background:var(--card);border-radius:12px;border:1px solid var(--border);}
+.section-icon{font-size:1.5rem;margin-bottom:0.3rem;}
+.section-name{font-size:1.1rem;font-weight:800;color:var(--text);}
+.section-desc{font-size:0.72rem;color:var(--muted);margin-top:0.2rem;}
+.section-badge{display:inline-block;padding:0.15rem 0.5rem;border-radius:20px;font-size:0.58rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.5px;margin-top:0.4rem;}
+/* Table cards */
+.tbl-card{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:1rem;overflow:hidden;}
+.tbl-card-head{display:flex;align-items:center;gap:0.5rem;padding:0.6rem 0.8rem;border-bottom:1px solid var(--border);background:var(--tbl-head);}
+.tbl-card-title{font-size:0.75rem;font-weight:700;color:var(--text);}
+.tbl-card-ref{font-size:0.58rem;color:var(--muted);margin-left:auto;background:var(--bg);padding:0.15rem 0.4rem;border-radius:4px;}
+.tbl-card-body{padding:0.5rem;overflow-x:auto;}
+/* Tables */
+table.data-tbl{width:100%;border-collapse:collapse;font-size:0.72rem;}
+table.data-tbl th{background:var(--tbl-head);color:var(--text);font-weight:600;padding:0.4rem 0.5rem;
+  border:1px solid var(--border);text-align:left;white-space:nowrap;font-size:0.65rem;}
+table.data-tbl th.col-ceiling{background:var(--ceiling-bg);color:var(--amber);font-weight:700;}
+table.data-tbl td{border:1px solid var(--border);padding:0;}
+table.data-tbl td.ceiling-cell{background:var(--ceiling-bg);}
+table.data-tbl tr:nth-child(even) td{background:var(--bg);}
+table.data-tbl tr:hover td{background:var(--editor-focus);}
+table.data-tbl .section-row td{background:#eef2ff !important;font-weight:700;color:var(--accent);padding:0.4rem 0.5rem;}
+[data-theme="dark"] table.data-tbl .section-row td{background:#1e3a5f !important;}
+.cell-input{width:100%;border:none;padding:0.35rem 0.5rem;font-size:0.72rem;font-family:'Inter',sans-serif;
+  background:transparent;color:var(--text);outline:none;min-height:1.8rem;}
+.cell-input:focus{background:var(--card);box-shadow:inset 0 0 0 2px #1a73e8;}
+.cell-input.cell-label{font-weight:500;background:rgba(0,0,0,0.01);}
+.cell-input.cell-readonly{background:var(--bg);color:var(--muted);cursor:default;}
+.cell-input.ceiling-input{background:var(--ceiling-bg);font-weight:600;color:var(--amber);}
+/* Status icons */
+.status-ok{color:var(--green);}.status-warn{color:var(--amber);}.status-err{color:var(--red);}.status-na{color:var(--muted);}
+/* Row actions */
+.row-del{width:28px;height:28px;border:none;background:transparent;color:#cbd5e1;cursor:pointer;
+  font-size:0.7rem;border-radius:4px;transition:all 0.15s;display:flex;align-items:center;justify-content:center;}
+.row-del:hover{background:#fef2f2;color:var(--red);}
+table.data-tbl th.col-act{width:30px;padding:0.2rem;text-align:center;}
+table.data-tbl td.col-act{padding:0;text-align:center;border:1px solid var(--border);}
+.add-row-btn{display:inline-flex;align-items:center;gap:0.3rem;padding:0.3rem 0.7rem;margin:0.4rem 0.3rem;
+  border:1px dashed var(--muted);border-radius:6px;background:transparent;color:var(--muted);
+  font-size:0.65rem;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.15s;}
+.add-row-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--editor-focus);}
+/* Compliance dashboard */
+.compliance-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.8rem;margin-bottom:1.2rem;}
+.comp-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem;text-align:center;transition:all 0.2s;}
+.comp-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.06);}
+.comp-card .comp-icon{font-size:1.8rem;margin-bottom:0.4rem;}
+.comp-card .comp-count{font-size:1.6rem;font-weight:800;}
+.comp-card .comp-label{font-size:0.65rem;color:var(--muted);font-weight:500;margin-top:0.2rem;}
+.comp-card .comp-pct{font-size:0.75rem;font-weight:700;margin-top:0.2rem;}
+.progress-track{height:8px;border-radius:4px;background:var(--border);overflow:hidden;margin-top:0.8rem;}
+.progress-fill{height:100%;border-radius:4px;transition:width 0.5s ease;}
+.target-label{display:flex;justify-content:space-between;font-size:0.65rem;color:var(--muted);margin-top:0.3rem;font-weight:600;}
+/* Actions bar */
+.sb-actions{margin-top:auto;padding:0.5rem 0.3rem;border-top:1px solid var(--border);}
+.sb-btn{display:flex;align-items:center;justify-content:center;gap:0.3rem;width:100%;padding:0.45rem;
+  border-radius:8px;font-size:0.7rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;
+  transition:all 0.15s;border:none;margin-bottom:0.3rem;}
+.sb-btn.primary{background:linear-gradient(135deg,#2563eb,#3b82f6);color:#fff;}
+.sb-btn.primary:hover{box-shadow:0 3px 12px rgba(37,99,235,0.3);}
+.sb-btn.export{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;}
+.sb-btn.export:hover{box-shadow:0 3px 12px rgba(22,163,74,0.3);}
+.sb-btn.secondary{background:var(--bg);color:var(--text);border:1px solid var(--border);}
+.sb-btn.secondary:hover{background:var(--editor-focus);}
+/* Toast */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--card);border:1px solid var(--green);border-radius:10px;padding:0.5rem 1.2rem;
+  font-size:0.78rem;color:var(--green);font-weight:600;box-shadow:0 6px 24px rgba(0,0,0,0.15);
+  opacity:0;pointer-events:none;transition:all 0.3s;z-index:400;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+/* Progress */
+.sb-progress-wrap{padding:0.5rem;margin-top:0.5rem;}
+.sb-progress-label{font-size:0.6rem;font-weight:600;color:var(--muted);margin-bottom:0.3rem;}
+.sb-progress-bar{height:6px;border-radius:3px;background:var(--border);overflow:hidden;}
+.sb-progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#2563eb,#16a34a);transition:width 0.4s ease;width:0;}
+.sb-progress-pct{font-size:0.6rem;font-weight:700;color:var(--accent);text-align:right;margin-top:0.2rem;}
+/* User label */
+.user-label{font-size:0.6rem;color:var(--muted);text-align:center;padding:0.4rem;background:var(--bg);border-radius:6px;margin-bottom:0.3rem;}
+/* Print & Responsive */
+@media print{header,.sidebar,.sb-actions,.toast{display:none!important;}.layout{grid-template-columns:1fr;}}
+@media(max-width:800px){.layout{grid-template-columns:1fr;}.sidebar{display:none;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo"><i class='fa-solid fa-file-invoice-dollar'></i> Tarif Layanan BLU</div>
+    <div class="logo-sub">PMK 126/PMK.05/2024 — UIN Kiai Ageng Muhammad Besari Ponorogo</div>
+  </div>
+  <nav class="nav-links" id="adminNav" style="display:none">
+    <a href="index.html"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+    <a href="rsb_generator.html"><i class="fa-solid fa-file-lines"></i> Generator</a>
+    <a href="rsb_checklist.html"><i class="fa-solid fa-list-check"></i> Checklist</a>
+    <a href="data_collection.html"><i class="fa-solid fa-clipboard-list"></i> Data Unit</a>
+    <a href="tarif_blu.html" class="active"><i class="fa-solid fa-file-invoice-dollar"></i> Tarif BLU</a>
+  </nav>
+  <div class="header-actions">
+    <button class="theme-btn" onclick="toggleTheme()" title="Toggle tema">
+      <i class="fa-solid fa-sun" id="theme-icon"></i>
+    </button>
+  </div>
+</header>
+
+<div class="layout">
+<aside class="sidebar" id="sidebar"></aside>
+<main class="main" id="mainContent"></main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   DATA DEFINITIONS — Tarif BLU per PMK 126/2024
+============================================================ */
+const API_URL='/api/data';
+let dirty=false;
+
+const YEARS_HIST=['2020','2021','2022','2023','2024','2025'];
+const YEARS_PROJ=['2026','2027','2028','2029'];
+const ALL_YEARS=[...YEARS_HIST,...YEARS_PROJ];
+
+// Program studi & UKT (KMA 498/2024)
+const PRODI_LIST=[
+  {nama:'Hukum Keluarga Islam',ukt:[400000,1560000,2000000,2500000,3000000]},
+  {nama:'Hukum Ekonomi Syariah',ukt:[400000,1560000,2000000,2500000,3000000]},
+  {nama:'Hukum Tata Negara (Siyasah)',ukt:[400000,1560000,2000000,2500000,3000000]},
+  {nama:'Pendidikan Agama Islam',ukt:[400000,1800000,2400000,3000000,3500000]},
+  {nama:'Pendidikan Guru Madrasah Ibtidaiyah',ukt:[400000,1800000,2400000,3000000,3500000]},
+  {nama:'Pendidikan Bahasa Arab',ukt:[400000,1800000,2400000,3000000,3500000]},
+  {nama:'Pendidikan Islam Anak Usia Dini',ukt:[400000,1800000,2400000,3000000,3500000]},
+  {nama:'Tadris Bahasa Inggris',ukt:[400000,1800000,2400000,3000000,3500000]},
+  {nama:'Tadris Matematika',ukt:[400000,1800000,2400000,3000000,3500000]},
+  {nama:'Tadris IPA',ukt:[400000,1800000,2400000,3000000,3500000]},
+  {nama:'Manajemen Pendidikan Islam',ukt:[400000,1800000,2400000,3000000,3500000]},
+  {nama:'Ekonomi Syariah',ukt:[400000,1800000,2400000,3000000,3500000]},
+  {nama:'Perbankan Syariah',ukt:[400000,1800000,2400000,3000000,3500000]},
+  {nama:'Manajemen Bisnis Syariah',ukt:[400000,1800000,2400000,3000000,3500000]},
+  {nama:'Akuntansi Syariah',ukt:[400000,1800000,2400000,3000000,3500000]},
+  {nama:'Manajemen Zakat dan Wakaf',ukt:[400000,1430000,1750000,2100000,2400000]},
+  {nama:'Komunikasi Penyiaran Islam',ukt:[400000,1430000,1750000,2100000,2400000]},
+  {nama:'Bimbingan Konseling Islam',ukt:[400000,1430000,1750000,2100000,2400000]},
+  {nama:'Pengembangan Masyarakat Islam',ukt:[400000,1430000,1750000,2100000,2400000]},
+  {nama:'Sejarah Peradaban Islam',ukt:[400000,1000000,1200000,1400000,1500000]},
+  {nama:'Ilmu Al-Quran dan Tafsir',ukt:[400000,1000000,1200000,1400000,1500000]},
+  {nama:'Aqidah dan Filsafat Islam',ukt:[400000,1000000,1200000,1400000,1500000]},
+  {nama:'Tasawuf dan Psikoterapi',ukt:[400000,1000000,1200000,1400000,1500000]},
+  {nama:'Ilmu Hadis',ukt:[400000,1000000,1200000,1400000,1500000]},
+  {nama:'Sosiologi Agama',ukt:[400000,1000000,1200000,1400000,1500000]},
+  {nama:'Informatika',ukt:[400000,1800000,2400000,3000000,3500000]},
+  {nama:'Psikologi Islam',ukt:[400000,1800000,2400000,3000000,3500000]},
+  {nama:'Ilmu Perpustakaan dan Informasi Islam',ukt:[400000,1430000,1750000,2100000,2400000]},
+];
+
+const SECTIONS=[
+  {
+    id:'akademik', name:'Tarif Layanan Akademik', icon:'fa-graduation-cap', color:'#2563eb', bgColor:'#eff6ff',
+    desc:'UKT, biaya pendidikan, seleksi masuk (Pasal 2 Ayat 1 PMK 126/2024)',
+    cssClass:'u-akademik',
+    tables:[
+      {id:'tf-seleksi', title:'Tarif Seleksi Ujian Masuk', ref:'PMK 126 Ps.2(1)(a)',
+        headers:['No','Jenis Seleksi','Satuan',...ALL_YEARS,'Ceiling PMK'],
+        rows:[
+          ['1','SNBT/UTBK-SNBT','Rp/peserta',...ALL_YEARS.map(()=>'...'),''],
+          ['2','SPAN-PTKIN (Jalur Prestasi)','Rp/peserta',...ALL_YEARS.map(()=>'...'),''],
+          ['3','UM-PTKIN (Jalur Mandiri)','Rp/peserta',...ALL_YEARS.map(()=>'...'),''],
+          ['4','Seleksi Pascasarjana','Rp/peserta',...ALL_YEARS.map(()=>'...'),''],
+        ]},
+      {id:'tf-ukt', title:'UKT per Program Studi — 5 Kelompok (KMA 498/2024)', ref:'PMK 126 Ps.2(1)(b)',
+        headers:['No','Program Studi','Kel.','UKT 2025 (Rp)','Ceiling PMK (Rp)','Proyeksi 2026','Proyeksi 2027','Proyeksi 2028','Proyeksi 2029','Status'],
+        rows:[]  // dynamically generated
+      },
+      {id:'tf-pasca', title:'Biaya Pendidikan Pascasarjana', ref:'PMK 126 Ps.2(1)(c)',
+        headers:['No','Program','Jenjang','Satuan',...ALL_YEARS,'Ceiling PMK'],
+        rows:[
+          ['1','Magister Hukum Keluarga','S2','Rp/smt',...ALL_YEARS.map(()=>'...'),''],
+          ['2','Magister Pendidikan Agama Islam','S2','Rp/smt',...ALL_YEARS.map(()=>'...'),''],
+          ['3','Magister Ekonomi Syariah','S2','Rp/smt',...ALL_YEARS.map(()=>'...'),''],
+          ['4','Program Doktor (jika ada)','S3','Rp/smt',...ALL_YEARS.map(()=>'...'),''],
+        ]},
+      {id:'tf-ipi', title:'Iuran Pengembangan Institusi', ref:'PMK 126 Ps.2(1)(d)',
+        headers:['No','Jenis Iuran','Satuan',...ALL_YEARS,'Ceiling PMK'],
+        rows:[
+          ['1','Iuran Pengembangan Institusi - Reguler','Rp/mhs',...ALL_YEARS.map(()=>'...'),''],
+          ['2','Iuran Pengembangan Institusi - Non-Reguler','Rp/mhs',...ALL_YEARS.map(()=>'...'),''],
+        ]},
+    ]
+  },
+  {
+    id:'penunjang', name:'Tarif Layanan Penunjang Akademik', icon:'fa-building', color:'#0891b2', bgColor:'#ecfeff',
+    desc:'Fasilitas, sewa, layanan penunjang (Pasal 2 Ayat 2 PMK 126/2024)',
+    cssClass:'u-umum',
+    tables:[
+      {id:'tf-asrama', title:'Tarif Asrama / Ma\'had Al-Jami\'ah', ref:'PMK 126 Ps.2(2)(a)',
+        unitPengisi:'Bag. Umum', unitIcon:'fa-building', unitColor:'#0891b2',
+        headers:['No','Jenis Layanan','Satuan',...ALL_YEARS,'Ceiling PMK'],
+        rows:[
+          ['1','Asrama Putra - Reguler','Rp/smt',...ALL_YEARS.map(()=>'...'),''],
+          ['2','Asrama Putri - Reguler','Rp/smt',...ALL_YEARS.map(()=>'...'),''],
+          ['3','Asrama VIP/Premium','Rp/smt',...ALL_YEARS.map(()=>'...'),''],
+          ['4','Laundry & Kebersihan','Rp/smt',...ALL_YEARS.map(()=>'...'),''],
+        ]},
+      {id:'tf-perpus', title:'Tarif Layanan Perpustakaan', ref:'PMK 126 Ps.2(2)(b)',
+        unitPengisi:'Perpustakaan', unitIcon:'fa-book', unitColor:'#9333ea',
+        headers:['No','Jenis Layanan','Satuan',...ALL_YEARS,'Ceiling PMK'],
+        rows:[
+          ['1','Kartu Anggota Luar','Rp/tahun',...ALL_YEARS.map(()=>'...'),''],
+          ['2','Denda Keterlambatan','Rp/hari',...ALL_YEARS.map(()=>'...'),''],
+          ['3','Layanan Referensi Khusus','Rp/kali',...ALL_YEARS.map(()=>'...'),''],
+        ]},
+      {id:'tf-lab', title:'Tarif Laboratorium', ref:'PMK 126 Ps.2(2)(c)',
+        unitPengisi:'Bag. Akademik', unitIcon:'fa-flask', unitColor:'#2563eb',
+        headers:['No','Jenis Lab','Satuan',...ALL_YEARS,'Ceiling PMK'],
+        rows:[
+          ['1','Lab Komputer/IT','Rp/smt',...ALL_YEARS.map(()=>'...'),''],
+          ['2','Lab Bahasa','Rp/smt',...ALL_YEARS.map(()=>'...'),''],
+          ['3','Lab Micro-Teaching','Rp/smt',...ALL_YEARS.map(()=>'...'),''],
+          ['4','Lab Sains','Rp/smt',...ALL_YEARS.map(()=>'...'),''],
+        ]},
+      {id:'tf-sewa', title:'Tarif Sewa Gedung & Fasilitas', ref:'PMK 126 Ps.2(2)(d)',
+        unitPengisi:'Bag. Umum', unitIcon:'fa-building', unitColor:'#0891b2',
+        headers:['No','Fasilitas','Satuan',...ALL_YEARS,'Ceiling PMK'],
+        rows:[
+          ['1','Aula/Auditorium','Rp/hari',...ALL_YEARS.map(()=>'...'),''],
+          ['2','Ruang Kelas','Rp/hari',...ALL_YEARS.map(()=>'...'),''],
+          ['3','Lapangan Olahraga','Rp/hari',...ALL_YEARS.map(()=>'...'),''],
+          ['4','Masjid/Mushola (acara eksternal)','Rp/hari',...ALL_YEARS.map(()=>'...'),''],
+        ]},
+      {id:'tf-it', title:'Tarif Layanan IT / PTIPD', ref:'PMK 126 Ps.2(2)(e)',
+        unitPengisi:'PTIPD', unitIcon:'fa-server', unitColor:'#0284c7',
+        headers:['No','Jenis Layanan','Satuan',...ALL_YEARS,'Ceiling PMK'],
+        rows:[
+          ['1','Hosting & Domain Website','Rp/tahun',...ALL_YEARS.map(()=>'...'),''],
+          ['2','Email Institusi','Rp/akun/th',...ALL_YEARS.map(()=>'...'),''],
+          ['3','Pembuatan Aplikasi','Rp/proyek',...ALL_YEARS.map(()=>'...'),''],
+          ['4','Sertifikasi IT','Rp/peserta',...ALL_YEARS.map(()=>'...'),''],
+        ]},
+      {id:'tf-sertifikasi', title:'Tarif Sertifikasi & Pelatihan', ref:'PMK 126 Ps.2(2)(f)',
+        unitPengisi:'LP2M', unitIcon:'fa-flask', unitColor:'#16a34a',
+        headers:['No','Jenis Program','Satuan',...ALL_YEARS,'Ceiling PMK'],
+        rows:[
+          ['1','LSP-P1 Uji Kompetensi','Rp/peserta',...ALL_YEARS.map(()=>'...'),''],
+          ['2','Pelatihan Profesional','Rp/peserta',...ALL_YEARS.map(()=>'...'),''],
+          ['3','Diklat Bahasa Arab/Inggris','Rp/peserta',...ALL_YEARS.map(()=>'...'),''],
+          ['4','Workshop & Seminar Berbayar','Rp/peserta',...ALL_YEARS.map(()=>'...'),''],
+        ]},
+      {id:'tf-kesehatan', title:'Tarif Klinik Kesehatan Kampus', ref:'PMK 126 Ps.2(2)(g)',
+        unitPengisi:'Bag. Umum', unitIcon:'fa-heart-pulse', unitColor:'#0891b2',
+        headers:['No','Jenis Layanan','Satuan',...ALL_YEARS,'Ceiling PMK'],
+        rows:[
+          ['1','Pemeriksaan Umum','Rp/kunjungan',...ALL_YEARS.map(()=>'...'),''],
+          ['2','Rujukan & Surat Keterangan','Rp/surat',...ALL_YEARS.map(()=>'...'),''],
+          ['3','Layanan Konseling','Rp/sesi',...ALL_YEARS.map(()=>'...'),''],
+        ]},
+      {id:'tf-karier', title:'Tarif Layanan Pusat Karier', ref:'PMK 126 Ps.2(2)(h)',
+        unitPengisi:'Pusat Karier', unitIcon:'fa-briefcase', unitColor:'#ea580c',
+        headers:['No','Jenis Layanan','Satuan',...ALL_YEARS,'Ceiling PMK'],
+        rows:[
+          ['1','Tracer Study Kerjasama','Rp/batch',...ALL_YEARS.map(()=>'...'),''],
+          ['2','Job Fair & Career Expo','Rp/booth',...ALL_YEARS.map(()=>'...'),''],
+          ['3','Pelatihan Karier/Soft Skill','Rp/peserta',...ALL_YEARS.map(()=>'...'),''],
+        ]},
+    ]
+  },
+];
+
+// Generate UKT rows dynamically
+function generateUKTRows(){
+  const rows=[];
+  let no=1;
+  PRODI_LIST.forEach(p=>{
+    for(let k=1;k<=5;k++){
+      const uktVal=p.ukt[k-1];
+      rows.push([
+        k===1?String(no):'',
+        k===1?p.nama:'',
+        'Kel. '+k,
+        uktVal.toLocaleString('id-ID'),
+        '', // ceiling
+        '...','...','...','...', // proyeksi
+        '' // status
+      ]);
+    }
+    no++;
+  });
+  return rows;
+}
+// Assign UKT rows
+SECTIONS[0].tables[1].rows=generateUKTRows();
+
+/* ============================================================
+   UI RENDERING
+============================================================ */
+function renderSidebar(){
+  const sb=document.getElementById('sidebar');
+  let html=`
+    <div class="sb-group-header"><i class="fa-solid fa-layer-group"></i> Kategori Tarif</div>
+  `;
+  SECTIONS.forEach((s,i)=>{
+    html+=`<div class="sb-item ${s.cssClass} ${i===0?'active':''}" onclick="switchSection('${s.id}')" id="sb-${s.id}">
+      <i class="fa-solid ${s.icon}"></i> ${s.name}
+    </div>`;
+  });
+  // Compliance dashboard
+  html+=`<div class="sb-item u-compliance" onclick="switchSection('compliance')" id="sb-compliance">
+    <i class="fa-solid fa-chart-pie"></i> Compliance Dashboard
+  </div>`;
+  html+=`
+    <div class="sb-progress-wrap">
+      <div class="sb-progress-label"><i class="fa-solid fa-chart-simple"></i> Pengisian Data</div>
+      <div class="sb-progress-bar"><div class="sb-progress-fill" id="progFill"></div></div>
+      <div class="sb-progress-pct" id="progPct">0%</div>
+    </div>
+    <div class="sb-actions">
+      <div class="user-label" id="userLabel"><i class="fa-solid fa-user"></i> Mode Pengisian Data</div>
+      <button class="sb-btn primary" onclick="saveAll()"><i class="fa-solid fa-cloud-arrow-up"></i> Simpan ke Server</button>
+      <button class="sb-btn export" onclick="exportCSV()"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+      <button class="sb-btn secondary" onclick="if(confirm('Reset semua data tarif?'))resetAll()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+    </div>
+  `;
+  sb.innerHTML=html;
+}
+
+function renderMain(){
+  const main=document.getElementById('mainContent');
+  let html='';
+  SECTIONS.forEach((s,i)=>{
+    html+=`<div class="section-block ${i===0?'active':''}" id="block-${s.id}">`;
+    html+=`<div class="section-head" style="border-left:4px solid ${s.color}">
+      <div class="section-icon" style="color:${s.color}"><i class="fa-solid ${s.icon}"></i></div>
+      <div class="section-name">${s.name}</div>
+      <div class="section-desc">${s.desc}</div>
+      <div class="section-badge" style="background:${s.bgColor};color:${s.color}">
+        <i class="fa-solid fa-scale-balanced"></i> PMK 126/PMK.05/2024
+      </div>
+    </div>`;
+    s.tables.forEach(t=>{
+      html+=renderTable(t,s);
+    });
+    html+=`</div>`;
+  });
+  // Compliance dashboard
+  html+=renderComplianceDashboard();
+  main.innerHTML=html;
+}
+
+function renderTable(t,section){
+  const isUKT=t.id==='tf-ukt';
+  let html=`<div class="tbl-card">
+    <div class="tbl-card-head" style="border-left:3px solid ${section.color}">
+      <i class="fa-solid ${section.icon}" style="color:${section.color}"></i>
+      <span class="tbl-card-title">${t.title}</span>`;
+  if(t.unitPengisi) html+=`<span style="font-size:0.6rem;color:${t.unitColor||'var(--muted)'};margin-left:0.5rem">
+    <i class="fa-solid ${t.unitIcon||'fa-user'}"></i> ${t.unitPengisi}</span>`;
+  html+=`<span class="tbl-card-ref">${t.ref}</span>
+    </div><div class="tbl-card-body">
+    <table class="data-tbl" id="${t.id}"><thead><tr>`;
+  t.headers.forEach((h,hi)=>{
+    const isCeiling=h.includes('Ceiling');
+    html+=`<th${isCeiling?' class="col-ceiling"':''}>${h}</th>`;
+  });
+  html+=`<th class="col-act"></th></tr></thead><tbody>`;
+  t.rows.forEach((row,ri)=>{
+    const isSection=row[0]===''&&row[1]===''&&row.length<=3;
+    if(isSection){
+      html+=`<tr class="section-row">${row.map(c=>`<td>${c}</td>`).join('')}<td></td></tr>`;
+      return;
+    }
+    html+=`<tr>`;
+    row.forEach((cell,ci)=>{
+      const hdr=t.headers[ci]||'';
+      const isCeiling=hdr.includes('Ceiling');
+      const isStatus=hdr==='Status';
+      const isNo=ci===0;
+      const isLabel=ci===1||(isUKT&&ci<=2);
+      const isUKTVal=isUKT&&ci===3; // current UKT value
+      if(isStatus){
+        html+=`<td style="text-align:center;padding:0.3rem"><span class="status-na"><i class="fa-solid fa-circle-minus"></i></span></td>`;
+      } else if(isCeiling){
+        html+=`<td class="ceiling-cell"><input class="cell-input ceiling-input" value="${cell}" placeholder="..." oninput="markDirty();updateCompliance()"/></td>`;
+      } else if(isNo){
+        html+=`<td><input class="cell-input cell-readonly" value="${cell}" readonly tabindex="-1"/></td>`;
+      } else if(isLabel){
+        html+=`<td><input class="cell-input cell-label" value="${cell}" ${isUKT?'readonly tabindex="-1"':''} oninput="markDirty()"/></td>`;
+      } else if(isUKTVal){
+        html+=`<td><input class="cell-input cell-readonly" value="${cell}" readonly tabindex="-1"/></td>`;
+      } else {
+        html+=`<td><input class="cell-input" value="${cell}" oninput="markDirty();updateCompliance()" placeholder="..."/></td>`;
+      }
+    });
+    html+=`<td class="col-act"><button class="row-del" onclick="deleteRow(this)" title="Hapus baris"><i class="fa-solid fa-trash-can"></i></button></td>`;
+    html+=`</tr>`;
+  });
+  html+=`</tbody></table>`;
+  if(!isUKT){
+    const colCount=t.headers.length;
+    html+=`<button class="add-row-btn" onclick="addRow('${t.id}',${colCount})"><i class="fa-solid fa-plus"></i> Tambah Baris</button>`;
+  }
+  html+=`</div></div>`;
+  return html;
+}
+
+function renderComplianceDashboard(){
+  return `<div class="section-block" id="block-compliance">
+    <div class="section-head" style="border-left:4px solid #059669">
+      <div class="section-icon" style="color:#059669"><i class="fa-solid fa-chart-pie"></i></div>
+      <div class="section-name">Compliance Dashboard</div>
+      <div class="section-desc">Validasi tarif aktual vs ceiling PMK 126/2024. Status otomatis berubah saat data terisi.</div>
+      <div class="section-badge" style="background:#ecfdf5;color:#059669">
+        <i class="fa-solid fa-shield-check"></i> Auto-Validasi Real-time
+      </div>
+    </div>
+    <div class="compliance-grid" id="compGrid">
+      <div class="comp-card">
+        <div class="comp-icon status-ok"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="comp-count" id="comp-ok">0</div>
+        <div class="comp-label">Compliant</div>
+        <div class="comp-pct status-ok" id="comp-ok-pct">0%</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon status-warn"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div class="comp-count" id="comp-warn">0</div>
+        <div class="comp-label">Mendekati Ceiling (&gt;80%)</div>
+        <div class="comp-pct status-warn" id="comp-warn-pct">0%</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon status-err"><i class="fa-solid fa-circle-xmark"></i></div>
+        <div class="comp-count" id="comp-err">0</div>
+        <div class="comp-label">Melebihi Ceiling</div>
+        <div class="comp-pct status-err" id="comp-err-pct">0%</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon status-na"><i class="fa-solid fa-circle-minus"></i></div>
+        <div class="comp-count" id="comp-na">0</div>
+        <div class="comp-label">Belum Diisi / Tanpa Ceiling</div>
+        <div class="comp-pct status-na" id="comp-na-pct">0%</div>
+      </div>
+    </div>
+    <div class="tbl-card">
+      <div class="tbl-card-head" style="border-left:3px solid #059669">
+        <i class="fa-solid fa-bullseye" style="color:#059669"></i>
+        <span class="tbl-card-title">Target Penetapan Tarif — RSB 2025-2029</span>
+        <span class="tbl-card-ref">Lampiran II RSB</span>
+      </div>
+      <div class="tbl-card-body">
+        <div style="display:flex;align-items:center;gap:1rem;padding:0.5rem">
+          <div style="flex:1">
+            <div class="target-label"><span>Jenis tarif ditetapkan</span><span id="target-count">0 / 10</span></div>
+            <div class="progress-track"><div class="progress-fill" id="target-fill" style="width:0%;background:linear-gradient(90deg,#059669,#10b981)"></div></div>
+          </div>
+        </div>
+        <table class="data-tbl" id="tbl-compliance-detail" style="margin-top:0.5rem">
+          <thead><tr><th>No</th><th>Jenis Tarif</th><th>Tarif Terbaru (Rp)</th><th>Ceiling PMK (Rp)</th><th>Rasio</th><th>Status</th></tr></thead>
+          <tbody id="compliance-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   NAVIGATION
+============================================================ */
+function switchSection(id){
+  document.querySelectorAll('.section-block').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  const block=document.getElementById('block-'+id);
+  const sbItem=document.getElementById('sb-'+id);
+  if(block)block.classList.add('active');
+  if(sbItem)sbItem.classList.add('active');
+  if(id==='compliance')updateCompliance();
+}
+
+/* ============================================================
+   ROW MANAGEMENT
+============================================================ */
+function addRow(tblId,colCount){
+  const tbl=document.getElementById(tblId);
+  if(!tbl)return;
+  const tbody=tbl.querySelector('tbody');
+  const rows=[...tbody.querySelectorAll('tr:not(.section-row)')];
+  const nextNo=rows.length+1;
+  const tr=document.createElement('tr');
+  let html='';
+  for(let i=0;i<colCount;i++){
+    const hdr=tbl.querySelectorAll('thead th')[i]?.textContent||'';
+    const isCeiling=hdr.includes('Ceiling');
+    if(i===0) html+=`<td><input class="cell-input cell-readonly" value="${nextNo}" readonly tabindex="-1"/></td>`;
+    else if(i===1) html+=`<td><input class="cell-input cell-label" value="" oninput="markDirty()" placeholder="Nama tarif..."/></td>`;
+    else if(isCeiling) html+=`<td class="ceiling-cell"><input class="cell-input ceiling-input" value="" placeholder="..." oninput="markDirty();updateCompliance()"/></td>`;
+    else html+=`<td><input class="cell-input" value="" oninput="markDirty();updateCompliance()" placeholder="..."/></td>`;
+  }
+  html+=`<td class="col-act"><button class="row-del" onclick="deleteRow(this)" title="Hapus baris"><i class="fa-solid fa-trash-can"></i></button></td>`;
+  tr.innerHTML=html;
+  tbody.appendChild(tr);
+  tr.querySelector('.cell-label')?.focus();
+  markDirty();
+}
+
+function deleteRow(btn){
+  const tr=btn.closest('tr');
+  const tbody=tr.closest('tbody');
+  const rows=[...tbody.querySelectorAll('tr:not(.section-row)')];
+  if(rows.length<=1){showToast('<i class="fa-solid fa-circle-info"></i> Minimal 1 baris data');return;}
+  tr.remove();
+  // Renumber
+  let n=1;
+  tbody.querySelectorAll('tr:not(.section-row)').forEach(r=>{
+    const noInput=r.querySelector('.cell-readonly');
+    if(noInput&&noInput.value)noInput.value=n++;
+  });
+  markDirty();
+}
+
+/* ============================================================
+   COMPLIANCE VALIDATION
+============================================================ */
+function updateCompliance(){
+  let ok=0,warn=0,err=0,na=0,total=0,tariffSet=0;
+  const details=[];
+
+  SECTIONS.forEach(s=>{
+    s.tables.forEach(t=>{
+      if(t.id==='tf-ukt')return; // UKT handled separately
+      const tbl=document.getElementById(t.id);
+      if(!tbl)return;
+      tbl.querySelectorAll('tbody tr:not(.section-row)').forEach(tr=>{
+        const inputs=[...tr.querySelectorAll('.cell-input')];
+        const labelInput=inputs.find(i=>i.classList.contains('cell-label'));
+        const ceilingInput=inputs.find(i=>i.classList.contains('ceiling-input'));
+        const label=labelInput?labelInput.value.trim():'';
+        if(!label)return;
+        total++;
+
+        // Get latest year value (2025 baseline or latest filled)
+        let latestVal=0;
+        const dataInputs=inputs.filter(i=>!i.classList.contains('cell-readonly')&&!i.classList.contains('cell-label')&&!i.classList.contains('ceiling-input'));
+        for(let idx=dataInputs.length-1;idx>=0;idx--){
+          const v=parseFloat(dataInputs[idx].value.replace(/[^0-9.-]/g,''));
+          if(!isNaN(v)&&v>0){latestVal=v;break;}
+        }
+        const ceilingVal=ceilingInput?parseFloat(ceilingInput.value.replace(/[^0-9.-]/g,'')):0;
+
+        let status='na',statusIcon='fa-circle-minus',statusClass='status-na',ratio='-';
+        if(latestVal>0)tariffSet++;
+
+        if(latestVal>0&&ceilingVal>0){
+          const r=latestVal/ceilingVal;
+          ratio=(r*100).toFixed(1)+'%';
+          if(r<=0.8){status='ok';statusIcon='fa-circle-check';statusClass='status-ok';ok++;}
+          else if(r<=1.0){status='warn';statusIcon='fa-triangle-exclamation';statusClass='status-warn';warn++;}
+          else{status='err';statusIcon='fa-circle-xmark';statusClass='status-err';err++;}
+        } else {na++;}
+
+        // Update status cell in table
+        const statusCell=tr.querySelector('td:last-of-type')?.previousElementSibling;
+        // skip — status column only in UKT
+
+        details.push({label,latest:latestVal,ceiling:ceilingVal,ratio,status,statusIcon,statusClass});
+      });
+    });
+  });
+
+  // Update dashboard cards
+  const setEl=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  setEl('comp-ok',ok);setEl('comp-warn',warn);setEl('comp-err',err);setEl('comp-na',na);
+  const pct=v=>total>0?Math.round(v/total*100)+'%':'0%';
+  setEl('comp-ok-pct',pct(ok));setEl('comp-warn-pct',pct(warn));setEl('comp-err-pct',pct(err));setEl('comp-na-pct',pct(na));
+
+  // Target progress
+  setEl('target-count',tariffSet+' / 10');
+  const fill=document.getElementById('target-fill');
+  if(fill)fill.style.width=Math.min(tariffSet/10*100,100)+'%';
+
+  // Detail table
+  const tbody=document.getElementById('compliance-tbody');
+  if(tbody){
+    tbody.innerHTML=details.map((d,i)=>`<tr>
+      <td style="padding:0.3rem 0.5rem;text-align:center">${i+1}</td>
+      <td style="padding:0.3rem 0.5rem;font-weight:500">${d.label}</td>
+      <td style="padding:0.3rem 0.5rem;text-align:right">${d.latest?d.latest.toLocaleString('id-ID'):'-'}</td>
+      <td style="padding:0.3rem 0.5rem;text-align:right">${d.ceiling?d.ceiling.toLocaleString('id-ID'):'-'}</td>
+      <td style="padding:0.3rem 0.5rem;text-align:center;font-weight:600">${d.ratio}</td>
+      <td style="padding:0.3rem 0.5rem;text-align:center"><span class="${d.statusClass}"><i class="fa-solid ${d.statusIcon}"></i></span></td>
+    </tr>`).join('');
+  }
+
+  updateProgress();
+}
+
+/* ============================================================
+   PROGRESS
+============================================================ */
+function updateProgress(){
+  let filled=0,total=0;
+  SECTIONS.forEach(s=>{
+    s.tables.forEach(t=>{
+      const tbl=document.getElementById(t.id);
+      if(!tbl)return;
+      tbl.querySelectorAll('tbody tr:not(.section-row) .cell-input:not(.cell-readonly):not(.cell-label)').forEach(inp=>{
+        total++;
+        const v=inp.value.trim();
+        if(v&&v!=='...'&&v!=='\u2014')filled++;
+      });
+    });
+  });
+  const pct=total>0?Math.round(filled/total*100):0;
+  const fill=document.getElementById('progFill');
+  const pctEl=document.getElementById('progPct');
+  if(fill)fill.style.width=pct+'%';
+  if(pctEl)pctEl.textContent=pct+'%';
+}
+
+/* ============================================================
+   SAVE / LOAD / RESET
+============================================================ */
+function markDirty(){dirty=true;}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.innerHTML=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+async function saveAll(){
+  // Collect all table data
+  const allData={};
+  SECTIONS.forEach(s=>{
+    s.tables.forEach(t=>{
+      const tbl=document.getElementById(t.id);
+      if(!tbl)return;
+      const rows=[];
+      tbl.querySelectorAll('tbody tr').forEach(tr=>{
+        if(tr.classList.contains('section-row'))return;
+        const cells=[];
+        tr.querySelectorAll('.cell-input').forEach(inp=>cells.push(inp.value));
+        rows.push(cells);
+      });
+      allData[t.id]={title:t.title,ref:t.ref,rows};
+    });
+  });
+
+  // Save to localStorage
+  localStorage.setItem('tarif_blu_data',JSON.stringify({timestamp:new Date().toISOString(),tables:allData}));
+
+  // Save to API
+  let cloudSaved=false;
+  try{
+    const promises=SECTIONS.map(s=>{
+      const sectionData={};
+      s.tables.forEach(t=>{if(allData[t.id])sectionData[t.id]=allData[t.id];});
+      return fetch(API_URL,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({unitId:'tarif-'+s.id,tables:sectionData})
+      });
+    });
+    await Promise.all(promises);
+    cloudSaved=true;
+  }catch(e){console.warn('API save failed, localStorage only:',e);}
+
+  dirty=false;
+  showToast(`<i class="fa-solid fa-circle-check"></i> Data tarif disimpan${cloudSaved?' ke server':' (lokal)'}`);
+  updateProgress();
+  updateCompliance();
+}
+
+async function loadData(){
+  // Try API first
+  try{
+    const res=await fetch(API_URL);
+    const json=await res.json();
+    if(json.ok&&json.data){
+      const allData={};
+      Object.keys(json.data).forEach(key=>{
+        if(key.startsWith('tarif-')&&json.data[key]&&json.data[key].tables){
+          Object.assign(allData,json.data[key].tables);
+        }
+      });
+      if(Object.keys(allData).length>0){
+        applyData(allData);
+        return;
+      }
+    }
+  }catch(e){console.warn('API load failed, trying localStorage:',e);}
+
+  // Fallback to localStorage
+  try{
+    const raw=localStorage.getItem('tarif_blu_data');
+    if(raw){
+      const parsed=JSON.parse(raw);
+      if(parsed.tables)applyData(parsed.tables);
+    }
+  }catch(e){console.warn('localStorage load failed:',e);}
+}
+
+function applyData(tables){
+  Object.keys(tables).forEach(tblId=>{
+    const tbl=document.getElementById(tblId);
+    if(!tbl||!tables[tblId].rows)return;
+    const tbody=tbl.querySelector('tbody');
+    const existingRows=[...tbody.querySelectorAll('tr:not(.section-row)')];
+    const savedRows=tables[tblId].rows;
+
+    savedRows.forEach((rowData,ri)=>{
+      let tr=existingRows[ri];
+      if(!tr){
+        // Need to add row
+        tr=document.createElement('tr');
+        let html='';
+        rowData.forEach(()=>html+='<td><input class="cell-input" value="" oninput="markDirty()"/></td>');
+        html+='<td class="col-act"><button class="row-del" onclick="deleteRow(this)"><i class="fa-solid fa-trash-can"></i></button></td>';
+        tr.innerHTML=html;
+        tbody.appendChild(tr);
+      }
+      const inputs=[...tr.querySelectorAll('.cell-input')];
+      rowData.forEach((val,ci)=>{
+        if(inputs[ci])inputs[ci].value=val;
+      });
+    });
+  });
+  updateProgress();
+  updateCompliance();
+}
+
+function resetAll(){
+  SECTIONS.forEach(s=>{
+    s.tables.forEach(t=>{
+      const tbl=document.getElementById(t.id);
+      if(!tbl)return;
+      tbl.querySelectorAll('tbody tr:not(.section-row) .cell-input:not(.cell-readonly):not(.cell-label)').forEach(inp=>{
+        if(!inp.classList.contains('ceiling-input'))inp.value='...';
+        else inp.value='';
+      });
+    });
+  });
+  localStorage.removeItem('tarif_blu_data');
+  dirty=false;
+  updateProgress();
+  updateCompliance();
+  showToast('<i class="fa-solid fa-rotate-left"></i> Data tarif di-reset');
+}
+
+function exportCSV(){
+  saveAll();
+  let csv='Kategori,Tabel,'+['No','Nama','Satuan',...ALL_YEARS,'Ceiling PMK'].join(',')+'\n';
+  SECTIONS.forEach(s=>{
+    s.tables.forEach(t=>{
+      if(t.id==='tf-ukt')return; // UKT separate
+      const tbl=document.getElementById(t.id);
+      if(!tbl)return;
+      tbl.querySelectorAll('tbody tr:not(.section-row)').forEach(tr=>{
+        const cells=['"'+s.name+'"','"'+t.title+'"'];
+        tr.querySelectorAll('.cell-input').forEach(inp=>cells.push('"'+(inp.value||'')+'"'));
+        csv+=cells.join(',')+'\n';
+      });
+    });
+  });
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='tarif_blu_uin_ponorogo_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  showToast('<i class="fa-solid fa-file-csv"></i> CSV exported!');
+}
+
+/* ============================================================
+   THEME
+============================================================ */
+function toggleTheme(){
+  const html=document.documentElement;
+  const current=html.getAttribute('data-theme');
+  const next=current==='dark'?'light':'dark';
+  html.setAttribute('data-theme',next);
+  localStorage.setItem('tarif_theme',next);
+  const icon=document.getElementById('theme-icon');
+  if(icon)icon.className=next==='dark'?'fa-solid fa-moon':'fa-solid fa-sun';
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+// Apply saved theme
+const savedTheme=localStorage.getItem('tarif_theme');
+if(savedTheme){
+  document.documentElement.setAttribute('data-theme',savedTheme);
+}
+const thIcon=document.getElementById('theme-icon');
+if(thIcon)thIcon.className=document.documentElement.getAttribute('data-theme')==='dark'?'fa-solid fa-moon':'fa-solid fa-sun';
+
+// Admin detection
+const isAdmin=(()=>{
+  try{const c=JSON.parse(localStorage.getItem('rsb_ai_config')||'{}');return!!c.apiKey;}catch(e){return false;}
+})();
+if(isAdmin){
+  document.getElementById('adminNav').style.display='flex';
+  document.getElementById('userLabel').style.display='none';
+}
+
+// Beforeunload
+window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});
+
+// Render & load
+renderSidebar();
+renderMain();
+loadData().then(()=>{updateProgress();updateCompliance();});
+</script>
+</body>
+</html>
