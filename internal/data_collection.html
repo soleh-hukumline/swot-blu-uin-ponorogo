@@ -123,12 +123,13 @@ table.data-tbl td.col-act{padding:0;text-align:center;border:1px solid #d0d7de;}
     <div class="logo"><i class='fa-solid fa-clipboard-list'></i> Data Collection</div>
     <div class="logo-sub">Pengisian Data RSB — Per Unit Kerja</div>
   </div>
-  <nav class="nav-links">
+  <nav class="nav-links" id="adminNav" style="display:none">
     <a href="../index.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
     <a href="index.html"><i class="fa-solid fa-lock"></i> Internal</a>
     <a href="rsb_generator.html"><i class="fa-solid fa-gears"></i> Generator</a>
     <a href="data_collection.html" class="active"><i class='fa-solid fa-clipboard-list'></i> Data Collection</a>
   </nav>
+  <div id="userLabel" style="margin-left:auto;font-size:0.6rem;color:#94a3b8;"><i class="fa-solid fa-university"></i> UIN Ponorogo</div>
 </header>
 
 <div class="layout">
@@ -647,6 +648,11 @@ function exportCSV(){
 window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});
 
 // Init
+const isAdmin=(()=>{try{const c=JSON.parse(localStorage.getItem('rsb_ai_config')||'{}');return!!c.apiKey;}catch(e){return false;}})();
+if(isAdmin){
+  document.getElementById('adminNav').style.display='flex';
+  document.getElementById('userLabel').style.display='none';
+}
 renderSidebar();
 renderMain();
 loadData();
