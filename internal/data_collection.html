@@ -43,7 +43,10 @@ header{grid-column:1/-1;display:flex;align-items:center;padding:0.5rem 1.2rem;ba
 .sb-item.u-kepegawaian{border-left-color:#d97706;}.sb-item.u-kepegawaian.active,.sb-item.u-kepegawaian:hover{background:#fffbeb;color:#d97706;}
 .sb-item.u-lp2m{border-left-color:#16a34a;}.sb-item.u-lp2m.active,.sb-item.u-lp2m:hover{background:#f0fdf4;color:#16a34a;}
 .sb-item.u-umum{border-left-color:#0891b2;}.sb-item.u-umum.active,.sb-item.u-umum:hover{background:#ecfeff;color:#0891b2;}
-.sb-item.u-pendukung{border-left-color:#64748b;}.sb-item.u-pendukung.active,.sb-item.u-pendukung:hover{background:#f1f5f9;color:#475569;}
+.sb-item.u-lpm{border-left-color:#7c3aed;}.sb-item.u-lpm.active,.sb-item.u-lpm:hover{background:#f5f3ff;color:#7c3aed;}
+.sb-item.u-ptipd{border-left-color:#0284c7;}.sb-item.u-ptipd.active,.sb-item.u-ptipd:hover{background:#f0f9ff;color:#0284c7;}
+.sb-item.u-perpustakaan{border-left-color:#9333ea;}.sb-item.u-perpustakaan.active,.sb-item.u-perpustakaan:hover{background:#faf5ff;color:#9333ea;}
+.sb-item.u-karier{border-left-color:#ea580c;}.sb-item.u-karier.active,.sb-item.u-karier:hover{background:#fff7ed;color:#ea580c;}
 /* Main */
 .main{overflow-y:auto;padding:1.5rem 2rem;height:calc(100vh - 45px);}
 .unit-block{display:none;}
@@ -266,38 +269,65 @@ const UNITS=[
     ]
   },
   {
-    id:'pendukung', name:'Unit Pendukung', icon:'🤝', color:'u-pendukung',
-    colorHex:'#64748b', bgHex:'#f1f5f9',
-    desc:'Data dari: LPM (akreditasi), PTIPD (IT), Perpustakaan (koleksi), Ma\'had (penghuni), Pusat Karier (tracer study).',
-    badge:'PENDUKUNG — Data Spesifik',
+    id:'lpm', name:'LPM (Penjaminan Mutu)', icon:'✅', color:'u-lpm',
+    colorHex:'#7c3aed', bgHex:'#f5f3ff',
+    desc:'Data akreditasi program studi, survei kepuasan, dan indikator mutu pendidikan.',
+    badge:'1 Tabel',
     tables:[
-      { id:'dc-lpm', title:'Data LPM — Penjaminan Mutu', ref:'Lampiran I → tbl-layanan (akreditasi)',
+      { id:'dc-lpm', title:'Data Penjaminan Mutu (2020–2025)', ref:'Lampiran I → tbl-layanan (akreditasi & mutu)',
         headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
         rows:[
           ['1','Prodi terakreditasi Unggul','Prodi'],['2','Prodi terakreditasi Baik Sekali','Prodi'],
           ['3','Prodi belum re-akreditasi','Prodi'],['4','Indeks Kepuasan Mahasiswa (IKM)','%'],
-          ['5','Tingkat kelulusan tepat waktu','%'],['6','Dokumen mutu ter-review','%']
-        ]},
-      { id:'dc-ptipd', title:'Data PTIPD — Teknologi Informasi', ref:'Lampiran I → tbl-sarpras (IT)',
+          ['5','Tingkat kelulusan tepat waktu','%'],['6','Dokumen mutu ter-review','%'],
+          ['7','Audit mutu internal/tahun','Kali'],['8','Tindak lanjut temuan audit','%']
+        ]}
+    ]
+  },
+  {
+    id:'ptipd', name:'PTIPD (Teknologi Informasi)', icon:'💻', color:'u-ptipd',
+    colorHex:'#0284c7', bgHex:'#f0f9ff',
+    desc:'Data infrastruktur IT: bandwidth, server, aplikasi, dan transformasi digital kampus.',
+    badge:'1 Tabel',
+    tables:[
+      { id:'dc-ptipd', title:'Data Infrastruktur IT (2020–2025)', ref:'Lampiran I → tbl-sarpras (IT)',
         headers:['No','Indikator IT','Satuan','2020','2021','2022','2023','2024','2025'],
         rows:[
           ['1','Bandwidth internet','Mbps'],['2','Layanan berbasis TI','%'],
           ['3','Server aktif','Unit'],['4','Aplikasi terintegrasi','Aplikasi'],
-          ['5','User SIAKAD aktif','User'],['6','Uptime sistem','%']
-        ]},
-      { id:'dc-perpus', title:'Data Perpustakaan', ref:'Lampiran I → tbl-sarpras (Koleksi)',
+          ['5','User SIAKAD aktif','User'],['6','Uptime sistem','%'],
+          ['7','Ruang kelas smart classroom','Unit'],['8','Hotspot/access point','Unit']
+        ]}
+    ]
+  },
+  {
+    id:'perpustakaan', name:'Perpustakaan', icon:'📚', color:'u-perpustakaan',
+    colorHex:'#9333ea', bgHex:'#faf5ff',
+    desc:'Data koleksi perpustakaan: buku cetak, e-book, jurnal, dan statistik layanan.',
+    badge:'1 Tabel',
+    tables:[
+      { id:'dc-perpus', title:'Data Perpustakaan (2020–2025)', ref:'Lampiran I → tbl-sarpras (Koleksi)',
         headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
         rows:[
           ['1','Koleksi buku cetak','Judul'],['2','Koleksi e-book','Judul'],
           ['3','Database jurnal dilanggan','Database'],['4','Pengunjung/tahun','Orang'],
-          ['5','Peminjaman/tahun','Transaksi']
-        ]},
-      { id:'dc-karier', title:'Data Pusat Karier & Alumni', ref:'Lampiran I → tbl-layanan (Lulusan)',
+          ['5','Peminjaman/tahun','Transaksi'],['6','Koleksi repositori','Judul'],
+          ['7','Judul tugas akhir digital','Judul']
+        ]}
+    ]
+  },
+  {
+    id:'karier', name:'Pusat Karier & Alumni', icon:'💼', color:'u-karier',
+    colorHex:'#ea580c', bgHex:'#fff7ed',
+    desc:'Data tracer study: masa tunggu kerja, kesesuaian bidang, dan statistik alumni.',
+    badge:'1 Tabel',
+    tables:[
+      { id:'dc-karier', title:'Data Lulusan & Alumni (2020–2025)', ref:'Lampiran I → tbl-layanan (Lulusan)',
         headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
         rows:[
           ['1','Masa tunggu kerja lulusan','Bulan'],['2','Kesesuaian kerja dengan bidang','%'],
           ['3','Responden tracer study','%'],['4','Alumni terdata','Orang'],
-          ['5','Alumni aktif berkontribusi','%']
+          ['5','Alumni aktif berkontribusi','%'],['6','Beasiswa alumni untuk mhs','Orang']
         ]}
     ]
   }
