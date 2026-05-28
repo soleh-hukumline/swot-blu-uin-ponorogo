@@ -1461,7 +1461,7 @@ function autoImportData(){
 /* ============================================================
    EXPORT DOCX — PMK 76/2025 Lampiran III Format
 ============================================================ */
-async 
+
 /* ============================================================
    SYNC LAMPIRAN: I→III baseline, II→III targets, III auto-calc
 ============================================================ */
@@ -1606,7 +1606,7 @@ function syncLampiran(){
   }
 }
 
-function exportDOCX(){
+async function exportDOCX(){
   showToast('<i class="fa-solid fa-spinner fa-spin"></i> Generating DOCX...');
   try{
     const{Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,
