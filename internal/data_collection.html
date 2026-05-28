@@ -365,8 +365,8 @@ function renderSidebar(){
   </div>`;
   // Actions
   h+=`<div class="sb-actions">
-    <button class="sb-btn primary" onclick="saveAll()"><i class="fa-solid fa-floppy-disk"></i> Simpan Data</button>
-    <button class="sb-btn export" onclick="exportToGenerator()"><i class="fa-solid fa-file-export"></i> Export ke RSB Generator</button>
+    <button class="sb-btn primary" onclick="saveAll()"><i class="fa-solid fa-floppy-disk"></i> Simpan & Sync</button>
+    <div style="font-size:0.58rem;color:#64748b;text-align:center;padding:0.2rem;"><i class="fa-solid fa-arrows-rotate" style="color:#16a34a"></i> Auto-sync ke RSB Generator saat Save</div>
     <button class="sb-btn secondary" onclick="exportCSV()"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
     <button class="sb-btn secondary" onclick="if(confirm('Reset semua data?'))resetAll()"><i class="fa-solid fa-rotate"></i> Reset</button>
   </div>`;
@@ -477,8 +477,30 @@ function saveAll(){
     });
   });
   localStorage.setItem(SK,JSON.stringify(data));
+  // Auto-sync: also write export data for RSB Generator
+  _writeExport();
   dirty=false;
-  showToast('<i class="fa-solid fa-circle-check"></i> Data tersimpan!');
+  showToast('<i class="fa-solid fa-circle-check"></i> Data tersimpan & auto-sync ke Generator!');
+}
+function _writeExport(){
+  const exportData={timestamp:new Date().toISOString(), tables:{}};
+  UNITS.forEach(u=>{
+    u.tables.forEach(t=>{
+      const tbl=document.getElementById(t.id);
+      if(!tbl)return;
+      const hdrs=[...tbl.querySelectorAll('thead th')].map(th=>th.textContent.trim());
+      const rows=[];
+      tbl.querySelectorAll('tbody tr:not(.section-row)').forEach(tr=>{
+        const cells=[];
+        tr.querySelectorAll('.cell-input').forEach(inp=>cells.push(inp.value.trim()));
+        const dataVals=cells.slice(3);
+        if(dataVals.some(v=>v&&v!=='...'&&v!=='\u2014'))
+          rows.push({cells:cells, headers:hdrs});
+      });
+      if(rows.length>0) exportData.tables[t.id]={ref:t.ref, unit:u.name, rows:rows};
+    });
+  });
+  localStorage.setItem('rsb_dc_export',JSON.stringify(exportData));
 }
 
 function loadData(){

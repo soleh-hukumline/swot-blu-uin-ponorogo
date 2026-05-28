@@ -1338,7 +1338,7 @@ function renderSidebar(){
     <button class="sb-btn secondary" onclick="syncFromLampiran()"><i class="fa-solid fa-arrows-rotate"></i> Sync ke BAB II</button>
     <button class="sb-btn ai" onclick="aiSyncToBAB2()"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Narasi BAB II</button>
     <button class="sb-btn secondary" onclick="syncLampiran()"><i class="fa-solid fa-link"></i> Sync Lampiran I→III</button>
-    <button class="sb-btn export" onclick="importFromDataCollection()" style="background:linear-gradient(135deg,#7c3aed,#6366f1)"><i class="fa-solid fa-file-import"></i> Import Data Unit</button>
+    <button class="sb-btn export" onclick="importFromDataCollection()" style="background:linear-gradient(135deg,#7c3aed,#6366f1)"><i class="fa-solid fa-arrows-rotate"></i> Sync Data Unit</button>
     <button class="sb-btn ai" onclick="aiGenerateRingkasan()"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Ringkasan</button>
     <button class="sb-btn secondary" onclick="showAISettings()"><i class="fa-solid fa-gear"></i> AI Settings</button>
     <div class="sb-btn-row">
@@ -1799,8 +1799,26 @@ window.addEventListener('DOMContentLoaded',()=>{
   renderSidebar();
   renderMain();
   loadData();
+  // Auto-sync from Data Collection (if available)
+  autoSyncFromDC();
   SECTIONS.flatMap(s=>s.components).forEach(c=>updBadge(c.id));
 });
+
+function autoSyncFromDC(){
+  const raw=localStorage.getItem('rsb_dc_export');
+  if(!raw)return;
+  try{
+    const exp=JSON.parse(raw);
+    const lastImport=localStorage.getItem('rsb_dc_last_import');
+    // Only auto-import if DC data is newer than last import
+    if(lastImport && exp.timestamp && exp.timestamp <= lastImport) return;
+    const count=_doImportDC(exp);
+    if(count>0){
+      localStorage.setItem('rsb_dc_last_import',exp.timestamp||new Date().toISOString());
+      showToast('<i class="fa-solid fa-arrows-rotate"></i> Auto-sync: '+count+' cell dari Data Collection.');
+    }
+  }catch(e){console.error('Auto-sync DC error:',e);}
+}
 
 
 
@@ -2178,45 +2196,18 @@ function syncLampiran(){
 /* ============================================================
    IMPORT FROM DATA COLLECTION PAGE
 ============================================================ */
-function importFromDataCollection(){
-  const raw=localStorage.getItem('rsb_dc_export');
-  if(!raw){
-    showToast('Belum ada data! Buka Data Collection → isi data → klik Export ke RSB Generator.');
-    return;
-  }
-  const exp=JSON.parse(raw);
-  if(!exp.tables){
-    showToast('Format export tidak valid!');
-    return;
-  }
+const DC_TO_GEN={
+  'dc-pnbp':'tbl-keuangan','dc-belanja':'tbl-keuangan',
+  'dc-layanan':'tbl-layanan','dc-sdm':'tbl-sdm',
+  'dc-riset':'tbl-riset','dc-sarpras':'tbl-sarpras','dc-pkm':'tbl-pkm',
+  'dc-proy-pnbp':'tbl-proy-pnbp','dc-proy-belanja':'tbl-proy-belanja',
+  'dc-vol':'tbl-proy-vol','dc-proporsi':'tbl-proporsi',
+  'dc-lpm':'tbl-layanan','dc-ptipd':'tbl-sarpras',
+  'dc-perpus':'tbl-sarpras','dc-karier':'tbl-layanan'
+};
 
-  // Mapping: dc table id → generator table id(s)
-  const DC_TO_GEN={
-    'dc-pnbp':'tbl-keuangan',
-    'dc-belanja':'tbl-keuangan',
-    'dc-layanan':'tbl-layanan',
-    'dc-sdm':'tbl-sdm',
-    'dc-riset':'tbl-riset',
-    'dc-sarpras':'tbl-sarpras',
-    'dc-pkm':'tbl-pkm',
-    'dc-proy-pnbp':'tbl-proy-pnbp',
-    'dc-proy-belanja':'tbl-proy-belanja',
-    'dc-vol':'tbl-proy-vol',
-    'dc-proporsi':'tbl-proporsi'
-  };
-
-  // Helper: get cell value from input
-  function gv(td){
-    if(!td)return '';
-    const inp=td.querySelector('input.cell-input,input.cell-custom');
-    return inp?inp.value.trim():td.textContent.trim();
-  }
-  function sv(td,val){
-    if(!td)return;
-    const inp=td.querySelector('input.cell-input,input.cell-custom');
-    if(inp)inp.value=val; else td.textContent=val;
-  }
-
+function _doImportDC(exp){
+  if(!exp||!exp.tables)return 0;
   let imported=0;
 
   Object.entries(exp.tables).forEach(([dcId,dcData])=>{
@@ -2224,7 +2215,6 @@ function importFromDataCollection(){
     if(!genId)return;
     const genTbl=document.getElementById(genId);
     if(!genTbl)return;
-
     const genRows=genTbl.querySelectorAll('tbody tr');
 
     dcData.rows.forEach(dcRow=>{
@@ -2232,26 +2222,20 @@ function importFromDataCollection(){
       const dcSatuan=(dcRow.cells[2]||'').toLowerCase().trim();
       if(!dcLabel)return;
 
-      // Find matching row in generator table by label similarity
       let bestMatch=null, bestScore=0;
       genRows.forEach(gr=>{
         const gCells=gr.querySelectorAll('td');
         if(gCells.length<4)return;
-        const gLabel=gv(gCells[1]).toLowerCase().trim();
+        const gLabel=getCellValue(gCells[1]).toLowerCase().trim();
         if(!gLabel)return;
-
-        // Score matching
         let score=0;
-        // Exact match
         if(gLabel===dcLabel) score=100;
-        // Partial keyword match
         else{
           const dcWords=dcLabel.split(/[\s\/\-,()]+/).filter(w=>w.length>2);
           const gWords=gLabel.split(/[\s\/\-,()]+/).filter(w=>w.length>2);
           const matches=dcWords.filter(w=>gWords.some(gw=>gw.includes(w)||w.includes(gw)));
           score=matches.length>0?Math.round(matches.length/Math.max(dcWords.length,1)*80):0;
-          // Satuan bonus
-          const gSatuan=gv(gCells[2]).toLowerCase().trim();
+          const gSatuan=getCellValue(gCells[2]).toLowerCase().trim();
           if(gSatuan&&dcSatuan&&gSatuan===dcSatuan) score+=10;
         }
         if(score>bestScore){bestScore=score;bestMatch=gr;}
@@ -2259,21 +2243,17 @@ function importFromDataCollection(){
 
       if(bestMatch&&bestScore>=40){
         const mCells=bestMatch.querySelectorAll('td');
-        const dcVals=dcRow.cells.slice(3); // data values only
-        // Map data columns: find year column offsets
-        // Generator header years
+        const dcVals=dcRow.cells.slice(3);
         const genHdrs=[...genTbl.querySelectorAll('thead th')].map(th=>th.textContent.trim());
         const dcHdrs=dcRow.headers;
-
         dcVals.forEach((val,di)=>{
           if(!val||val==='...'||val==='\u2014')return;
-          const dcYear=dcHdrs[di+3]; // offset by 3 (No, Label, Satuan)
-          // Find same year column in generator
+          const dcYear=dcHdrs[di+3];
           const genColIdx=genHdrs.findIndex(h=>h===dcYear);
           if(genColIdx>=0&&mCells[genColIdx]){
-            const curVal=gv(mCells[genColIdx]);
+            const curVal=getCellValue(mCells[genColIdx]);
             if(!curVal||curVal==='...'||curVal==='\u2014'){
-              sv(mCells[genColIdx],val);
+              setCellValue(mCells[genColIdx],val);
               imported++;
             }
           }
@@ -2281,12 +2261,23 @@ function importFromDataCollection(){
       }
     });
   });
+  return imported;
+}
 
-  if(imported>0){
+function importFromDataCollection(){
+  const raw=localStorage.getItem('rsb_dc_export');
+  if(!raw){
+    showToast('Belum ada data! Buka <a href="data_collection.html">Data Collection</a> → isi data → Simpan.');
+    return;
+  }
+  const exp=JSON.parse(raw);
+  const count=_doImportDC(exp);
+  if(count>0){
+    localStorage.setItem('rsb_dc_last_import',new Date().toISOString());
     markDirty();
-    showToast('<i class="fa-solid fa-circle-check"></i> Import berhasil! '+imported+' cell diperbarui dari Data Collection.');
+    showToast('<i class="fa-solid fa-circle-check"></i> Sync berhasil! '+count+' cell diperbarui dari Data Collection.');
   } else {
-    showToast('Import selesai. Tidak ada data baru (semua sudah terisi atau tidak ada match).');
+    showToast('Sync selesai. Tidak ada data baru (semua sudah terisi atau tidak ada match).');
   }
 }
 
