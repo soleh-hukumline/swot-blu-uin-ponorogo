@@ -77,6 +77,16 @@ table.data-tbl .section-row td{background:#eef2ff !important;font-weight:700;col
 .cell-input:focus{background:#fff;box-shadow:inset 0 0 0 2px #1a73e8;}
 .cell-input.cell-label{font-weight:500;background:rgba(0,0,0,0.01);}
 .cell-input.cell-readonly{background:#f6f8fa;color:#64748b;cursor:default;}
+/* Row actions */
+.row-del{width:28px;height:28px;border:none;background:transparent;color:#cbd5e1;cursor:pointer;
+  font-size:0.7rem;border-radius:4px;transition:all 0.15s;display:flex;align-items:center;justify-content:center;}
+.row-del:hover{background:#fef2f2;color:#dc2626;}
+table.data-tbl th.col-act{width:30px;padding:0.2rem;text-align:center;}
+table.data-tbl td.col-act{padding:0;text-align:center;border:1px solid #d0d7de;}
+.add-row-btn{display:inline-flex;align-items:center;gap:0.3rem;padding:0.3rem 0.7rem;margin:0.4rem 0.3rem;
+  border:1px dashed #94a3b8;border-radius:6px;background:transparent;color:#64748b;
+  font-size:0.65rem;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.15s;}
+.add-row-btn:hover{border-color:#2563eb;color:#2563eb;background:#f0f4ff;}
 /* Status badges */
 .status-empty{color:#dc2626;font-size:0.6rem;}.status-partial{color:#d97706;font-size:0.6rem;}.status-done{color:#16a34a;font-size:0.6rem;}
 /* Actions */
@@ -374,30 +384,28 @@ function renderSidebar(){
 }
 
 function renderTable(tbl){
-  const numDataCols=tbl.headers.length-3; // Minus No, Indikator, Satuan (or similar first 3)
   let h=`<table class="data-tbl" id="${tbl.id}"><thead><tr>`;
   tbl.headers.forEach((hd,i)=>{
     const w=i===0?'width:35px':i===1?'min-width:180px':i===2?'width:60px':'min-width:80px';
     h+=`<th style="${w}">${hd}</th>`;
   });
-  h+=`</tr></thead><tbody>`;
+  h+=`<th class="col-act"></th></tr></thead><tbody>`;
   tbl.rows.forEach((row,ri)=>{
     const isSection=row[0]===''&&row.length<=3;
     if(isSection&&row[1]){
-      h+=`<tr class="section-row"><td colspan="${tbl.headers.length}">${row[1]}</td></tr>`;
+      h+=`<tr class="section-row"><td colspan="${tbl.headers.length+1}">${row[1]}</td></tr>`;
       return;
     }
     h+=`<tr>`;
     tbl.headers.forEach((hd,ci)=>{
       const val=row[ci]||'';
       if(ci<3){
-        // Label columns (No, Name, Satuan)
         h+=`<td><input type="text" class="cell-input cell-label${ci===0?' cell-readonly':''}" value="${val.replace(/"/g,'&quot;')}" ${ci===0?'readonly':''} oninput="markDirty()"/></td>`;
       } else {
-        // Data columns
         h+=`<td><input type="text" class="cell-input" value="${val.replace(/"/g,'&quot;')}" oninput="markDirty()" placeholder="..."/></td>`;
       }
     });
+    h+=`<td class="col-act"><button class="row-del" onclick="deleteRow(this)" title="Hapus baris"><i class="fa-solid fa-trash-can"></i></button></td>`;
     h+=`</tr>`;
   });
   h+=`</tbody></table>`;
@@ -421,12 +429,60 @@ function renderMain(){
           <span class="tbl-card-title">${tbl.title}</span>
           <span class="tbl-card-ref"><i class="fa-solid fa-link"></i> ${tbl.ref}</span>
         </div>
-        <div class="tbl-card-body">${renderTable(tbl)}</div>
+        <div class="tbl-card-body">
+          ${renderTable(tbl)}
+          <button class="add-row-btn" onclick="addRow('${tbl.id}',${tbl.headers.length})"><i class="fa-solid fa-plus"></i> Tambah Baris</button>
+        </div>
       </div>`;
     });
     h+=`</div>`;
   });
   document.getElementById('mainContent').innerHTML=h;
+}
+
+function addRow(tblId, colCount){
+  const tbl=document.getElementById(tblId);
+  if(!tbl)return;
+  const tbody=tbl.querySelector('tbody');
+  const rows=tbody.querySelectorAll('tr:not(.section-row)');
+  const nextNo=rows.length+1;
+  const tr=document.createElement('tr');
+  for(let i=0;i<colCount;i++){
+    const td=document.createElement('td');
+    const inp=document.createElement('input');
+    inp.type='text';
+    inp.className=i===0?'cell-input cell-label':'cell-input'+(i<3?' cell-label':'');
+    inp.oninput=markDirty;
+    if(i===0){inp.value=String(nextNo);inp.readOnly=true;inp.classList.add('cell-readonly');}
+    if(i>=3)inp.placeholder='...';
+    td.appendChild(inp);
+    tr.appendChild(td);
+  }
+  // Delete button
+  const actTd=document.createElement('td');
+  actTd.className='col-act';
+  actTd.innerHTML='<button class="row-del" onclick="deleteRow(this)" title="Hapus baris"><i class="fa-solid fa-trash-can"></i></button>';
+  tr.appendChild(actTd);
+  tbody.appendChild(tr);
+  // Focus on indicator name (col 1)
+  const nameInput=tr.querySelectorAll('.cell-input')[1];
+  if(nameInput)nameInput.focus();
+  markDirty();
+}
+
+function deleteRow(btn){
+  const tr=btn.closest('tr');
+  if(!tr)return;
+  const tbody=tr.closest('tbody');
+  const rows=tbody.querySelectorAll('tr:not(.section-row)');
+  if(rows.length<=1){showToast('Minimal 1 baris harus ada');return;}
+  tr.remove();
+  // Re-number
+  tbody.querySelectorAll('tr:not(.section-row)').forEach((r,i)=>{
+    const noInput=r.querySelector('.cell-readonly');
+    if(noInput)noInput.value=String(i+1);
+  });
+  markDirty();
 }
 
 let dirty=false;
