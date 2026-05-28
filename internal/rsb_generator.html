@@ -1336,9 +1336,8 @@ function renderSidebar(){
     <button class="sb-btn primary" onclick="showPreview()"><i class="fa-solid fa-eye"></i> Preview</button>
     <button class="sb-btn export" onclick="exportDOCX()"><i class="fa-solid fa-file-word"></i> Export DOCX</button>
     <button class="sb-btn secondary" onclick="syncFromLampiran()"><i class="fa-solid fa-arrows-rotate"></i> Sync ke BAB II</button>
-    <button class="sb-btn ai" onclick="aiSyncToBAB2()"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Narasi BAB II</button>
     <button class="sb-btn secondary" onclick="syncLampiran()"><i class="fa-solid fa-link"></i> Sync Lampiran I→III</button>
-    <button class="sb-btn export" onclick="importFromDataCollection()" style="background:linear-gradient(135deg,#7c3aed,#6366f1)"><i class="fa-solid fa-arrows-rotate"></i> Sync Data Unit</button>
+    <button class="sb-btn ai" onclick="aiSmartSync()"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Smart Sync</button>
     <button class="sb-btn ai" onclick="aiGenerateRingkasan()"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Ringkasan</button>
     <button class="sb-btn secondary" onclick="showAISettings()"><i class="fa-solid fa-gear"></i> AI Settings</button>
     <div class="sb-btn-row">
@@ -2278,6 +2277,106 @@ function importFromDataCollection(){
     showToast('<i class="fa-solid fa-circle-check"></i> Sync berhasil! '+count+' cell diperbarui dari Data Collection.');
   } else {
     showToast('Sync selesai. Tidak ada data baru (semua sudah terisi atau tidak ada match).');
+  }
+}
+
+/* ============================================================
+   AI SMART SYNC — SumoPod-powered sync for all operations
+   Combines: Data Unit import + Lamp I→BAB II + Lamp I→III + Validation
+============================================================ */
+async function aiSmartSync(){
+  const cfg=getAIConfig();
+  if(!cfg.apiKey){showAISettings();return;}
+
+  showToast('<i class="fa-solid fa-spinner fa-spin"></i> AI Smart Sync dimulai...');
+
+  // Step 1: Import from Data Collection (mechanical first)
+  const dcRaw=localStorage.getItem('rsb_dc_export');
+  let dcCount=0;
+  if(dcRaw){
+    try{dcCount=_doImportDC(JSON.parse(dcRaw));}catch(e){}
+  }
+
+  // Step 2: Run mechanical syncs
+  syncFromLampiran();
+  syncLampiran();
+
+  // Step 3: Collect all Lampiran I data for AI validation
+  const lamp1Tables=['tbl-layanan','tbl-keuangan','tbl-sdm','tbl-riset','tbl-sarpras','tbl-pkm'];
+  let allData='';
+  lamp1Tables.forEach(tid=>{
+    const tbl=document.getElementById(tid);
+    if(!tbl)return;
+    allData+='\n=== '+tid+' ===\n';
+    const hdrs=[...tbl.querySelectorAll('thead th')].map(th=>th.textContent.trim());
+    allData+=hdrs.join(' | ')+'\n';
+    tbl.querySelectorAll('tbody tr').forEach(tr=>{
+      const cells=[...tr.querySelectorAll('td')].map(td=>getCellValue(td));
+      if(cells.some(c=>c&&c!=='...'&&c!=='\u2014'))
+        allData+=cells.join(' | ')+'\n';
+    });
+  });
+
+  // Step 4: Collect Data Collection data if available
+  let dcData='';
+  if(dcRaw){
+    try{
+      const exp=JSON.parse(dcRaw);
+      Object.entries(exp.tables).forEach(([id,t])=>{
+        dcData+='\n=== DC: '+id+' ('+t.unit+') ===\n';
+        t.rows.forEach(r=>dcData+=r.cells.join(' | ')+'\n');
+      });
+    }catch(e){}
+  }
+
+  // Step 5: AI Validation & Anomaly Detection
+  const prompt=`Kamu adalah auditor data RSB BLU UIN Ponorogo.
+
+DATA LAMPIRAN I (RSB Generator):
+${allData}
+
+${dcData?'DATA DARI UNIT KERJA (Data Collection):\n'+dcData:''}
+
+Tugas:
+1. VALIDASI KONSISTENSI: Periksa apakah ada data yang tidak konsisten antar tabel (misal: jumlah dosen di tbl-sdm vs rasio di tbl-layanan)
+2. DETEKSI ANOMALI: Identifikasi angka yang janggal (tren naik tiba-tiba turun, angka 0 di tahun tertentu, dll)
+3. DATA KOSONG KRITIS: Sebutkan cell kosong yang HARUS diisi untuk dokumen RSB yang lengkap
+4. SARAN PERBAIKAN: Jika ada data yang perlu di-cross-check antar unit
+
+Format output HTML ringkas:
+<h4>\u2705 Hasil Validasi AI Smart Sync</h4>
+<p><b>Data Unit imported:</b> ${dcCount} cell</p>
+<ul>
+<li><b>Konsistensi:</b> [temuan]</li>
+<li><b>Anomali:</b> [temuan]</li>
+<li><b>Data Kosong Kritis:</b> [daftar]</li>
+<li><b>Saran:</b> [rekomendasi]</li>
+</ul>
+Maks 300 kata. Bahasa Indonesia.`;
+
+  try{
+    // Navigate to ringkasan to show results
+    navigateTo('ringkasan');
+    const edId=document.getElementById('rte-r1')?'rte-r1':
+               document.getElementById('ed-r1')?'ed-r1':null;
+    
+    if(edId){
+      const model=cfg.modelSync||'gpt-5-nano';
+      await callAI(
+        'Kamu auditor data BLU. Output HTML ringkas.',
+        prompt,
+        model,
+        edId,
+        false
+      );
+    }
+    
+    localStorage.setItem('rsb_dc_last_import',new Date().toISOString());
+    markDirty();
+    showToast('<i class="fa-solid fa-circle-check"></i> AI Smart Sync selesai! DC:'+dcCount+' cell + validasi AI.');
+  }catch(e){
+    console.error('AI Smart Sync error:',e);
+    showToast('Sync mekanis berhasil (DC:'+dcCount+'). AI validasi gagal: '+e.message);
   }
 }
 
