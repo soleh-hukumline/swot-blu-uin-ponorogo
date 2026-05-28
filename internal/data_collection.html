@@ -110,14 +110,14 @@ table.data-tbl .section-row td{background:#eef2ff !important;font-weight:700;col
 
 <header>
   <div>
-    <div class="logo">📋 Data Collection</div>
+    <div class="logo"><i class='fa-solid fa-clipboard-list'></i> Data Collection</div>
     <div class="logo-sub">Pengisian Data RSB — Per Unit Kerja</div>
   </div>
   <nav class="nav-links">
-    <a href="../index.html">🗺️ Dashboard</a>
-    <a href="index.html">🔒 Internal</a>
-    <a href="rsb_generator.html">📄 RSB Generator</a>
-    <a href="data_collection.html" class="active">📋 Data Collection</a>
+    <a href="../index.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+    <a href="index.html"><i class="fa-solid fa-lock"></i> Internal</a>
+    <a href="rsb_generator.html"><i class="fa-solid fa-gears"></i> Generator</a>
+    <a href="data_collection.html" class="active"><i class='fa-solid fa-clipboard-list'></i> Data Collection</a>
   </nav>
 </header>
 
@@ -135,7 +135,7 @@ table.data-tbl .section-row td{background:#eef2ff !important;font-weight:700;col
 const SK='rsb_datacollect_v1';
 const UNITS=[
   {
-    id:'keuangan', name:'Bagian Keuangan', icon:'💰', color:'u-keuangan',
+    id:'keuangan', name:'Bagian Keuangan', icon:'<i class="fa-solid fa-coins" style="color:#dc2626"></i>', color:'u-keuangan',
     colorHex:'#dc2626', bgHex:'#fef2f2',
     desc:'Data keuangan: PNBP, belanja, realisasi anggaran 5 tahun terakhir & proyeksi 5 tahun ke depan.',
     badge:'KRITIS — 5 Tabel',
@@ -178,7 +178,7 @@ const UNITS=[
     ]
   },
   {
-    id:'akademik', name:'Bagian Akademik & Kemahasiswaan', icon:'🎓', color:'u-akademik',
+    id:'akademik', name:'Bagian Akademik & Kemahasiswaan', icon:'<i class="fa-solid fa-graduation-cap" style="color:#2563eb"></i>', color:'u-akademik',
     colorHex:'#2563eb', bgHex:'#eff6ff',
     desc:'Data layanan pendidikan: jumlah mahasiswa, lulusan, prodi, kelulusan tepat waktu, dan volume layanan.',
     badge:'PENTING — 2 Tabel',
@@ -206,7 +206,7 @@ const UNITS=[
     ]
   },
   {
-    id:'kepegawaian', name:'Bagian Kepegawaian / SDM', icon:'👥', color:'u-kepegawaian',
+    id:'kepegawaian', name:'Bagian Kepegawaian / SDM', icon:'<i class="fa-solid fa-users" style="color:#d97706"></i>', color:'u-kepegawaian',
     colorHex:'#d97706', bgHex:'#fffbeb',
     desc:'Data SDM: dosen (kualifikasi, jabatan fungsional, sertifikasi), tenaga kependidikan, rasio dosen:mahasiswa.',
     badge:'PENTING — 1 Tabel (Detail)',
@@ -225,7 +225,7 @@ const UNITS=[
     ]
   },
   {
-    id:'lp2m', name:'LP2M (Penelitian & PkM)', icon:'🔬', color:'u-lp2m',
+    id:'lp2m', name:'LP2M (Penelitian & PkM)', icon:'<i class="fa-solid fa-flask" style="color:#16a34a"></i>', color:'u-lp2m',
     colorHex:'#16a34a', bgHex:'#f0fdf4',
     desc:'Data penelitian, publikasi, HKI, pengabdian masyarakat, hibah, dan kerjasama riset.',
     badge:'PENTING — 2 Tabel',
@@ -251,7 +251,7 @@ const UNITS=[
     ]
   },
   {
-    id:'umum', name:'Bagian Umum / BMN', icon:'🏢', color:'u-umum',
+    id:'umum', name:'Bagian Umum / BMN', icon:'<i class="fa-solid fa-building" style="color:#0891b2"></i>', color:'u-umum',
     colorHex:'#0891b2', bgHex:'#ecfeff',
     desc:'Data sarana prasarana: lahan, gedung, laboratorium, aset BMN, dan fasilitas kampus.',
     badge:'PENTING — 1 Tabel',
@@ -269,7 +269,7 @@ const UNITS=[
     ]
   },
   {
-    id:'lpm', name:'LPM (Penjaminan Mutu)', icon:'✅', color:'u-lpm',
+    id:'lpm', name:'LPM (Penjaminan Mutu)', icon:'<i class="fa-solid fa-certificate" style="color:#7c3aed"></i>', color:'u-lpm',
     colorHex:'#7c3aed', bgHex:'#f5f3ff',
     desc:'Data akreditasi program studi, survei kepuasan, dan indikator mutu pendidikan.',
     badge:'1 Tabel',
@@ -285,7 +285,7 @@ const UNITS=[
     ]
   },
   {
-    id:'ptipd', name:'PTIPD (Teknologi Informasi)', icon:'💻', color:'u-ptipd',
+    id:'ptipd', name:'PTIPD (Teknologi Informasi)', icon:'<i class="fa-solid fa-server" style="color:#0284c7"></i>', color:'u-ptipd',
     colorHex:'#0284c7', bgHex:'#f0f9ff',
     desc:'Data infrastruktur IT: bandwidth, server, aplikasi, dan transformasi digital kampus.',
     badge:'1 Tabel',
@@ -301,7 +301,7 @@ const UNITS=[
     ]
   },
   {
-    id:'perpustakaan', name:'Perpustakaan', icon:'📚', color:'u-perpustakaan',
+    id:'perpustakaan', name:'Perpustakaan', icon:'<i class="fa-solid fa-book" style="color:#9333ea"></i>', color:'u-perpustakaan',
     colorHex:'#9333ea', bgHex:'#faf5ff',
     desc:'Data koleksi perpustakaan: buku cetak, e-book, jurnal, dan statistik layanan.',
     badge:'1 Tabel',
@@ -317,7 +317,7 @@ const UNITS=[
     ]
   },
   {
-    id:'karier', name:'Pusat Karier & Alumni', icon:'💼', color:'u-karier',
+    id:'karier', name:'Pusat Karier & Alumni', icon:'<i class="fa-solid fa-briefcase" style="color:#ea580c"></i>', color:'u-karier',
     colorHex:'#ea580c', bgHex:'#fff7ed',
     desc:'Data tracer study: masa tunggu kerja, kesesuaian bidang, dan statistik alumni.',
     badge:'1 Tabel',
