@@ -1783,7 +1783,7 @@ function toggleTheme(){
   document.documentElement.setAttribute('data-theme',d?'light':'dark');
   localStorage.setItem('rsb_gen_theme',d?'light':'dark');
 }
-function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function showToast(m){const t=document.getElementById('toast');t.innerHTML=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
 let ast=null;
 document.addEventListener('input',()=>{if(ast)clearTimeout(ast);ast=setTimeout(()=>{if(dirty)saveAll();},5000);});
