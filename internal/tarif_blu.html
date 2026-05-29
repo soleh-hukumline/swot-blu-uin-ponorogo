@@ -306,7 +306,7 @@ const SECTIONS=[
     cssClass:'u-akademik',
     tables:[
       {id:'tf-seleksi', title:'Tarif Seleksi Ujian Masuk', ref:'PMK 126 Ps.2(1)(a)',
-        unitPengisi:'Bag. Akademik', unitIcon:'fa-graduation-cap', unitColor:'#2563eb',
+        unitPengisi:'Sub Bag. Layanan Akademik', unitIcon:'fa-graduation-cap', unitColor:'#2563eb',
         headers:['No','Jenis Seleksi','Satuan',...ALL_YEARS,'Ceiling PMK'],
         rows:[
           ['1','SNBT/UTBK-SNBT','Rp/peserta',...ALL_YEARS.map(()=>'...'),''],
@@ -315,7 +315,7 @@ const SECTIONS=[
           ['4','Seleksi Pascasarjana','Rp/peserta',...ALL_YEARS.map(()=>'...'),''],
         ]},
       {id:'tf-ukt', title:'UKT per Program Studi — 5 Kelompok (KMA 498/2024)', ref:'PMK 126 Ps.2(1)(b)',
-        unitPengisi:'Bag. Keuangan + Akademik', unitIcon:'fa-coins', unitColor:'#dc2626',
+        unitPengisi:'Biro AUAK (Keuangan + Akademik)', unitIcon:'fa-coins', unitColor:'#dc2626',
         headers:['No','Program Studi','Kel.','UKT 2025 (Rp)','Ceiling PMK (Rp)','Proyeksi 2026','Proyeksi 2027','Proyeksi 2028','Proyeksi 2029','Status'],
         rows:[]  // dynamically generated
       },
@@ -329,7 +329,7 @@ const SECTIONS=[
           ['4','Program Doktor (jika ada)','S3','Rp/smt',...ALL_YEARS.map(()=>'...'),''],
         ]},
       {id:'tf-ipi', title:'Iuran Pengembangan Institusi', ref:'PMK 126 Ps.2(1)(d)',
-        unitPengisi:'Bag. Keuangan', unitIcon:'fa-coins', unitColor:'#dc2626',
+        unitPengisi:'Biro AUAK — Keuangan', unitIcon:'fa-coins', unitColor:'#dc2626',
         headers:['No','Jenis Iuran','Satuan',...ALL_YEARS,'Ceiling PMK'],
         rows:[
           ['1','Iuran Pengembangan Institusi - Reguler','Rp/mhs',...ALL_YEARS.map(()=>'...'),''],
@@ -343,7 +343,7 @@ const SECTIONS=[
     cssClass:'u-umum',
     tables:[
       {id:'tf-asrama', title:'Tarif Asrama / Ma\'had Al-Jami\'ah', ref:'PMK 126 Ps.2(2)(a)',
-        unitPengisi:'Bag. Umum', unitIcon:'fa-building', unitColor:'#0891b2',
+        unitPengisi:'Sub Bag. TU & Perlengkapan', unitIcon:'fa-building', unitColor:'#0891b2',
         headers:['No','Jenis Layanan','Satuan',...ALL_YEARS,'Ceiling PMK'],
         rows:[
           ['1','Asrama Putra - Reguler','Rp/smt',...ALL_YEARS.map(()=>'...'),''],
@@ -360,7 +360,7 @@ const SECTIONS=[
           ['3','Layanan Referensi Khusus','Rp/kali',...ALL_YEARS.map(()=>'...'),''],
         ]},
       {id:'tf-lab', title:'Tarif Laboratorium', ref:'PMK 126 Ps.2(2)(c)',
-        unitPengisi:'Bag. Akademik', unitIcon:'fa-flask', unitColor:'#2563eb',
+        unitPengisi:'Sub Bag. Layanan Akademik', unitIcon:'fa-flask', unitColor:'#2563eb',
         headers:['No','Jenis Lab','Satuan',...ALL_YEARS,'Ceiling PMK'],
         rows:[
           ['1','Lab Komputer/IT','Rp/smt',...ALL_YEARS.map(()=>'...'),''],
@@ -369,7 +369,7 @@ const SECTIONS=[
           ['4','Lab Sains','Rp/smt',...ALL_YEARS.map(()=>'...'),''],
         ]},
       {id:'tf-sewa', title:'Tarif Sewa Gedung & Fasilitas', ref:'PMK 126 Ps.2(2)(d)',
-        unitPengisi:'Bag. Umum', unitIcon:'fa-building', unitColor:'#0891b2',
+        unitPengisi:'Sub Bag. TU & Perlengkapan', unitIcon:'fa-building', unitColor:'#0891b2',
         headers:['No','Fasilitas','Satuan',...ALL_YEARS,'Ceiling PMK'],
         rows:[
           ['1','Aula/Auditorium','Rp/hari',...ALL_YEARS.map(()=>'...'),''],
@@ -377,8 +377,8 @@ const SECTIONS=[
           ['3','Lapangan Olahraga','Rp/hari',...ALL_YEARS.map(()=>'...'),''],
           ['4','Masjid/Mushola (acara eksternal)','Rp/hari',...ALL_YEARS.map(()=>'...'),''],
         ]},
-      {id:'tf-it', title:'Tarif Layanan IT / PTIPD', ref:'PMK 126 Ps.2(2)(e)',
-        unitPengisi:'PTIPD', unitIcon:'fa-server', unitColor:'#0284c7',
+      {id:'tf-it', title:'Tarif Layanan IT / UPT TIPD', ref:'PMK 126 Ps.2(2)(e)',
+        unitPengisi:'UPT TIPD', unitIcon:'fa-server', unitColor:'#0284c7',
         headers:['No','Jenis Layanan','Satuan',...ALL_YEARS,'Ceiling PMK'],
         rows:[
           ['1','Hosting & Domain Website','Rp/tahun',...ALL_YEARS.map(()=>'...'),''],
@@ -396,15 +396,15 @@ const SECTIONS=[
           ['4','Workshop & Seminar Berbayar','Rp/peserta',...ALL_YEARS.map(()=>'...'),''],
         ]},
       {id:'tf-kesehatan', title:'Tarif Klinik Kesehatan Kampus', ref:'PMK 126 Ps.2(2)(g)',
-        unitPengisi:'Bag. Umum', unitIcon:'fa-heart-pulse', unitColor:'#0891b2',
+        unitPengisi:'Sub Bag. TU & Perlengkapan', unitIcon:'fa-heart-pulse', unitColor:'#0891b2',
         headers:['No','Jenis Layanan','Satuan',...ALL_YEARS,'Ceiling PMK'],
         rows:[
           ['1','Pemeriksaan Umum','Rp/kunjungan',...ALL_YEARS.map(()=>'...'),''],
           ['2','Rujukan & Surat Keterangan','Rp/surat',...ALL_YEARS.map(()=>'...'),''],
           ['3','Layanan Konseling','Rp/sesi',...ALL_YEARS.map(()=>'...'),''],
         ]},
-      {id:'tf-karier', title:'Tarif Layanan Pusat Karier', ref:'PMK 126 Ps.2(2)(h)',
-        unitPengisi:'Pusat Karier', unitIcon:'fa-briefcase', unitColor:'#ea580c',
+      {id:'tf-karier', title:'Tarif Layanan Pusat Pengembangan Karir', ref:'PMK 126 Ps.2(2)(h)',
+        unitPengisi:'LPM — Pusat Pengembangan Karir', unitIcon:'fa-briefcase', unitColor:'#7c3aed',
         headers:['No','Jenis Layanan','Satuan',...ALL_YEARS,'Ceiling PMK'],
         rows:[
           ['1','Tracer Study Kerjasama','Rp/batch',...ALL_YEARS.map(()=>'...'),''],
