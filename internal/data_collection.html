@@ -47,6 +47,9 @@ header{grid-column:1/-1;display:flex;align-items:center;padding:0.5rem 1.2rem;ba
 .sb-item.u-ptipd{border-left-color:#0284c7;}.sb-item.u-ptipd.active,.sb-item.u-ptipd:hover{background:#f0f9ff;color:#0284c7;}
 .sb-item.u-perpustakaan{border-left-color:#9333ea;}.sb-item.u-perpustakaan.active,.sb-item.u-perpustakaan:hover{background:#faf5ff;color:#9333ea;}
 .sb-item.u-karier{border-left-color:#ea580c;}.sb-item.u-karier.active,.sb-item.u-karier:hover{background:#fff7ed;color:#ea580c;}
+.sb-item.u-bahasa{border-left-color:#059669;}.sb-item.u-bahasa.active,.sb-item.u-bahasa:hover{background:#ecfdf5;color:#059669;}
+.sb-item.u-mahad{border-left-color:#b45309;}.sb-item.u-mahad.active,.sb-item.u-mahad:hover{background:#fffbeb;color:#b45309;}
+.sb-item.u-spi{border-left-color:#be123c;}.sb-item.u-spi.active,.sb-item.u-spi:hover{background:#fff1f2;color:#be123c;}
 /* Main */
 .main{overflow-y:auto;padding:1.5rem 2rem;height:calc(100vh - 45px);}
 .unit-block{display:none;}
@@ -208,9 +211,9 @@ table.data-tbl td.col-act{padding:0;text-align:center;border:1px solid #d0d7de;}
 const SK='rsb_datacollect_v1';
 const UNITS=[
   {
-    id:'keuangan', name:'Bagian Keuangan', icon:'<i class="fa-solid fa-coins" style="color:#dc2626"></i>', color:'u-keuangan',
+    id:'keuangan', name:'Biro AUAK — Keuangan & Anggaran', icon:'<i class="fa-solid fa-coins" style="color:#dc2626"></i>', color:'u-keuangan',
     colorHex:'#dc2626', bgHex:'#fef2f2',
-    desc:'Data keuangan: PNBP, belanja, realisasi anggaran 5 tahun terakhir & proyeksi 5 tahun ke depan.',
+    desc:'Data keuangan institusi: PNBP, belanja, realisasi anggaran 5 tahun terakhir & proyeksi 5 tahun ke depan. Dikelola oleh Sub Bag. TU, Perlengkapan & RT.',
     badge:'KRITIS — 5 Tabel',
     tables:[
       { id:'dc-pnbp', title:'Pendapatan PNBP (2020–2025)', ref:'Lampiran I → tbl-keuangan (Pendapatan)',
@@ -251,7 +254,7 @@ const UNITS=[
     ]
   },
   {
-    id:'akademik', name:'Bagian Akademik & Kemahasiswaan', icon:'<i class="fa-solid fa-graduation-cap" style="color:#2563eb"></i>', color:'u-akademik',
+    id:'akademik', name:'Biro AUAK — Sub Bag. Layanan Akademik', icon:'<i class="fa-solid fa-graduation-cap" style="color:#2563eb"></i>', color:'u-akademik',
     colorHex:'#2563eb', bgHex:'#eff6ff',
     desc:'Data layanan pendidikan: jumlah mahasiswa, lulusan, prodi, kelulusan tepat waktu, dan volume layanan.',
     badge:'PENTING — 2 Tabel',
@@ -279,10 +282,10 @@ const UNITS=[
     ]
   },
   {
-    id:'kepegawaian', name:'Bagian Kepegawaian / SDM', icon:'<i class="fa-solid fa-users" style="color:#d97706"></i>', color:'u-kepegawaian',
+    id:'kepegawaian', name:'Biro AUAK — Kepegawaian & SDM', icon:'<i class="fa-solid fa-users" style="color:#d97706"></i>', color:'u-kepegawaian',
     colorHex:'#d97706', bgHex:'#fffbeb',
-    desc:'Data SDM: dosen (kualifikasi, jabatan fungsional, sertifikasi), tenaga kependidikan, rasio dosen:mahasiswa.',
-    badge:'PENTING — 1 Tabel (Detail)',
+    desc:'Data SDM institusi: dosen (kualifikasi, jabatan fungsional, sertifikasi), tenaga kependidikan, rasio dosen:mahasiswa. Dikelola oleh Biro AUAK.',
+    badge:'PENTING — 1 Tabel',
     tables:[
       { id:'dc-sdm', title:'Data SDM Dosen & Tendik (2020–2025)', ref:'Lampiran I → tbl-sdm',
         headers:['No','Indikator SDM','Satuan','2020','2021','2022','2023','2024','2025'],
@@ -300,31 +303,44 @@ const UNITS=[
   {
     id:'lp2m', name:'LP2M (Penelitian & PkM)', icon:'<i class="fa-solid fa-flask" style="color:#16a34a"></i>', color:'u-lp2m',
     colorHex:'#16a34a', bgHex:'#f0fdf4',
-    desc:'Data penelitian, publikasi, HKI, pengabdian masyarakat, hibah, dan kerjasama riset.',
-    badge:'PENTING — 2 Tabel',
+    desc:'Lembaga Penelitian dan Pengabdian pada Masyarakat: 4 Pusat — Penelitian & Penerbitan, Pengabdian Masyarakat, Studi Gender & Anak, Jurnal & Publikasi Ilmiah.',
+    badge:'PENTING — 4 Tabel',
     tables:[
-      { id:'dc-riset', title:'Kinerja Penelitian & Publikasi (2020–2025)', ref:'Lampiran I → tbl-riset',
-        headers:['No','Indikator Riset','Satuan','2020','2021','2022','2023','2024','2025'],
+      { id:'dc-riset', title:'Pusat Penelitian dan Penerbitan (2020–2025)', ref:'Lampiran I → tbl-riset',
+        headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
         rows:[
           ['1','Publikasi Scopus (kumulatif)','Dokumen'],['2','Sitasi Scopus (kumulatif)','Sitasi'],
           ['3','Publikasi Q1','Dokumen'],['4','Publikasi Q2','Dokumen'],
-          ['5','Jurnal SINTA terakreditasi','Jurnal'],['6','Jurnal internasional terindeks','Jurnal'],
-          ['7','HKI/Paten granted','Jumlah'],['8','Buku ber-ISBN','Judul'],
-          ['9','Hibah penelitian eksternal','Jumlah'],['10','Dana penelitian internal','Rp Juta'],
-          ['11','Dana penelitian dari BOPTN','Rp Juta']
+          ['5','HKI/Paten granted','Jumlah'],['6','Buku ber-ISBN','Judul'],
+          ['7','Hibah penelitian eksternal','Jumlah'],['8','Dana penelitian internal','Rp Juta'],
+          ['9','Dana penelitian dari BOPTN','Rp Juta']
         ]},
-      { id:'dc-pkm', title:'Kinerja Pengabdian Masyarakat (2020–2025)', ref:'Lampiran I → tbl-pkm',
+      { id:'dc-pkm', title:'Pusat Pengabdian kepada Masyarakat (2020–2025)', ref:'Lampiran I → tbl-pkm',
         headers:['No','Indikator PkM','Satuan','2020','2021','2022','2023','2024','2025'],
         rows:[
           ['1','Jumlah kegiatan PkM','Kegiatan'],['2','Desa/kelurahan binaan','Desa'],
           ['3','Kerjasama aktif (MoU PkM)','MoU'],['4','Dana PkM internal','Rp Juta'],
           ['5','Hibah PkM eksternal','Jumlah'],['6','Dosen terlibat PkM','%'],
           ['7','Produk PkM yang dimanfaatkan','Produk']
+        ]},
+      { id:'dc-gender', title:'Pusat Studi Gender dan Anak (2020–2025)', ref:'Lampiran I → Program unggulan',
+        headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
+        rows:[
+          ['1','Penelitian gender & anak','Jumlah'],['2','Publikasi bertema gender','Dokumen'],
+          ['3','Kegiatan advokasi/sosialisasi','Kegiatan'],['4','Kerjasama dengan instansi','MoU'],
+          ['5','Peserta pelatihan/seminar','Orang']
+        ]},
+      { id:'dc-jurnal', title:'Pusat Jurnal dan Publikasi Ilmiah (2020–2025)', ref:'Lampiran I → tbl-riset (Jurnal)',
+        headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
+        rows:[
+          ['1','Jurnal SINTA terakreditasi','Jurnal'],['2','Jurnal internasional terindeks','Jurnal'],
+          ['3','Artikel diterbitkan/tahun','Artikel'],['4','Proses akreditasi ulang','Jurnal'],
+          ['5','OJS terkelola','Platform']
         ]}
     ]
   },
   {
-    id:'umum', name:'Bagian Umum / BMN', icon:'<i class="fa-solid fa-building" style="color:#0891b2"></i>', color:'u-umum',
+    id:'umum', name:'Biro AUAK — Sub Bag. TU, Perlengkapan & RT', icon:'<i class="fa-solid fa-building" style="color:#0891b2"></i>', color:'u-umum',
     colorHex:'#0891b2', bgHex:'#ecfeff',
     desc:'Data sarana prasarana: lahan, gedung, laboratorium, aset BMN, dan fasilitas kampus.',
     badge:'PENTING — 1 Tabel',
@@ -344,8 +360,8 @@ const UNITS=[
   {
     id:'lpm', name:'LPM (Penjaminan Mutu)', icon:'<i class="fa-solid fa-certificate" style="color:#7c3aed"></i>', color:'u-lpm',
     colorHex:'#7c3aed', bgHex:'#f5f3ff',
-    desc:'Data akreditasi program studi, survei kepuasan, dan indikator mutu pendidikan.',
-    badge:'1 Tabel',
+    desc:'Lembaga Penjaminan Mutu: data akreditasi, survei kepuasan, mutu pendidikan, dan Pusat Pengembangan Karir (CDC).',
+    badge:'3 Tabel',
     tables:[
       { id:'dc-lpm', title:'Data Penjaminan Mutu (2020–2025)', ref:'Lampiran I → tbl-layanan (akreditasi & mutu)',
         headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
@@ -354,13 +370,26 @@ const UNITS=[
           ['3','Prodi belum re-akreditasi','Prodi'],['4','Indeks Kepuasan Mahasiswa (IKM)','%'],
           ['5','Tingkat kelulusan tepat waktu','%'],['6','Dokumen mutu ter-review','%'],
           ['7','Audit mutu internal/tahun','Kali'],['8','Tindak lanjut temuan audit','%']
+        ]},
+      { id:'dc-karier', title:'Pusat Pengembangan Karir / CDC (2020–2025)', ref:'Lampiran I → tbl-layanan (Lulusan)',
+        headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
+        rows:[
+          ['1','Masa tunggu kerja lulusan','Bulan'],['2','Kesesuaian kerja dengan bidang','%'],
+          ['3','Responden tracer study','%'],['4','Alumni terdata','Orang'],
+          ['5','Alumni aktif berkontribusi','%'],['6','Beasiswa alumni untuk mhs','Orang']
+        ]},
+      { id:'dc-moderasi', title:'Pusat Rumah Moderasi Beragama (2020–2025)', ref:'Lampiran I → Program unggulan',
+        headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
+        rows:[
+          ['1','Kegiatan moderasi beragama','Kegiatan'],['2','Peserta kegiatan','Orang'],
+          ['3','Publikasi/riset moderasi','Dokumen'],['4','Kerjasama lintas agama','MoU']
         ]}
     ]
   },
   {
-    id:'ptipd', name:'PTIPD (Teknologi Informasi)', icon:'<i class="fa-solid fa-server" style="color:#0284c7"></i>', color:'u-ptipd',
+    id:'ptipd', name:'UPT TIPD (Teknologi Informasi)', icon:'<i class="fa-solid fa-server" style="color:#0284c7"></i>', color:'u-ptipd',
     colorHex:'#0284c7', bgHex:'#f0f9ff',
-    desc:'Data infrastruktur IT: bandwidth, server, aplikasi, dan transformasi digital kampus.',
+    desc:'Unit Pelaksana Teknis Teknologi Informasi dan Pangkalan Data.',
     badge:'1 Tabel',
     tables:[
       { id:'dc-ptipd', title:'Data Infrastruktur IT (2020–2025)', ref:'Lampiran I → tbl-sarpras (IT)',
@@ -374,9 +403,9 @@ const UNITS=[
     ]
   },
   {
-    id:'perpustakaan', name:'Perpustakaan', icon:'<i class="fa-solid fa-book" style="color:#9333ea"></i>', color:'u-perpustakaan',
+    id:'perpustakaan', name:'UPT Perpustakaan', icon:'<i class="fa-solid fa-book" style="color:#9333ea"></i>', color:'u-perpustakaan',
     colorHex:'#9333ea', bgHex:'#faf5ff',
-    desc:'Data koleksi perpustakaan: buku cetak, e-book, jurnal, dan statistik layanan.',
+    desc:'Unit Pelaksana Teknis Perpustakaan: data koleksi, e-book, jurnal, dan statistik layanan.',
     badge:'1 Tabel',
     tables:[
       { id:'dc-perpus', title:'Data Perpustakaan (2020–2025)', ref:'Lampiran I → tbl-sarpras (Koleksi)',
@@ -390,17 +419,47 @@ const UNITS=[
     ]
   },
   {
-    id:'karier', name:'Pusat Karier & Alumni', icon:'<i class="fa-solid fa-briefcase" style="color:#ea580c"></i>', color:'u-karier',
-    colorHex:'#ea580c', bgHex:'#fff7ed',
-    desc:'Data tracer study: masa tunggu kerja, kesesuaian bidang, dan statistik alumni.',
+    id:'bahasa', name:'UPT Pengembangan Bahasa', icon:'<i class="fa-solid fa-language" style="color:#059669"></i>', color:'u-bahasa',
+    colorHex:'#059669', bgHex:'#ecfdf5',
+    desc:'Unit Pelaksana Teknis Pengembangan Bahasa: data program bahasa, TOEFL/TOAFL, dan sertifikasi.',
     badge:'1 Tabel',
     tables:[
-      { id:'dc-karier', title:'Data Lulusan & Alumni (2020–2025)', ref:'Lampiran I → tbl-layanan (Lulusan)',
+      { id:'dc-bahasa', title:'Data Pengembangan Bahasa (2020–2025)', ref:'Lampiran I → tbl-layanan (Bahasa)',
         headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
         rows:[
-          ['1','Masa tunggu kerja lulusan','Bulan'],['2','Kesesuaian kerja dengan bidang','%'],
-          ['3','Responden tracer study','%'],['4','Alumni terdata','Orang'],
-          ['5','Alumni aktif berkontribusi','%'],['6','Beasiswa alumni untuk mhs','Orang']
+          ['1','Peserta TOEFL/tahun','Orang'],['2','Rata-rata skor TOEFL','Skor'],
+          ['3','Peserta TOAFL/tahun','Orang'],['4','Rata-rata skor TOAFL','Skor'],
+          ['5','Program pelatihan bahasa','Program'],['6','Sertifikat bahasa diterbitkan','Sertifikat']
+        ]}
+    ]
+  },
+  {
+    id:'mahad', name:'UPT Ma\'had Al Jami\'ah', icon:'<i class="fa-solid fa-mosque" style="color:#b45309"></i>', color:'u-mahad',
+    colorHex:'#b45309', bgHex:'#fffbeb',
+    desc:'Unit Pelaksana Teknis Ma\'had Al Jami\'ah: data pesantren kampus, santri, dan program keagamaan.',
+    badge:'1 Tabel',
+    tables:[
+      { id:'dc-mahad', title:'Data Ma\'had Al Jami\'ah (2020–2025)', ref:'Lampiran I → tbl-layanan (Ma\'had)',
+        headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
+        rows:[
+          ['1','Kapasitas asrama','Orang'],['2','Santri aktif','Orang'],
+          ['3','Tingkat hunian','%'],['4','Pembina/musyrif','Orang'],
+          ['5','Program tahfidz/bahasa','Program'],['6','Kegiatan keagamaan','Kegiatan']
+        ]}
+    ]
+  },
+  {
+    id:'spi', name:'SPI (Satuan Pengawas Internal)', icon:'<i class="fa-solid fa-shield-halved" style="color:#be123c"></i>', color:'u-spi',
+    colorHex:'#be123c', bgHex:'#fff1f2',
+    desc:'Satuan Pengawas Internal: data audit internal, temuan, dan tindak lanjut.',
+    badge:'1 Tabel',
+    tables:[
+      { id:'dc-spi', title:'Data Pengawasan Internal (2020–2025)', ref:'Lampiran I → tbl-tata kelola',
+        headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
+        rows:[
+          ['1','Audit internal/tahun','Kali'],['2','Temuan audit','Temuan'],
+          ['3','Tindak lanjut selesai','%'],['4','Reviu laporan keuangan','Kali'],
+          ['5','Evaluasi SAKIP','Nilai'],['6','Rekomendasi BPK ditindaklanjuti','%']
         ]}
     ]
   }
@@ -722,6 +781,38 @@ async function saveAll(silent=false){
 }
 
 async function loadData(){
+  // Migration map: old unitId → new unitId for moved tables
+  const UNIT_MIGRATION={'karier':'lpm'};
+  // Build a table→unit lookup for all current tables
+  const tblToUnit={};
+  UNITS.forEach(u=>u.tables.forEach(t=>{tblToUnit[t.id]=u.id;}));
+
+  function applyData(rawDataByUnit){
+    // First pass: load data where unit ID matches directly
+    Object.entries(rawDataByUnit).forEach(([unitId,unitData])=>{
+      if(!unitData)return;
+      const raw=unitData.rawData||unitData;
+      // Determine target unit: direct match, migration, or skip
+      let targetUnitId=unitId;
+      if(!UNITS.find(u=>u.id===unitId)){
+        targetUnitId=UNIT_MIGRATION[unitId]||null;
+      }
+      // Load each table by its ID — even if the parent unit changed
+      Object.entries(raw).forEach(([tblId,rows])=>{
+        if(!Array.isArray(rows))return;
+        // Find the DOM table by ID (regardless of which unit it was saved under)
+        const tbl=document.getElementById(tblId);
+        if(!tbl)return;
+        const domRows=tbl.querySelectorAll('tbody tr:not(.section-row)');
+        rows.forEach((cells,ri)=>{
+          if(!domRows[ri])return;
+          const inputs=domRows[ri].querySelectorAll('.cell-input');
+          cells.forEach((v,ci)=>{if(inputs[ci])inputs[ci].value=v;});
+        });
+      });
+    });
+  }
+
   // Try loading from centralized API first
   let cloudData=null;
   try{
@@ -729,24 +820,7 @@ async function loadData(){
     const json=await res.json();
     if(json.ok && json.data){
       cloudData=json.data;
-      // Merge cloud data into tables
-      Object.entries(cloudData).forEach(([unitId,record])=>{
-        if(!record||!record.rawData)return;
-        const unit=UNITS.find(u=>u.id===unitId);
-        if(!unit)return;
-        unit.tables.forEach(t=>{
-          const saved=record.rawData[t.id];
-          if(!saved)return;
-          const tbl=document.getElementById(t.id);
-          if(!tbl)return;
-          const rows=tbl.querySelectorAll('tbody tr:not(.section-row)');
-          saved.forEach((cells,ri)=>{
-            if(!rows[ri])return;
-            const inputs=rows[ri].querySelectorAll('.cell-input');
-            cells.forEach((v,ci)=>{if(inputs[ci])inputs[ci].value=v;});
-          });
-        });
-      });
+      applyData(cloudData);
       // Also update localStorage cache & export
       const mergedExport={timestamp:new Date().toISOString(), tables:{}};
       Object.values(cloudData).forEach(record=>{
@@ -764,21 +838,12 @@ async function loadData(){
     if(!raw)return;
     const data=JSON.parse(raw);
     if(!data.units)return;
-    UNITS.forEach(u=>{
-      if(!data.units[u.id])return;
-      u.tables.forEach(t=>{
-        const saved=data.units[u.id][t.id];
-        if(!saved)return;
-        const tbl=document.getElementById(t.id);
-        if(!tbl)return;
-        const rows=tbl.querySelectorAll('tbody tr:not(.section-row)');
-        saved.forEach((cells,ri)=>{
-          if(!rows[ri])return;
-          const inputs=rows[ri].querySelectorAll('.cell-input');
-          cells.forEach((v,ci)=>{if(inputs[ci])inputs[ci].value=v;});
-        });
-      });
+    // Wrap in same structure as cloud data for applyData
+    const wrapped={};
+    Object.entries(data.units).forEach(([uid,tables])=>{
+      wrapped[uid]={rawData:tables};
     });
+    applyData(wrapped);
     updateProgress();
   }catch(e){console.error('Load error:',e);}
 }
