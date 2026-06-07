@@ -843,9 +843,8 @@ async function loadData(){
         if(!Array.isArray(rows))return;
         const tbl=document.getElementById(tblId);
         if(!tbl)return;
-        const domRows=tbl.querySelectorAll('tbody tr:not(.section-row)');
-        // Apply KV data row-by-row (extra KV rows beyond template are ignored,
-        // extra template rows beyond KV keep their pre-fills)
+        const domRows=[...tbl.querySelectorAll('tbody tr:not(.section-row)')];
+        // Apply KV data row-by-row
         rows.forEach((cells,ri)=>{
           if(!domRows[ri])return;
           const inputs=domRows[ri].querySelectorAll('.cell-input');
@@ -854,7 +853,6 @@ async function loadData(){
             if(inputs[ci].classList.contains('cell-label'))return;
             const saved=(v||'').trim();
             const current=(inputs[ci].value||'').trim();
-            // Don't overwrite pre-filled template data with empty KV
             const templateHasData=current && current!=='0' && current!=='...' && current!=='—' && /\d/.test(current) && current.length>1;
             const kvHasData=saved && saved!=='0' && saved!=='...' && saved!=='—' && /\d/.test(saved) && saved.length>1;
             if(templateHasData && !kvHasData) return;
@@ -865,6 +863,14 @@ async function loadData(){
             inputs[ci].value=v;
           });
         });
+        // Remove extra template rows that user had deleted
+        // (KV has fewer rows = user previously deleted and saved)
+        if(rows.length < domRows.length){
+          for(let i=rows.length; i<domRows.length; i++){
+            domRows[i].remove();
+          }
+          console.log('🗑️ '+tblId+': removed '+(domRows.length-rows.length)+' extra template rows');
+        }
       });
     });
   }
