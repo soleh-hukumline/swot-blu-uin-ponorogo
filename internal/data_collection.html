@@ -857,14 +857,21 @@ async function loadData(){
             if(!inputs[ci])return;
             // Skip label/readonly cells — preserve template labels
             if(inputs[ci].classList.contains('cell-label'))return;
-            // Don't overwrite pre-filled template data with empty/placeholder values
+            
             const saved=(v||'').trim();
             const current=(inputs[ci].value||'').trim();
-            if(!saved || saved==='...' || saved==='\u2014'){
-              // Only clear if template is also empty/placeholder
-              if(!current || current==='...' || current==='\u2014') inputs[ci].value=v;
+            // Template has real data (contains digits, not just '0')
+            const templateHasData=current && current!=='0' && current!=='...' && current!=='—' && /\d/.test(current) && current.length>1;
+            // KV has meaningful data (not empty, not '0', not placeholder)
+            const kvHasData=saved && saved!=='0' && saved!=='...' && saved!=='—' && /\d/.test(saved) && saved.length>1;
+            // Rule: if template has real data and KV doesn't → keep template
+            if(templateHasData && !kvHasData) return;
+            // Rule: if KV has no data → skip (don't clear template)
+            if(!saved || saved==='...' || saved==='—' || saved==='0'){
+              if(!current || current==='...' || current==='—') inputs[ci].value=v;
               return;
             }
+            // KV has real data → apply it
             inputs[ci].value=v;
           });
         });
