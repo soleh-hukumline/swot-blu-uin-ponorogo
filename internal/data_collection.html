@@ -835,6 +835,14 @@ async function loadData(){
             if(!inputs[ci])return;
             // Skip label/readonly cells — preserve template labels
             if(inputs[ci].classList.contains('cell-label'))return;
+            // Don't overwrite pre-filled template data with empty/placeholder values
+            const saved=(v||'').trim();
+            const current=(inputs[ci].value||'').trim();
+            if(!saved || saved==='...' || saved==='\u2014'){
+              // Only clear if template is also empty/placeholder
+              if(!current || current==='...' || current==='\u2014') inputs[ci].value=v;
+              return;
+            }
             inputs[ci].value=v;
           });
         });
