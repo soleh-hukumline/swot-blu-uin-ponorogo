@@ -836,18 +836,6 @@ async function loadData(){
   UNITS.forEach(u=>u.tables.forEach(t=>{tblToUnit[t.id]=u.id;}));
 
   function applyData(rawDataByUnit){
-    // Check schema version — skip stale data
-    let staleSchema=false;
-    Object.values(rawDataByUnit).forEach(unitData=>{
-      if(unitData && unitData.schemaVersion && unitData.schemaVersion!==SCHEMA_VERSION) staleSchema=true;
-      if(unitData && !unitData.schemaVersion) staleSchema=true; // no version = old data
-    });
-    if(staleSchema){
-      console.warn('⚠️ KV schema version mismatch — skipping stale data. Klik "Simpan & Sync" untuk update KV.');
-      showToast('⚠️ Data KV lama (schema berbeda) — template baru digunakan. Klik Simpan & Sync!','warning');
-      return;
-    }
-    // Apply data from matching schema
     Object.entries(rawDataByUnit).forEach(([unitId,unitData])=>{
       if(!unitData)return;
       const raw=unitData.rawData||unitData;
@@ -856,6 +844,12 @@ async function loadData(){
         const tbl=document.getElementById(tblId);
         if(!tbl)return;
         const domRows=tbl.querySelectorAll('tbody tr:not(.section-row)');
+        // Per-table structural check: skip if row count mismatch
+        if(rows.length!==domRows.length){
+          console.log('⏭️ '+tblId+': KV rows='+rows.length+' vs template='+domRows.length+' → skip (structure changed)');
+          return; // Keep template pre-fills for this table
+        }
+        // Row count matches → apply KV data
         rows.forEach((cells,ri)=>{
           if(!domRows[ri])return;
           const inputs=domRows[ri].querySelectorAll('.cell-input');
@@ -864,7 +858,7 @@ async function loadData(){
             if(inputs[ci].classList.contains('cell-label'))return;
             const saved=(v||'').trim();
             const current=(inputs[ci].value||'').trim();
-            // Template has real pre-filled data
+            // Don't overwrite pre-filled template data with empty KV
             const templateHasData=current && current!=='0' && current!=='...' && current!=='—' && /\d/.test(current) && current.length>1;
             const kvHasData=saved && saved!=='0' && saved!=='...' && saved!=='—' && /\d/.test(saved) && saved.length>1;
             if(templateHasData && !kvHasData) return;
