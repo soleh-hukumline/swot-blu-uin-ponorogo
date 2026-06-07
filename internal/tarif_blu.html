@@ -486,6 +486,17 @@ function generateUKTRows(){
       const selStr=selisih>0?'+'+selisih.toLocaleString('id-ID'):
                    selisih<0?selisih.toLocaleString('id-ID'):
                    (ukt25===0&&ukt26===0)?'':'-';
+      // Ceiling PMK = KMA 1375/2025 (batas regulasi saat ini)
+      const ceiling=ukt25;
+      const ceilStr=ceiling?ceiling.toLocaleString('id-ID'):'';
+      // Auto-status: cek Usulan 2026 vs Ceiling KMA
+      let status='';
+      if(ukt25===0&&ukt26===0) status='—';
+      else if(!ukt26) status='⏳ Belum diusulkan';
+      else if(ukt25===0&&ukt26>0) status='🆕 Kelompok baru';
+      else if(ukt26>ukt25) status='⚠️ Di atas ceiling';
+      else if(ukt26===ukt25) status='✅ Sesuai ceiling';
+      else status='✅ Di bawah ceiling';
       rows.push([
         k===0?String(no):'',
         k===0?p.nama:'',
@@ -493,8 +504,8 @@ function generateUKTRows(){
         ukt25?ukt25.toLocaleString('id-ID'):(k<5?'0':k===5?'-':''),
         ukt26?ukt26.toLocaleString('id-ID'):'',
         selStr,
-        '', // ceiling PMK
-        '' // status
+        ceilStr,
+        status
       ]);
     }
     no++;
