@@ -865,6 +865,8 @@ async function loadData(){
       });
       localStorage.setItem('rsb_dc_export',JSON.stringify(mergedExport));
       updateProgress();
+      // Auto-save back to KV to replace stale/empty data with current template
+      setTimeout(()=>saveAll(true),2000);
       return;
     }
   }catch(e){console.warn('Cloud load failed, using local:',e);}
