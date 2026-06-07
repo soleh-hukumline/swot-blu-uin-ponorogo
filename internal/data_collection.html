@@ -831,7 +831,12 @@ async function loadData(){
         rows.forEach((cells,ri)=>{
           if(!domRows[ri])return;
           const inputs=domRows[ri].querySelectorAll('.cell-input');
-          cells.forEach((v,ci)=>{if(inputs[ci])inputs[ci].value=v;});
+          cells.forEach((v,ci)=>{
+            if(!inputs[ci])return;
+            // Skip label/readonly cells — preserve template labels
+            if(inputs[ci].classList.contains('cell-label'))return;
+            inputs[ci].value=v;
+          });
         });
       });
     });
