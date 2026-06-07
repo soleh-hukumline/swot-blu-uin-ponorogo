@@ -209,6 +209,7 @@ table.data-tbl td.col-act{padding:0;text-align:center;border:1px solid #d0d7de;}
    UNIT DEFINITIONS & DATA TABLES
 ============================================================ */
 const SK='rsb_datacollect_v1';
+const SCHEMA_VERSION='2026-06-08-v2'; // Bump when template structure changes → old KV data skipped
 const UNITS=[
   {
     id:'keuangan', name:'Biro AUAK — Keuangan & Anggaran', icon:'<i class="fa-solid fa-coins" style="color:#dc2626"></i>', color:'u-keuangan',
@@ -812,7 +813,8 @@ async function saveAll(silent=false){
           unitId:u.id,
           tables:unitExport,
           rawData:data.units[u.id],
-          savedBy: 'unit-user'
+          savedBy: 'unit-user',
+          schemaVersion: SCHEMA_VERSION
         })
       });
     });
@@ -834,19 +836,23 @@ async function loadData(){
   UNITS.forEach(u=>u.tables.forEach(t=>{tblToUnit[t.id]=u.id;}));
 
   function applyData(rawDataByUnit){
-    // First pass: load data where unit ID matches directly
+    // Check schema version — skip stale data
+    let staleSchema=false;
+    Object.values(rawDataByUnit).forEach(unitData=>{
+      if(unitData && unitData.schemaVersion && unitData.schemaVersion!==SCHEMA_VERSION) staleSchema=true;
+      if(unitData && !unitData.schemaVersion) staleSchema=true; // no version = old data
+    });
+    if(staleSchema){
+      console.warn('⚠️ KV schema version mismatch — skipping stale data. Klik "Simpan & Sync" untuk update KV.');
+      showToast('⚠️ Data KV lama (schema berbeda) — template baru digunakan. Klik Simpan & Sync!','warning');
+      return;
+    }
+    // Apply data from matching schema
     Object.entries(rawDataByUnit).forEach(([unitId,unitData])=>{
       if(!unitData)return;
       const raw=unitData.rawData||unitData;
-      // Determine target unit: direct match, migration, or skip
-      let targetUnitId=unitId;
-      if(!UNITS.find(u=>u.id===unitId)){
-        targetUnitId=UNIT_MIGRATION[unitId]||null;
-      }
-      // Load each table by its ID — even if the parent unit changed
       Object.entries(raw).forEach(([tblId,rows])=>{
         if(!Array.isArray(rows))return;
-        // Find the DOM table by ID (regardless of which unit it was saved under)
         const tbl=document.getElementById(tblId);
         if(!tbl)return;
         const domRows=tbl.querySelectorAll('tbody tr:not(.section-row)');
@@ -855,23 +861,17 @@ async function loadData(){
           const inputs=domRows[ri].querySelectorAll('.cell-input');
           cells.forEach((v,ci)=>{
             if(!inputs[ci])return;
-            // Skip label/readonly cells — preserve template labels
             if(inputs[ci].classList.contains('cell-label'))return;
-            
             const saved=(v||'').trim();
             const current=(inputs[ci].value||'').trim();
-            // Template has real data (contains digits, not just '0')
+            // Template has real pre-filled data
             const templateHasData=current && current!=='0' && current!=='...' && current!=='—' && /\d/.test(current) && current.length>1;
-            // KV has meaningful data (not empty, not '0', not placeholder)
             const kvHasData=saved && saved!=='0' && saved!=='...' && saved!=='—' && /\d/.test(saved) && saved.length>1;
-            // Rule: if template has real data and KV doesn't → keep template
             if(templateHasData && !kvHasData) return;
-            // Rule: if KV has no data → skip (don't clear template)
             if(!saved || saved==='...' || saved==='—' || saved==='0'){
               if(!current || current==='...' || current==='—') inputs[ci].value=v;
               return;
             }
-            // KV has real data → apply it
             inputs[ci].value=v;
           });
         });
@@ -887,15 +887,13 @@ async function loadData(){
     if(json.ok && json.data){
       cloudData=json.data;
       applyData(cloudData);
-      // Also update localStorage cache & export
       const mergedExport={timestamp:new Date().toISOString(), tables:{}};
       Object.values(cloudData).forEach(record=>{
         if(record&&record.tables) Object.assign(mergedExport.tables,record.tables);
       });
       localStorage.setItem('rsb_dc_export',JSON.stringify(mergedExport));
       updateProgress();
-      // NOTE: auto-save removed — user should manually click 'Simpan & Sync'
-      console.log('📥 Data loaded from cloud. Click "Simpan & Sync" to update KV with new template.');
+      console.log('📥 Data loaded from cloud.');
       return;
     }
   }catch(e){console.warn('Cloud load failed, using local:',e);}
