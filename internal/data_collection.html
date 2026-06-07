@@ -326,8 +326,8 @@ const UNITS=[
   {
     id:'lp2m', name:'LP2M (Penelitian & PkM)', icon:'<i class="fa-solid fa-flask" style="color:#16a34a"></i>', color:'u-lp2m',
     colorHex:'#16a34a', bgHex:'#f0fdf4',
-    desc:'Lembaga Penelitian dan Pengabdian pada Masyarakat: 4 Pusat — Penelitian & Penerbitan, Pengabdian Masyarakat, Studi Gender & Anak, Jurnal & Publikasi Ilmiah.',
-    badge:'PENTING — 4 Tabel',
+    desc:'Lembaga Penelitian dan Pengabdian pada Masyarakat: 5 Pusat — Penelitian & Penerbitan, Pengabdian Masyarakat, Studi Gender & Anak, Jurnal & Publikasi Ilmiah, Rumah Moderasi Beragama.',
+    badge:'PENTING — 5 Tabel',
     tables:[
       { id:'dc-riset', title:'Pusat Penelitian dan Penerbitan (2020–2025)', ref:'Lampiran I → tbl-riset',
         headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
@@ -359,6 +359,12 @@ const UNITS=[
           ['1','Jurnal SINTA terakreditasi','Jurnal'],['2','Jurnal internasional terindeks','Jurnal'],
           ['3','Artikel diterbitkan/tahun','Artikel'],['4','Proses akreditasi ulang','Jurnal'],
           ['5','OJS terkelola','Platform']
+        ]},
+      { id:'dc-moderasi', title:'Pusat Rumah Moderasi Beragama (2020–2025)', ref:'Lampiran I → Program unggulan',
+        headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
+        rows:[
+          ['1','Kegiatan moderasi beragama','Kegiatan'],['2','Peserta kegiatan','Orang'],
+          ['3','Publikasi/riset moderasi','Dokumen'],['4','Kerjasama lintas agama','MoU']
         ]}
     ]
   },
@@ -384,7 +390,7 @@ const UNITS=[
     id:'lpm', name:'LPM (Penjaminan Mutu)', icon:'<i class="fa-solid fa-certificate" style="color:#7c3aed"></i>', color:'u-lpm',
     colorHex:'#7c3aed', bgHex:'#f5f3ff',
     desc:'Lembaga Penjaminan Mutu: data akreditasi, survei kepuasan, mutu pendidikan, dan Pusat Pengembangan Karir (CDC).',
-    badge:'3 Tabel',
+    badge:'2 Tabel',
     tables:[
       { id:'dc-lpm', title:'Data Penjaminan Mutu (2020–2025)', ref:'Lampiran I → tbl-layanan (akreditasi & mutu)',
         headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
@@ -401,12 +407,6 @@ const UNITS=[
           ['3','Kesesuaian kerja dengan bidang','%'],['4','Responden tracer study','%'],
           ['5','Alumni terdata','Orang'],['6','Alumni aktif berkontribusi','%'],
           ['7','Beasiswa alumni untuk mhs','Orang']
-        ]},
-      { id:'dc-moderasi', title:'Pusat Rumah Moderasi Beragama (2020–2025)', ref:'Lampiran I → Program unggulan',
-        headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
-        rows:[
-          ['1','Kegiatan moderasi beragama','Kegiatan'],['2','Peserta kegiatan','Orang'],
-          ['3','Publikasi/riset moderasi','Dokumen'],['4','Kerjasama lintas agama','MoU']
         ]}
     ]
   },
