@@ -598,20 +598,7 @@ const SECTIONS=[
   },
 ];
 
-// Generate UKT rows — 1 row per prodi, historis Kel V 2020–2026
-function generateUKTRows(){
-  const rows=[];
-  PRODI_LIST.forEach((p,i)=>{
-    const row=[String(i+1), p.nama, p.fak];
-    p.ukt.forEach(v=>{
-      row.push(v ? v.toLocaleString('id-ID') : '—');
-    });
-    rows.push(row);
-  });
-  return rows;
-}
-// Assign UKT rows
-SECTIONS[0].tables[1].rows=generateUKTRows();
+
 
 /* ============================================================
    UI RENDERING
