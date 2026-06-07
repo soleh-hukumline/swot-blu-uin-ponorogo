@@ -1032,9 +1032,6 @@ async function loadData(){
       const parsed=JSON.parse(raw);
       if(parsed&&parsed.tables){
         applyData(parsed.tables);
-        // Auto-migrate: push localStorage data to server
-        console.log('Auto-migrating localStorage data to server...');
-        setTimeout(()=>saveAll(true),1000);
       }
     }
   }catch(e){console.warn('localStorage load failed:',e);}
@@ -1050,18 +1047,22 @@ function applyData(tables){
 
     savedRows.forEach((rowData,ri)=>{
       let tr=existingRows[ri];
-      if(!tr){
-        // Need to add row
-        tr=document.createElement('tr');
-        let html='';
-        rowData.forEach(()=>html+='<td><input class="cell-input" value="" oninput="markDirty()"/></td>');
-        html+='<td class="col-act"><button class="row-del" onclick="deleteRow(this)"><i class="fa-solid fa-trash-can"></i></button></td>';
-        tr.innerHTML=html;
-        tbody.appendChild(tr);
-      }
+      // Don't create new rows from KV — only apply to existing template rows
+      if(!tr) return;
       const inputs=[...tr.querySelectorAll('.cell-input')];
       rowData.forEach((val,ci)=>{
-        if(inputs[ci])inputs[ci].value=val;
+        if(!inputs[ci])return;
+        const saved=(val||'').trim();
+        const current=(inputs[ci].value||'').trim();
+        // Don't overwrite pre-filled template data with empty/junk KV
+        const templateHasData=current && current!=='0' && current!=='...' && current!=='—' && /\d/.test(current) && current.length>1;
+        const kvHasData=saved && saved!=='0' && saved!=='...' && saved!=='—' && /\d/.test(saved) && saved.length>1;
+        if(templateHasData && !kvHasData) return;
+        if(!saved || saved==='...' || saved==='—' || saved==='0'){
+          if(!current || current==='...' || current==='—') inputs[ci].value=val;
+          return;
+        }
+        inputs[ci].value=val;
       });
     });
   });
