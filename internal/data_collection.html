@@ -844,12 +844,8 @@ async function loadData(){
         const tbl=document.getElementById(tblId);
         if(!tbl)return;
         const domRows=tbl.querySelectorAll('tbody tr:not(.section-row)');
-        // Per-table structural check: skip if row count mismatch
-        if(rows.length!==domRows.length){
-          console.log('⏭️ '+tblId+': KV rows='+rows.length+' vs template='+domRows.length+' → skip (structure changed)');
-          return; // Keep template pre-fills for this table
-        }
-        // Row count matches → apply KV data
+        // Apply KV data row-by-row (extra KV rows beyond template are ignored,
+        // extra template rows beyond KV keep their pre-fills)
         rows.forEach((cells,ri)=>{
           if(!domRows[ri])return;
           const inputs=domRows[ri].querySelectorAll('.cell-input');
