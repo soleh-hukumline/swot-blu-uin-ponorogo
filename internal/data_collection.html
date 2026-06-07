@@ -213,43 +213,66 @@ const UNITS=[
   {
     id:'keuangan', name:'Biro AUAK — Keuangan & Anggaran', icon:'<i class="fa-solid fa-coins" style="color:#dc2626"></i>', color:'u-keuangan',
     colorHex:'#dc2626', bgHex:'#fef2f2',
-    desc:'Data keuangan institusi: PNBP, belanja, realisasi anggaran 5 tahun terakhir & proyeksi 5 tahun ke depan. Dikelola oleh Sub Bag. TU, Perlengkapan & RT.',
+    desc:'Data keuangan institusi sesuai kode akun resmi (425xxx / MAK 51-53): realisasi PNBP & belanja 2019–2025, serta proyeksi 5 tahun ke depan.',
     badge:'KRITIS — 5 Tabel',
     tables:[
-      { id:'dc-pnbp', title:'Pendapatan PNBP (2020–2025)', ref:'Lampiran I → tbl-keuangan (Pendapatan)',
-        headers:['No','Uraian Pendapatan PNBP','Satuan','2020','2021','2022','2023','2024','2025'],
+      { id:'dc-pnbp', title:'Realisasi PNBP (2019–2025) — Kode Akun', ref:'Lampiran I → tbl-keuangan (PNBP)',
+        headers:['Kode','Uraian Penerimaan','Satuan','2019','2020','2021','2022','2023','2024','2025'],
         rows:[
-          ['1','UKT/SPP Mahasiswa','Rp Juta'],['2','Asrama Ma\'had Al-Jami\'ah','Rp Juta'],
-          ['3','Sewa Gedung & Aula','Rp Juta'],['4','Sewa Lapangan','Rp Juta'],
-          ['5','PPG (Pendidikan Profesi Guru)','Rp Juta'],['6','RPL (Rekognisi Pembelajaran Lampau)','Rp Juta'],
-          ['7','Pendapatan Lainnya','Rp Juta'],['','TOTAL PENDAPATAN PNBP','Rp Juta']
+          ['025.04.DK','Program Pendidikan Tinggi (TOTAL PNBP)','Rp'],
+          ['425131','Pend. Sewa Tanah, Gedung & Bangunan','Rp'],
+          ['425411','Pend. Ujian/Seleksi Masuk Pendidikan','Rp'],
+          ['425412','Pend. Biaya Pendidikan (UKT/SPP)','Rp'],
+          ['425419','Pend. Pendidikan Lainnya','Rp'],
+          ['','',''],
+          ['','RINCIAN 425412 — Biaya Pendidikan:',''],
+          ['a','UKT/SPP Mahasiswa Reguler','Rp'],
+          ['b','Asrama Ma\'had Al-Jami\'ah','Rp'],
+          ['c','PPG (Pendidikan Profesi Guru)','Rp'],
+          ['d','RPL (Rekognisi Pembelajaran Lampau)','Rp']
         ]},
-      { id:'dc-belanja', title:'Belanja (2020–2025)', ref:'Lampiran I → tbl-keuangan (Belanja)',
-        headers:['No','Uraian Belanja','Satuan','2020','2021','2022','2023','2024','2025'],
+      { id:'dc-belanja', title:'Realisasi Belanja (2019–2025) — MAK', ref:'Lampiran I → tbl-keuangan (Belanja)',
+        headers:['Kode','Uraian Belanja','Satuan','2019','2020','2021','2022','2023','2024','2025'],
         rows:[
-          ['1','Belanja Pegawai (MAK 51)','Rp Juta'],['2','Belanja Barang (MAK 52)','Rp Juta'],
-          ['3','Belanja Modal (MAK 53)','Rp Juta'],['','TOTAL BELANJA','Rp Juta'],
-          ['4','Pagu DIPA (RM + PNBP)','Rp Juta'],['5','Realisasi Belanja','%'],
-          ['6','Proporsi PNBP / Total Belanja','%'],['7','Nilai SAKIP','Nilai']
+          ['51','Belanja Pegawai — gaji PNS, tunjangan, honor','Rp'],
+          ['52','Belanja Barang & Jasa — operasional, perjalanan, pemeliharaan','Rp'],
+          ['53','Belanja Modal — tanah, gedung, peralatan, aset','Rp'],
+          ['','TOTAL BELANJA (51+52+53)','Rp'],
+          ['','',''],
+          ['','Pagu DIPA (RM + PNBP)','Rp'],
+          ['','Realisasi Belanja','%'],
+          ['','Proporsi PNBP / Total Belanja','%'],
+          ['','Nilai SAKIP','Nilai'],
+          ['','Opini BPK','Opini']
         ]},
-      { id:'dc-proy-pnbp', title:'Proyeksi PNBP 5 Tahun (2025–2029)', ref:'Lampiran III → tbl-proy-pnbp',
-        headers:['No','Sumber PNBP','Satuan','Realisasi 2024','2025','2026','2027','2028','2029'],
+      { id:'dc-proy-pnbp', title:'Proyeksi PNBP 5 Tahun (2025–2029) — Kode Akun', ref:'Lampiran III → tbl-proy-pnbp',
+        headers:['Kode','Sumber PNBP','Satuan','Real. 2024','2025','2026','2027','2028','2029'],
         rows:[
-          ['1','UKT/SPP','Rp Juta'],['2','Asrama','Rp Juta'],['3','Sewa Gedung & Aula','Rp Juta'],
-          ['4','Sewa Lapangan','Rp Juta'],['5','PPG','Rp Juta'],['6','RPL','Rp Juta'],
-          ['7','LSP-P1 Sertifikasi','Rp Juta'],['8','Digital Learning Hub','Rp Juta'],
-          ['9','Klinik Kesehatan','Rp Juta'],['10','Inkubator Bisnis','Rp Juta'],
-          ['11','Pendapatan Lainnya','Rp Juta'],['','TOTAL PROYEKSI PNBP','Rp Juta']
+          ['425131','Pend. Sewa Tanah, Gedung & Bangunan','Rp'],
+          ['425411','Pend. Ujian/Seleksi Masuk','Rp'],
+          ['425412','Pend. Biaya Pendidikan (UKT/SPP)','Rp'],
+          ['425419','Pend. Pendidikan Lainnya','Rp'],
+          ['','TOTAL PNBP (025.04.DK)','Rp'],
+          ['','',''],
+          ['','RINCIAN SUMBER BARU BLU:',''],
+          ['a','LSP-P1 Sertifikasi Kompetensi','Rp'],
+          ['b','Digital Learning Hub','Rp'],
+          ['c','Klinik Kesehatan Kampus','Rp'],
+          ['d','Inkubator Bisnis & Co-Working','Rp'],
+          ['e','Pendapatan Lainnya','Rp']
         ]},
-      { id:'dc-proy-belanja', title:'Proyeksi Belanja 5 Tahun (2025–2029)', ref:'Lampiran III → tbl-proy-belanja',
-        headers:['No','Jenis Belanja','Satuan','Realisasi 2024','2025','2026','2027','2028','2029'],
+      { id:'dc-proy-belanja', title:'Proyeksi Belanja 5 Tahun (2025–2029) — MAK', ref:'Lampiran III → tbl-proy-belanja',
+        headers:['Kode','Jenis Belanja','Satuan','Real. 2024','2025','2026','2027','2028','2029'],
         rows:[
-          ['1','Belanja Pegawai','Rp Juta'],['2','Belanja Barang','Rp Juta'],['3','Belanja Modal','Rp Juta'],
-          ['','TOTAL BELANJA','Rp Juta']
+          ['51','Belanja Pegawai','Rp'],
+          ['52','Belanja Barang & Jasa','Rp'],
+          ['53','Belanja Modal','Rp'],
+          ['','TOTAL BELANJA','Rp'],
+          ['','Rasio Belanja Modal / Total (%)','%']
         ]},
       { id:'dc-proporsi', title:'Proporsi Kemandirian Keuangan', ref:'Lampiran III → tbl-proporsi',
-        headers:['Tahun','Total Belanja (Rp Juta)','Total PNBP (Rp Juta)','RM (Rp Juta)','SBSN (Rp Juta)','Proporsi PNBP (%)'],
-        rows:[['2024'],['2025'],['2026'],['2027'],['2028'],['2029']]
+        headers:['Tahun','Pagu DIPA (Rp)','Total PNBP (Rp)','RM (Rp)','SBSN (Rp)','Proporsi PNBP (%)'],
+        rows:[['2019'],['2020'],['2021'],['2022'],['2023'],['2024'],['2025'],['2026'],['2027'],['2028'],['2029']]
       }
     ]
   },
