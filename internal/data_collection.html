@@ -550,6 +550,7 @@ function renderSidebar(){
     <button class="sb-btn primary" onclick="saveAll()"><i class="fa-solid fa-floppy-disk"></i> Simpan & Sync</button>
     <div style="font-size:0.58rem;color:#64748b;text-align:center;padding:0.2rem;"><i class="fa-solid fa-arrows-rotate" style="color:#16a34a"></i> Auto-sync ke RSB Generator saat Save</div>
     <button class="sb-btn secondary" onclick="exportCSV()"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+    <button class="sb-btn secondary" onclick="backupKV()" style="background:#fef3c7;border-color:#f59e0b;color:#92400e"><i class="fa-solid fa-download"></i> Backup KV</button>
     <button class="sb-btn secondary" onclick="if(confirm('Reset semua data?'))resetAll()"><i class="fa-solid fa-rotate"></i> Reset</button>
   </div>`;
   document.getElementById('sidebar').innerHTML=h;
@@ -886,8 +887,8 @@ async function loadData(){
       });
       localStorage.setItem('rsb_dc_export',JSON.stringify(mergedExport));
       updateProgress();
-      // Auto-save back to KV to replace stale/empty data with current template
-      setTimeout(()=>saveAll(true),2000);
+      // NOTE: auto-save removed — user should manually click 'Simpan & Sync'
+      console.log('📥 Data loaded from cloud. Click "Simpan & Sync" to update KV with new template.');
       return;
     }
   }catch(e){console.warn('Cloud load failed, using local:',e);}
@@ -938,6 +939,42 @@ async function exportCSV(){
   a.download='data_rsb_per_unit_'+new Date().toISOString().slice(0,10)+'.csv';
   a.click();
   showToast('CSV downloaded!');
+}
+
+async function backupKV(){
+  showToast('🔄 Mengunduh backup KV...');
+  try{
+    const res=await fetch(API_URL);
+    const json=await res.json();
+    if(!json.ok||!json.data){showToast('❌ Gagal fetch data dari KV','error');return;}
+    const backup={
+      timestamp:new Date().toISOString(),
+      source:'KV Cloudflare Workers',
+      url:window.location.href,
+      data:json.data
+    };
+    const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download='kv_backup_'+new Date().toISOString().slice(0,19).replace(/:/g,'-')+'.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    // Summary
+    let totalCells=0;
+    Object.values(json.data).forEach(record=>{
+      if(!record)return;
+      const raw=record.rawData||record;
+      Object.values(raw).forEach(tbl=>{
+        if(Array.isArray(tbl)) tbl.forEach(row=>{
+          if(Array.isArray(row)) row.forEach((c,ci)=>{
+            if(ci>=3&&c&&c.trim()&&c.trim()!=='...'&&c.trim()!=='—') totalCells++;
+          });
+        });
+      });
+    });
+    showToast('✅ Backup berhasil! ('+totalCells+' cells)','success');
+  }catch(e){showToast('❌ Error: '+e.message,'error');}
 }
 
 // Auto-save warning
