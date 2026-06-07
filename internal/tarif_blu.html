@@ -267,83 +267,35 @@ const YEARS_HIST=['2020','2021','2022','2023','2024','2025'];
 const YEARS_PROJ=['2026','2027','2028','2029'];
 const ALL_YEARS=[...YEARS_HIST,...YEARS_PROJ];
 
-// Program studi & UKT
-// ukt2025: 8 kelompok [I,II,III,IV,V,VI,VII,KIP] — KMA 1375/2025 (Kel VI-VII = 0, belum ada)
-// ukt2026: 8 kelompok [I,II,III,IV,V,VI,VII,KIP] — Usulan 2026/2027
+// UKT Historis per Prodi — Kel V (tertinggi reguler), 2020–2026
+// Sumber: UKT UIN PONOROGO 2013_2026.xls, 2026 = Kel VII (Usulan)
 const PRODI_LIST=[
   // Fakultas Syariah
-  {nama:'Hukum Keluarga Islam',fak:'Syariah',
-    ukt2025:[400000,1560000,2000000,2500000,3000000,0,0,2400000],
-    ukt2026:[400000,1560000,2000000,2500000,3000000,3250000,3500000,2400000]},
-  {nama:'Hukum Ekonomi Syariah',fak:'Syariah',
-    ukt2025:[400000,1375000,1600000,1800000,2000000,0,0,2400000],
-    ukt2026:[400000,1375000,1600000,1800000,2000000,2400000,2600000,2400000]},
-  {nama:'Hukum Tata Negara',fak:'Syariah',
-    ukt2025:[400000,1430000,1750000,2100000,2400000,0,0,2400000],
-    ukt2026:[400000,1430000,1750000,2100000,2400000,2700000,3000000,2400000]},
-  // Fakultas Tarbiyah dan Ilmu Keguruan
-  {nama:'Pendidikan Agama Islam',fak:'FTIK',
-    ukt2025:[400000,1800000,2400000,3000000,3500000,0,0,2400000],
-    ukt2026:[400000,1800000,2400000,3000000,3500000,3800000,4000000,2400000]},
-  {nama:'Pendidikan Bahasa Arab',fak:'FTIK',
-    ukt2025:[400000,1430000,1750000,2100000,2400000,0,0,2400000],
-    ukt2026:[400000,1430000,1750000,2100000,2400000,2700000,3000000,2400000]},
-  {nama:'Pendidikan Guru Madrasah Ibtidaiyah',fak:'FTIK',
-    ukt2025:[400000,1560000,2000000,2500000,3000000,0,0,2400000],
-    ukt2026:[400000,1560000,2000000,2500000,3000000,3500000,4000000,2400000]},
-  {nama:'Tadris Bahasa Inggris',fak:'FTIK',
-    ukt2025:[400000,1430000,1750000,2100000,2400000,0,0,2400000],
-    ukt2026:[400000,1430000,1750000,2100000,2400000,2700000,3000000,2400000]},
-  {nama:'Pendidikan Islam Anak Usia Dini',fak:'FTIK',
-    ukt2025:[400000,1430000,1750000,2100000,2400000,0,0,2400000],
-    ukt2026:[400000,1430000,1750000,2100000,2400000,2700000,3000000,2400000]},
-  {nama:'Manajemen Pendidikan Islam',fak:'FTIK',
-    ukt2025:[400000,1500000,1900000,2400000,2800000,0,0,2400000],
-    ukt2026:[400000,1500000,1900000,2400000,2800000,3200000,3600000,2400000]},
-  {nama:'Tadris IPA',fak:'FTIK',
-    ukt2025:[400000,1560000,2000000,2500000,3000000,0,0,2400000],
-    ukt2026:[400000,1560000,2000000,2500000,3000000,3500000,4000000,2400000]},
-  {nama:'Tadris IPS',fak:'FTIK',
-    ukt2025:[400000,1430000,1750000,2100000,2100000,0,0,2400000],
-    ukt2026:[400000,1430000,1750000,2100000,2400000,2700000,3000000,2400000]},
-  {nama:'Tadris Bahasa Indonesia',fak:'FTIK',
-    ukt2025:[400000,1375000,1600000,1800000,2000000,0,0,2400000],
-    ukt2026:[400000,1375000,1600000,1800000,2000000,2500000,3000000,2400000]},
-  {nama:'Tadris Matematika',fak:'FTIK',
-    ukt2025:[400000,1375000,1600000,1800000,2000000,0,0,2400000],
-    ukt2026:[400000,1375000,1600000,1800000,2000000,2500000,3000000,2400000]},
-  {nama:'Pendidikan Profesi Guru',fak:'FTIK',
-    ukt2025:[0,0,0,0,0,0,0,0],
-    ukt2026:[400000,0,0,0,0,0,0,0]},
+  {nama:'Hukum Keluarga Islam',fak:'Syariah',ukt:[1800000,1800000,2160000,2350000,3000000,3000000,3500000]},
+  {nama:'Hukum Ekonomi Syariah',fak:'Syariah',ukt:[1700000,1700000,1870000,1870000,2000000,2000000,2600000]},
+  {nama:'Hukum Tata Negara',fak:'Syariah',ukt:[1650000,1650000,1800000,1800000,2400000,2400000,3000000]},
+  // FTIK
+  {nama:'Pendidikan Agama Islam',fak:'FTIK',ukt:[2100000,2100000,2625000,3000000,3500000,3500000,4000000]},
+  {nama:'Pendidikan Bahasa Arab',fak:'FTIK',ukt:[1750000,1750000,1870000,1870000,2400000,2400000,3000000]},
+  {nama:'PGMI',fak:'FTIK',ukt:[1800000,1800000,2160000,2350000,3000000,3000000,4000000]},
+  {nama:'Tadris Bahasa Inggris',fak:'FTIK',ukt:[1800000,1800000,1980000,1980000,2400000,2400000,3000000]},
+  {nama:'PIAUD',fak:'FTIK',ukt:[1800000,1800000,1980000,1980000,2400000,2400000,3000000]},
+  {nama:'Manajemen Pend. Islam',fak:'FTIK',ukt:[1800000,1800000,1980000,2200000,2800000,2800000,3600000]},
+  {nama:'Tadris IPA',fak:'FTIK',ukt:[1700000,1700000,2040000,2250000,3000000,3000000,4000000]},
+  {nama:'Tadris IPS',fak:'FTIK',ukt:[1700000,1700000,1870000,1870000,2100000,2100000,3000000]},
+  {nama:'Tadris Bahasa Indonesia',fak:'FTIK',ukt:[0,0,1650000,1650000,2000000,2000000,3000000]},
+  {nama:'Tadris Matematika',fak:'FTIK',ukt:[0,0,1650000,1650000,2000000,2000000,3000000]},
   // FUAD
-  {nama:'Ilmu Al-Quran dan Tafsir',fak:'FUAD',
-    ukt2025:[400000,1200000,1400000,1600000,1900000,0,0,2400000],
-    ukt2026:[400000,1200000,1400000,1600000,1900000,2300000,2600000,2400000]},
-  {nama:'Komunikasi Penyiaran Islam',fak:'FUAD',
-    ukt2025:[400000,1430000,1750000,2100000,2400000,0,0,2400000],
-    ukt2026:[400000,1430000,1750000,2100000,2400000,2700000,3000000,2400000]},
-  {nama:'Bimbingan Konseling Islam',fak:'FUAD',
-    ukt2025:[400000,1375000,1600000,1800000,2000000,0,0,2400000],
-    ukt2026:[400000,1375000,1600000,1800000,2000000,2300000,2600000,2400000]},
-  {nama:'Sejarah Peradaban Islam',fak:'FUAD',
-    ukt2025:[400000,1000000,1200000,1400000,1500000,0,0,2400000],
-    ukt2026:[400000,1000000,1200000,1400000,1500000,1600000,1700000,2400000]},
+  {nama:'Ilmu Al-Quran & Tafsir',fak:'FUAD',ukt:[1650000,1650000,1650000,1650000,1900000,1900000,2600000]},
+  {nama:'Komunikasi Penyiaran Islam',fak:'FUAD',ukt:[1750000,1750000,1870000,1950000,2400000,2400000,3000000]},
+  {nama:'Bimbingan Konseling Islam',fak:'FUAD',ukt:[1650000,1650000,1650000,1650000,2000000,2000000,2600000]},
+  {nama:'Sejarah Peradaban Islam',fak:'FUAD',ukt:[0,0,1400000,1400000,1500000,1500000,1700000]},
   // FEBI
-  {nama:'Ekonomi Syariah',fak:'FEBI',
-    ukt2025:[400000,1800000,2400000,3000000,3500000,0,0,2400000],
-    ukt2026:[400000,1800000,2400000,3000000,3500000,3750000,4000000,2400000]},
-  {nama:'Perbankan Syariah',fak:'FEBI',
-    ukt2025:[400000,1800000,2400000,3000000,3500000,0,0,2400000],
-    ukt2026:[400000,1800000,2400000,3000000,3500000,3650000,3900000,2400000]},
-  {nama:'Manajemen Zakat dan Wakaf',fak:'FEBI',
-    ukt2025:[400000,1000000,1200000,1400000,1500000,0,0,2400000],
-    ukt2026:[400000,1000000,1200000,1400000,1500000,1600000,1700000,2400000]},
-  {nama:'Manajemen Bisnis Syariah',fak:'FEBI',
-    ukt2025:[400000,1500000,1800000,2200000,2500000,0,0,2400000],
-    ukt2026:[400000,1500000,1800000,2200000,2500000,3250000,3750000,2400000]},
-  {nama:'Akuntansi Syariah',fak:'FEBI',
-    ukt2025:[400000,1500000,1800000,2200000,2500000,0,0,2400000],
-    ukt2026:[400000,1500000,1800000,2200000,2500000,3000000,3500000,2400000]},
+  {nama:'Ekonomi Syariah',fak:'FEBI',ukt:[2100000,2100000,2625000,3000000,3500000,3500000,4000000]},
+  {nama:'Perbankan Syariah',fak:'FEBI',ukt:[2100000,2100000,2625000,2900000,3500000,3500000,3900000]},
+  {nama:'Manajemen Zakat & Wakaf',fak:'FEBI',ukt:[1400000,1400000,1400000,1400000,1500000,1500000,1700000]},
+  {nama:'Manajemen Bisnis Syariah',fak:'FEBI',ukt:[0,0,0,0,2500000,2500000,3750000]},
+  {nama:'Akuntansi Syariah',fak:'FEBI',ukt:[0,0,0,0,2500000,2500000,3500000]},
 ];
 
 // Pascasarjana (S2) — mulai T.A. 2024/2025
@@ -354,6 +306,8 @@ const PASCA_LIST=[
   {nama:'Hukum Keluarga Islam',ukt:5000000},
   {nama:'Pendidikan Agama Islam',ukt:5000000},
 ];
+
+const UKT_YEARS=['2020','2021','2022','2023','2024','2025','2026'];
 
 const SECTIONS=[
   {
@@ -370,9 +324,9 @@ const SECTIONS=[
           ['3','UM-PTKIN (Jalur Mandiri)','Rp/peserta',...ALL_YEARS.map(()=>'...'),''],
           ['4','Seleksi Pascasarjana','Rp/peserta',...ALL_YEARS.map(()=>'...'),''],
         ]},
-      {id:'tf-ukt', title:'UKT per Program Studi — KMA 1375/2025 + Usulan 7 Kelompok 2026', ref:'PMK 126 Ps.2(1)(b)',
+      {id:'tf-ukt', title:'UKT per Program Studi — Kel V Tertinggi (2020–2026)', ref:'KMA 1375/2025 + Usulan 2026',
         unitPengisi:'Biro AUAK (Keuangan + Akademik)', unitIcon:'fa-coins', unitColor:'#dc2626',
-        headers:['No','Program Studi','Kel.','UKT 2025 (Rp)','Usulan 2026 (Rp)','Selisih','Ceiling PMK','Status'],
+        headers:['No','Program Studi','Fakultas',...UKT_YEARS.map((y,i)=>i===6?y+' (Usulan)':y)],
         rows:[]  // dynamically generated
       },
       {id:'tf-pasca', title:'Biaya Pendidikan Pascasarjana (S2) — T.A. 2024/2025', ref:'PMK 126 Ps.2(1)(c)',
@@ -472,43 +426,15 @@ const SECTIONS=[
   },
 ];
 
-// Generate UKT rows dynamically — 7 kelompok + KIP
+// Generate UKT rows — 1 row per prodi, historis Kel V 2020–2026
 function generateUKTRows(){
   const rows=[];
-  let no=1;
-  const kelLabels=['I','II','III','IV','V','VI','VII','KIP'];
-  PRODI_LIST.forEach(p=>{
-    // 2025 has 6 values (Kel I-V + KIP), 2026 has 8 (Kel I-VII + KIP)
-    for(let k=0;k<8;k++){
-      const ukt25=p.ukt2025[k]||0;
-      const ukt26=p.ukt2026[k]||0;
-      const selisih=ukt26-ukt25;
-      const selStr=selisih>0?'+'+selisih.toLocaleString('id-ID'):
-                   selisih<0?selisih.toLocaleString('id-ID'):
-                   (ukt25===0&&ukt26===0)?'':'-';
-      // Ceiling PMK = KMA 1375/2025 (batas regulasi saat ini)
-      const ceiling=ukt25;
-      const ceilStr=ceiling?ceiling.toLocaleString('id-ID'):'';
-      // Auto-status: cek Usulan 2026 vs Ceiling KMA
-      let status='';
-      if(ukt25===0&&ukt26===0) status='—';
-      else if(!ukt26) status='⏳ Belum diusulkan';
-      else if(ukt25===0&&ukt26>0) status='🆕 Kelompok baru';
-      else if(ukt26>ukt25) status='⚠️ Di atas ceiling';
-      else if(ukt26===ukt25) status='✅ Sesuai ceiling';
-      else status='✅ Di bawah ceiling';
-      rows.push([
-        k===0?String(no):'',
-        k===0?p.nama:'',
-        'Kel. '+kelLabels[k],
-        ukt25?ukt25.toLocaleString('id-ID'):(k<5?'0':k===5?'-':''),
-        ukt26?ukt26.toLocaleString('id-ID'):'',
-        selStr,
-        ceilStr,
-        status
-      ]);
-    }
-    no++;
+  PRODI_LIST.forEach((p,i)=>{
+    const row=[String(i+1), p.nama, p.fak];
+    p.ukt.forEach(v=>{
+      row.push(v ? v.toLocaleString('id-ID') : '—');
+    });
+    rows.push(row);
   });
   return rows;
 }
