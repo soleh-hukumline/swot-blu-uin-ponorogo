@@ -592,9 +592,11 @@ function cleanAIContent(raw){
   let s=raw.trim();
   // Strip semua backtick code block markers (di mana saja)
   s=s.replace(/```[a-zA-Z]*/g,'').replace(/```/g,'');
+  // Strip heading h3/h2/h1 pertama jika berisi judul section duplikat
+  s=s.replace(/^<h[1-3][^>]*>(?:narasi[^<]*|data kinerja[^<]*|pengantar[^<]*|kinerja layanan[^<]*|kinerja keuangan[^<]*|kinerja sdm[^<]*|kinerja sarpras[^<]*|kinerja riset[^<]*)<\/h[1-3]>\s*/i,'');
   // Hapus baris pertama jika berupa kalimat pembuka AI (bukan tag HTML)
   const lines=s.split('\n');
-  const skipPrefixes=['saya akan','berikut','di bawah ini','berikut adalah','berikut narasi','tentu','baik,','oke,','ini narasi','narasi:'];
+  const skipPrefixes=['saya akan','berikut','di bawah ini','berikut adalah','berikut narasi','tentu','baik,','oke,','ini narasi','narasi:','narasi pengantar'];
   while(lines.length>0){
     const first=lines[0].trim().toLowerCase();
     if(skipPrefixes.some(p=>first.startsWith(p))||(!first.startsWith('<')&&first.length<120&&!first.includes('.'))) {
@@ -603,7 +605,7 @@ function cleanAIContent(raw){
     } else break;
   }
   // Hapus baris terakhir jika berupa penutup AI
-  const closingPrefixes=['narasi mencakup','semoga','catatan:','note:','ringkasan:'];
+  const closingPrefixes=['narasi mencakup','semoga','catatan:','note:','ringkasan:','kesimpulan singkat'];
   while(lines.length>0){
     const last=lines[lines.length-1].trim().toLowerCase();
     if(closingPrefixes.some(p=>last.startsWith(p))||last==='') lines.pop();
