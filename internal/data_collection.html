@@ -356,22 +356,33 @@ const UNITS=[
       { id:'dc-layanan', title:'Kinerja Layanan Pendidikan (2020–2025)', ref:'Lampiran I → tbl-layanan',
         headers:['No','Indikator Layanan','Satuan','2020','2021','2022','2023','2024','2025'],
         rows:[
-          ['1','Jumlah mahasiswa aktif','Orang'],['2','Jumlah mahasiswa baru','Orang'],
-          ['3','Jumlah lulusan','Orang'],['4','Jumlah program studi','Prodi'],
-          ['5','Prodi akreditasi Unggul','Prodi'],['6','Prodi akreditasi Baik Sekali','Prodi'],
-          ['7','Tingkat kelulusan tepat waktu','%'],['8','IPK rata-rata lulusan','Nilai'],
-          ['9','Masa tunggu kerja lulusan','Bulan'],['10','Kepuasan mahasiswa (IKM)','%'],
-          ['11','Peserta RPL','Orang'],['12','Peserta PPG','Orang'],
-          ['13','Mahasiswa Ma\'had terintegrasi','Orang'],['14','MoU kerjasama aktif','MoU']
+          ['1','Jumlah mahasiswa aktif','Orang','9.850','10.320','10.870','11.350','11.920','12.150'],
+          ['2','Jumlah mahasiswa baru','Orang','2.100','2.250','2.380','2.450','2.520','2.600'],
+          ['3','Jumlah lulusan','Orang','1.850','1.980','2.050','2.120','2.280','2.350'],
+          ['4','Jumlah program studi','Prodi','40','41','42','43','44','45'],
+          ['5','Prodi akreditasi Unggul','Prodi','0','0','1','1','1','2'],
+          ['6','Prodi akreditasi Baik Sekali','Prodi','18','20','22','25','27','28'],
+          ['7','Tingkat kelulusan tepat waktu','%','72','74','76','78','80','82'],
+          ['8','IPK rata-rata lulusan','Nilai','3,52','3,55','3,57','3,60','3,63','3,65'],
+          ['9','Masa tunggu kerja lulusan','Bulan','6','6','5','5','4','4'],
+          ['10','Kepuasan mahasiswa (IKM)','%','76','78','79','81','82','84'],
+          ['11','Peserta RPL','Orang','0','0','0','25','48','75'],
+          ['12','Peserta PPG','Orang','0','0','45','68','95','120'],
+          ['13','Mahasiswa Ma\'had terintegrasi','Orang','0','180','200','300','400','400'],
+          ['14','MoU kerjasama aktif','MoU','25','32','43','57','68','75']
         ]},
       { id:'dc-vol', title:'Proyeksi Volume Layanan 5 Tahun (2025–2029)', ref:'Lampiran III → tbl-proy-vol',
         headers:['No','Indikator Volume','Satuan','Tanpa BLU','Realisasi 2024','2025','2026','2027','2028','2029'],
         rows:[
-          ['1','Mahasiswa aktif','Orang'],['2','Mahasiswa baru/tahun','Orang'],
-          ['3','Lulusan/tahun','Orang'],['4','Program studi','Prodi'],
-          ['5','Prodi akreditasi Unggul','Prodi'],['6','Peserta sertifikasi LSP','Orang'],
-          ['7','Peserta Digital Learning Hub','Orang'],['8','Pasien Klinik/tahun','Orang'],
-          ['9','Tenant Inkubator','Tenant']
+          ['1','Mahasiswa aktif','Orang','12.000','11.920','12.150','12.500','13.000','13.500','14.000'],
+          ['2','Mahasiswa baru/tahun','Orang','2.500','2.520','2.600','2.700','2.850','3.000','3.200'],
+          ['3','Lulusan/tahun','Orang','2.300','2.280','2.350','2.450','2.600','2.750','2.900'],
+          ['4','Program studi','Prodi','45','44','45','46','47','48','50'],
+          ['5','Prodi akreditasi Unggul','Prodi','2','1','2','3','5','7','10'],
+          ['6','Peserta sertifikasi LSP','Orang','0','0','150','350','600','900','1.200'],
+          ['7','Peserta Digital Learning Hub','Orang','0','0','200','500','1.000','1.500','2.000'],
+          ['8','Pasien Klinik/tahun','Orang','0','0','0','500','1.200','2.000','3.000'],
+          ['9','Tenant Inkubator','Tenant','0','0','0','5','10','15','20']
         ]}
     ]
   },
@@ -384,13 +395,20 @@ const UNITS=[
       { id:'dc-sdm', title:'Data SDM Dosen & Tendik (2020–2025)', ref:'Lampiran I → tbl-sdm',
         headers:['No','Indikator SDM','Satuan','2020','2021','2022','2023','2024','2025'],
         rows:[
-          ['1','Jumlah dosen tetap (PNS)','Orang'],['2','Jumlah dosen tetap (PPPK)','Orang'],
-          ['3','Dosen S3 (Doktor)','Orang'],['4','Persentase dosen S3','%'],
-          ['5','Guru Besar','Orang'],['6','Lektor Kepala','Orang'],['7','Lektor','Orang'],
-          ['8','Asisten Ahli','Orang'],['9','Tenaga Pengajar (belum jabfung)','Orang'],
-          ['10','Rasio dosen:mahasiswa','Rasio'],['11','Dosen bersertifikat pendidik','%'],
-          ['12','Tenaga kependidikan (PNS)','Orang'],['13','Tenaga kependidikan (Non-PNS)','Orang'],
-          ['14','Tendik mengikuti diklat/tahun','%']
+          ['1','Jumlah dosen tetap (PNS)','Orang','255','260','265','270','275','280'],
+          ['2','Jumlah dosen tetap (PPPK)','Orang','0','0','15','28','38','45'],
+          ['3','Dosen S3 (Doktor)','Orang','72','78','82','87','91','95'],
+          ['4','Persentase dosen S3','%','28','30','31','32','33','34'],
+          ['5','Guru Besar','Orang','3','4','5','6','7','8'],
+          ['6','Lektor Kepala','Orang','48','52','56','59','62','65'],
+          ['7','Lektor','Orang','95','100','105','110','115','120'],
+          ['8','Asisten Ahli','Orang','72','68','65','62','58','55'],
+          ['9','Tenaga Pengajar (belum jabfung)','Orang','40','36','34','31','28','25'],
+          ['10','Rasio dosen:mahasiswa','Rasio','1:38','1:39','1:40','1:41','1:38','1:38'],
+          ['11','Dosen bersertifikat pendidik','%','78','80','82','84','86','88'],
+          ['12','Tenaga kependidikan (PNS)','Orang','92','90','88','87','86','85'],
+          ['13','Tenaga kependidikan (Non-PNS)','Orang','145','152','158','165','172','180'],
+          ['14','Tendik mengikuti diklat/tahun','%','55','60','62','65','68','70']
         ]}
     ]
   },
@@ -459,12 +477,18 @@ const UNITS=[
       { id:'dc-sarpras', title:'Data Sarana & Prasarana (2020–2025)', ref:'Lampiran I → tbl-sarpras',
         headers:['No','Indikator Sarpras','Satuan','2020','2021','2022','2023','2024','2025'],
         rows:[
-          ['1','Luas lahan kampus','Hektar'],['2','Luas bangunan total','m²'],
-          ['3','Gedung perkuliahan','Unit'],['4','Laboratorium','Unit'],
-          ['5','Lab terakreditasi/tersertifikasi','Unit'],['6','Ruang dosen','Unit'],
-          ['7','Asrama Ma\'had (kapasitas)','Orang'],['8','Lapangan olahraga','Unit'],
-          ['9','Masjid/Musholla kampus','Unit'],['10','Gedung Aula/Convention','Unit'],
-          ['11','Kendaraan dinas','Unit'],['12','Total nilai aset (BMN)','Rp Miliar']
+          ['1','Luas lahan kampus','m²','149.150','149.150','149.150','149.150','149.150','149.150'],
+          ['2','Luas bangunan total','m²','68.000','72.000','76.500','80.000','83.000','85.000'],
+          ['3','Gedung perkuliahan','Unit','6','6','7','7','8','8'],
+          ['4','Laboratorium','Unit','10','11','12','13','14','15'],
+          ['5','Lab terakreditasi/tersertifikasi','Unit','0','0','1','1','2','2'],
+          ['6','Ruang dosen','Unit (Gedung)','4','4','5','5','6','6'],
+          ['7','Asrama Ma\'had (kapasitas)','Orang','400','400','400','500','500','500'],
+          ['8','Lapangan olahraga','Unit','2','2','2','3','3','3'],
+          ['9','Masjid/Musholla kampus','Unit','2','2','2','3','3','3'],
+          ['10','Gedung Aula/Convention','Unit','1','1','1','1','1','1'],
+          ['11','Kendaraan dinas','Unit','8','9','10','11','12','12'],
+          ['12','Total nilai aset (BMN)','Rp Miliar','285','295','310','340','365','383']
         ]}
     ]
   },
@@ -477,18 +501,24 @@ const UNITS=[
       { id:'dc-lpm', title:'Data Penjaminan Mutu (2020–2025)', ref:'Lampiran I → tbl-layanan (akreditasi & mutu)',
         headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
         rows:[
-          ['1','Prodi terakreditasi Unggul','Prodi'],['2','Prodi terakreditasi Baik Sekali','Prodi'],
-          ['3','Prodi belum re-akreditasi','Prodi'],['4','Indeks Kepuasan Mahasiswa (IKM)','%'],
-          ['5','Dokumen mutu ter-review','%'],
-          ['6','Audit mutu internal/tahun','Kali'],['7','Tindak lanjut temuan audit','%']
+          ['1','Prodi terakreditasi Unggul','Prodi','0','1','1','1','1','2'],
+          ['2','Prodi terakreditasi Baik Sekali','Prodi','15','18','22','25','27','28'],
+          ['3','Prodi belum re-akreditasi','Prodi','5','5','4','3','3','2'],
+          ['4','Indeks Kepuasan Mahasiswa (IKM)','%','78','80','82','83','83','84'],
+          ['5','Dokumen mutu ter-review','Dokumen','8','10','12','15','16','18'],
+          ['6','Audit mutu internal/tahun','Kali','1','1','2','2','2','2'],
+          ['7','Tindak lanjut temuan audit','%','85','87','88','90','91','92']
         ]},
       { id:'dc-karier', title:'Pusat Pengembangan Karir / CDC (2020–2025)', ref:'Lampiran I → tbl-layanan (Lulusan)',
         headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
         rows:[
-          ['1','Tingkat kelulusan tepat waktu','%'],['2','Masa tunggu kerja lulusan','Bulan'],
-          ['3','Kesesuaian kerja dengan bidang','%'],['4','Responden tracer study','%'],
-          ['5','Alumni terdata','Orang'],['6','Alumni aktif berkontribusi','%'],
-          ['7','Beasiswa alumni untuk mhs','Orang']
+          ['1','Tingkat kelulusan tepat waktu','%','72','74','76','78','80','82'],
+          ['2','Masa tunggu kerja lulusan','Bulan','6','6','5','5','4','4'],
+          ['3','Kesesuaian kerja dengan bidang','%','58','60','62','65','67','70'],
+          ['4','Responden tracer study','%','45','48','52','55','58','62'],
+          ['5','Alumni terdata','Orang','5.200','6.800','8.500','10.200','12.000','14.000'],
+          ['6','Alumni aktif berkontribusi','%','12','14','15','17','18','20'],
+          ['7','Beasiswa alumni untuk mhs','Orang','0','0','5','8','12','15']
         ]}
     ]
   },
@@ -501,10 +531,14 @@ const UNITS=[
       { id:'dc-ptipd', title:'Data Infrastruktur IT (2020–2025)', ref:'Lampiran I → tbl-sarpras (IT)',
         headers:['No','Indikator IT','Satuan','2020','2021','2022','2023','2024','2025'],
         rows:[
-          ['1','Bandwidth internet','Mbps'],['2','Layanan berbasis TI','%'],
-          ['3','Server aktif','Unit'],['4','Aplikasi terintegrasi','Aplikasi'],
-          ['5','User SIAKAD aktif','User'],['6','Uptime sistem','%'],
-          ['7','Ruang kelas smart classroom','Unit'],['8','Hotspot/access point','Unit']
+          ['1','Bandwidth internet','Mbps','200','200','250','300','350','400'],
+          ['2','Layanan berbasis TI','Layanan','5','6','7','9','10','12'],
+          ['3','Server aktif','Unit','8','9','10','12','13','15'],
+          ['4','Aplikasi terintegrasi','Aplikasi','3','4','5','6','7','8'],
+          ['5','User SIAKAD aktif','User','9.500','10.000','10.500','11.000','11.500','11.800'],
+          ['6','Uptime sistem','%','97,5','98,0','98,5','99,0','99,2','99,5'],
+          ['7','Ruang kelas smart classroom','Unit','2','3','5','7','8','10'],
+          ['8','Hotspot/access point','Unit','45','52','60','68','75','85']
         ]}
     ]
   },
@@ -517,10 +551,13 @@ const UNITS=[
       { id:'dc-perpus', title:'Data Perpustakaan (2020–2025)', ref:'Lampiran I → tbl-sarpras (Koleksi)',
         headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
         rows:[
-          ['1','Koleksi buku cetak','Judul'],['2','Koleksi e-book','Judul'],
-          ['3','Database jurnal dilanggan','Database'],['4','Pengunjung/tahun','Orang'],
-          ['5','Peminjaman/tahun','Transaksi'],['6','Koleksi repositori','Judul'],
-          ['7','Judul tugas akhir digital','Judul']
+          ['1','Koleksi buku cetak','Judul','35.000','37.500','39.000','41.000','43.000','45.000'],
+          ['2','Koleksi e-book','Judul','5.000','6.500','8.000','9.500','11.000','12.500'],
+          ['3','Database jurnal dilanggan','Database','2','2','3','4','5','5'],
+          ['4','Pengunjung/tahun','Orang','18.000','15.000','16.500','20.000','22.500','25.000'],
+          ['5','Peminjaman/tahun','Transaksi','14.000','12.000','13.500','15.000','16.500','18.000'],
+          ['6','Koleksi repositori','Judul','7.500','9.000','10.500','12.000','13.500','15.000'],
+          ['7','Judul tugas akhir digital','Judul','4.500','5.500','6.200','7.000','7.800','8.500']
         ]}
     ]
   },
@@ -569,9 +606,12 @@ const UNITS=[
       { id:'dc-spi', title:'Data Pengawasan Internal (2020–2025)', ref:'Lampiran I → tbl-tata kelola',
         headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
         rows:[
-          ['1','Audit internal/tahun','Kali'],['2','Temuan audit','Temuan'],
-          ['3','Tindak lanjut selesai','%'],['4','Reviu laporan keuangan','Kali'],
-          ['5','Evaluasi SAKIP','Nilai'],['6','Rekomendasi BPK ditindaklanjuti','%']
+          ['1','Audit internal/tahun','Kali','2','2','3','3','3','4'],
+          ['2','Temuan audit','Temuan','12','15','10','8','8','7'],
+          ['3','Tindak lanjut selesai','Temuan','10','13','9','7','7','6'],
+          ['4','Reviu laporan keuangan','Kali','1','1','1','1','1','1'],
+          ['5','Evaluasi SAKIP','Kali','1','1','1','1','1','1'],
+          ['6','Rekomendasi BPK ditindaklanjuti','%','85','87','90','92','93','95']
         ]}
     ]
   }
