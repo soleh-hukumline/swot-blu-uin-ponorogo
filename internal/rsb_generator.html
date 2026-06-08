@@ -978,7 +978,7 @@ Tugasmu: buat isian Matriks Keterkaitan Lampiran IV RSB BLU yang komprehensif da
 Output HARUS berupa JSON array yang valid — array of arrays, 7 elemen per baris:
 ["visi","misi","tujuan","sasaran","kebijakan","program","kegiatan","indikator_target"]
 Elemen ke-8 berisi kode IKSP/IKSK/IKT + target kuantitatif (mis: "IKSK.2132.3.2: Prodi Unggul 37,9%→48,2% (2029)").
-Jangan tambahkan teks apapun di luar JSON array. Mulai langsung dengan [.`;
+SANGAT PENTING: Output HANYA berupa JSON array. TIDAK BOLEH ada teks, penjelasan, atau markdown di luar JSON. TIDAK BOLEH ada ```json``` atau kode block. Mulai LANGSUNG dengan karakter [ dan akhiri dengan ].`;
 
   const USR=`Buat rekomendasi LENGKAP 16-20 baris Matriks Keterkaitan RSB BLU UIN Kiai Ageng Muhammad Besari Ponorogo 2025-2029 berdasarkan VISI-MISI RESMI berikut.
 
@@ -1059,11 +1059,23 @@ Output hanya JSON array:`;
 
     if(statusEl) statusEl.textContent='📋 Memproses '+raw.length+' karakter respons AI ke tabel...';
 
-    // Parse JSON — coba berbagai pola
+    // Parse JSON — strip markdown dulu, coba berbagai pola
     let rows=null;
-    const m=raw.match(/\[\s*\[[\s\S]*\]\s*\]/);
-    if(m){try{rows=JSON.parse(m[0]);}catch(e){}}
-    if(!rows||!rows.length) throw new Error('Respons AI tidak mengandung JSON array valid. Coba lagi atau ganti model.');
+    let cleaned=raw
+      .replace(/```json\s*/gi,'').replace(/```\s*/g,'')  // strip code fences
+      .replace(/^[^\[]*/, '').replace(/[^\]]*$/, '');    // trim non-JSON prefix/suffix
+    // Pola 1: [[...]] langsung
+    try{const m=raw.match(/\[\s*\[[\s\S]*?\]\s*\]/s);if(m)rows=JSON.parse(m[0]);}catch(e){}
+    // Pola 2: dari cleaned
+    if(!rows||!rows.length){try{rows=JSON.parse(cleaned);}catch(e){}}
+    // Pola 3: greedy full match
+    if(!rows||!rows.length){try{const m2=raw.match(/(\[\s*\[.*\]\s*\])/s);if(m2)rows=JSON.parse(m2[1]);}catch(e){}}
+    // Pola 4: cari dari [ pertama sampai ] terakhir
+    if(!rows||!rows.length){
+      const s=raw.indexOf('[['),e=raw.lastIndexOf(']]');
+      if(s>=0&&e>s){try{rows=JSON.parse(raw.substring(s,e+2));}catch(e2){}}
+    }
+    if(!rows||!rows.length) throw new Error('Respons AI tidak mengandung JSON array valid ('+raw.length+' chars). Raw: '+raw.substring(0,200)+'...');
 
     // Isi tabel tbl-cascading
     const tbl=document.getElementById('tbl-cascading');
@@ -1072,11 +1084,11 @@ Output hanya JSON array:`;
     tbody.innerHTML='';
     rows.forEach(row=>{
       const tr=document.createElement('tr');
-      for(let i=0;i<7;i++){
+      for(let i=0;i<8;i++){
         const td=document.createElement('td');
         const inp=document.createElement('input');
         inp.type='text';
-        inp.className='cell-input'+(i<3?' cell-label':' cell-data cell-empty');
+        inp.className='cell-input'+(i<3?' cell-label':i===7?' cell-indicator':' cell-data cell-empty');
         inp.value=(row[i]||'').toString().trim();
         inp.oninput=function(){markDirty();};
         td.appendChild(inp);
