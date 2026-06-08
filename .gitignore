@@ -28,3 +28,23 @@ swot_makro_contoh.md
 # OS
 .DS_Store
 Thumbs.db
+
+# File Excel/data sumber (jangan push ke repo — besar & sensitif)
+*.xlsx
+*.xls
+*.csv
+REKAP*
+UKT*
+DAFTAR*
+Filled_Data*
+New_edit*
+Permohonan*
+Katalog*
+"Data Ma'had*"
+
+# Dokumen internal/draft
+ground_truth_*.md
+implementation_plan*.md
+rsb_dokumen.html
+rsb_generator.html
+rsb_laporan.html
