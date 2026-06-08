@@ -441,6 +441,7 @@ table.editable tr:hover .row-del{opacity:1;}
     <a href="data_collection.html"><i class='fa-solid fa-clipboard-list'></i> Data Unit</a>
     <a href="tarif_blu.html"><i class='fa-solid fa-file-invoice-dollar'></i> Tarif BLU</a>
     <button onclick="toggleTheme()"><i class='fa-solid fa-sun' id='theme-icon'></i></button>
+    <button onclick="backupLokal()" title="Backup data ke folder lokal" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;padding:0.35rem 0.75rem;border-radius:8px;cursor:pointer;font-size:0.8rem;font-weight:600;display:flex;align-items:center;gap:0.4rem;"><i class='fa-solid fa-box-archive'></i> Backup</button>
   </div>
 </header>
 
@@ -2392,6 +2393,40 @@ function saveAll(){
     document.getElementById('saveFab').classList.remove('show');
     showToast('<i class="fa-solid fa-circle-check"></i> Dokumen tersimpan!');
   }catch(e){showToast('<i class="fa-solid fa-circle-xmark"></i> Gagal: '+e.message);}
+}
+
+async function backupLokal(){
+  // Simpan ke localStorage dulu
+  saveAll();
+  const raw=localStorage.getItem(SK)||'{}';
+  const ts=new Date();
+  const stamp=ts.getFullYear()+'-'+(String(ts.getMonth()+1).padStart(2,'0'))+'-'+(String(ts.getDate()).padStart(2,'0'))+'_'+(String(ts.getHours()).padStart(2,'0'))+(String(ts.getMinutes()).padStart(2,'0'));
+  const filename='rsb_backup_'+stamp+'.json';
+  const blob=new Blob([raw],{type:'application/json'});
+  // Coba File System Access API (Chrome/Edge) untuk simpan ke folder pilihan
+  if(window.showSaveFilePicker){
+    try{
+      const opts={
+        suggestedName:filename,
+        types:[{description:'JSON Backup',accept:{'application/json':['.json']}}],
+        startIn:'documents'
+      };
+      const fh=await window.showSaveFilePicker(opts);
+      const w=await fh.createWritable();
+      await w.write(blob);
+      await w.close();
+      showToast('💾 Backup tersimpan: '+fh.name);
+      return;
+    }catch(e){
+      if(e.name==='AbortError')return; // User cancel
+    }
+  }
+  // Fallback: download biasa
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=filename;
+  a.click();
+  showToast('💾 Backup didownload: '+filename);
 }
 
 function loadData(){
