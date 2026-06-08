@@ -442,6 +442,7 @@ table.editable tr:hover .row-del{opacity:1;}
     <a href="tarif_blu.html"><i class='fa-solid fa-file-invoice-dollar'></i> Tarif BLU</a>
     <button onclick="toggleTheme()"><i class='fa-solid fa-sun' id='theme-icon'></i></button>
     <button onclick="backupLokal()" title="Backup data ke folder lokal" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;padding:0.35rem 0.75rem;border-radius:8px;cursor:pointer;font-size:0.8rem;font-weight:600;display:flex;align-items:center;gap:0.4rem;"><i class='fa-solid fa-box-archive'></i> Backup</button>
+    <button onclick="loadBackup()" title="Load/Restore dari file backup JSON" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;padding:0.35rem 0.75rem;border-radius:8px;cursor:pointer;font-size:0.8rem;font-weight:600;display:flex;align-items:center;gap:0.4rem;"><i class='fa-solid fa-folder-open'></i> Load Backup</button>
   </div>
 </header>
 
@@ -2615,6 +2616,57 @@ async function backupLokal(){
   a.download=filename;
   a.click();
   showToast('💾 Backup didownload: '+filename);
+}
+
+async function loadBackup(){
+  // Coba File System Access API dulu (Chrome/Edge) — bisa buka langsung dari folder
+  if(window.showOpenFilePicker){
+    try{
+      const [fh]=await window.showOpenFilePicker({
+        types:[{description:'RSB Backup JSON',accept:{'application/json':['.json']}}],
+        startIn:'documents',
+        multiple:false
+      });
+      const file=await fh.getFile();
+      const txt=await file.text();
+      // Validasi JSON
+      JSON.parse(txt); // akan throw jika invalid
+      if(!confirm('Load backup dari "'+file.name+'"?\nSemua data saat ini akan ditimpa. Lanjutkan?'))return;
+      localStorage.setItem(SK,txt);
+      showToast('✅ Backup berhasil di-load: '+file.name);
+      setTimeout(()=>location.reload(),800);
+      return;
+    }catch(e){
+      if(e.name==='AbortError')return; // User cancel
+      // Fall through ke file input biasa
+    }
+  }
+  // Fallback: file input biasa (Safari/Firefox)
+  const inp=document.createElement('input');
+  inp.type='file';
+  inp.accept='.json,application/json';
+  inp.style.display='none';
+  document.body.appendChild(inp);
+  inp.onchange=function(){
+    const file=inp.files[0];
+    if(!file){document.body.removeChild(inp);return;}
+    const reader=new FileReader();
+    reader.onload=function(ev){
+      try{
+        const txt=ev.target.result;
+        JSON.parse(txt); // validasi
+        if(!confirm('Load backup dari "'+file.name+'"?\nSemua data saat ini akan ditimpa. Lanjutkan?'))return;
+        localStorage.setItem(SK,txt);
+        showToast('✅ Backup berhasil di-load: '+file.name);
+        setTimeout(()=>location.reload(),800);
+      }catch(e2){
+        showToast('❌ File JSON tidak valid: '+e2.message);
+      }
+      document.body.removeChild(inp);
+    };
+    reader.readAsText(file);
+  };
+  inp.click();
 }
 
 function loadData(){
