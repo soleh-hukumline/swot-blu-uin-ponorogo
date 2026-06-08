@@ -517,8 +517,10 @@ STANDAR PENULISAN:
 - Analisis harus tajam dan strategis, bukan sekadar deskriptif
 
 FORMAT OUTPUT:
-- Output dalam format HTML murni (gunakan tag: h3, p, ul, ol, li, b, i, table, tr, td, th)
-- JANGAN gunakan markdown. JANGAN bungkus dengan \`\`\`html\`\`\`
+- Output HANYA berupa HTML murni (tag: h3, p, ul, ol, li, b, i)
+- KERAS DILARANG: markdown, backtick (\`\`\`), kode block, atau wrapper apapun
+- KERAS DILARANG: kalimat pembuka seperti "Berikut narasi...", "Saya akan...", "Di bawah ini..."
+- Langsung mulai dengan tag HTML pertama (<h3> atau <p>) tanpa pendahuluan
 - Jangan tulis judul section (sudah ada di header card)
 - Paragraf min 3 kalimat, analitis dan berisi`;
 
@@ -584,15 +586,30 @@ async function listAvailableModels(){
   }catch(e){st.className='ai-status err';st.textContent='Network error: '+e.message;}
 }
 
-// Bersihkan response AI dari markdown wrapper (```html...```, ```...```)
+// Bersihkan response AI dari markdown wrapper dan kalimat pembuka
 function cleanAIContent(raw){
   if(!raw)return raw;
-  // Strip opening ```html, ```markdown, ``` etc.
   let s=raw.trim();
-  s=s.replace(/^```[a-zA-Z]*\n?/,'');
-  // Strip closing ```
-  s=s.replace(/\n?```\s*$/,'');
-  return s.trim();
+  // Strip semua backtick code block markers (di mana saja)
+  s=s.replace(/```[a-zA-Z]*/g,'').replace(/```/g,'');
+  // Hapus baris pertama jika berupa kalimat pembuka AI (bukan tag HTML)
+  const lines=s.split('\n');
+  const skipPrefixes=['saya akan','berikut','di bawah ini','berikut adalah','berikut narasi','tentu','baik,','oke,','ini narasi','narasi:'];
+  while(lines.length>0){
+    const first=lines[0].trim().toLowerCase();
+    if(skipPrefixes.some(p=>first.startsWith(p))||(!first.startsWith('<')&&first.length<120&&!first.includes('.'))) {
+      if(first.length===0||skipPrefixes.some(p=>first.startsWith(p))) lines.shift();
+      else break;
+    } else break;
+  }
+  // Hapus baris terakhir jika berupa penutup AI
+  const closingPrefixes=['narasi mencakup','semoga','catatan:','note:','ringkasan:'];
+  while(lines.length>0){
+    const last=lines[lines.length-1].trim().toLowerCase();
+    if(closingPrefixes.some(p=>last.startsWith(p))||last==='') lines.pop();
+    else break;
+  }
+  return lines.join('\n').trim();
 }
 
 // Core streaming API call
