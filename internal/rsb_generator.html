@@ -789,13 +789,8 @@ async function aiGenerate(compId){
     } else {
       userPrompt=sectionCtx+`\nPlaceholder: ${comp.placeholder||''}\n${relatedData?'\nData pendukung:\n'+relatedData:''}\n${existingContent?'\nKonten saat ini (bisa di-improve):\n'+existingContent.substring(0,500):''}\n\nTugas: Tulis konten lengkap untuk section "${comp.title}" dalam dokumen RSB BLU. ${comp.placeholder||''}. Format HTML.`;
     }
-  } else if(comp.type==='swot'){
-    model=cfg.modelSync||'gpt-5-nano';
-    userPrompt=sectionCtx+`\nTugas: Generate analisis SWOT untuk BLU UIN Ponorogo. Format sebagai 4 list terpisah (Strengths, Weaknesses, Opportunities, Threats), masing-masing 5-8 item. Format HTML.`;
-  }
-
-  } else if(comp.type==='swot+rte'||comp.type==='swot'){
-    // Analisis SWOT — baca data SWOT + IFAS/EFAS
+  } else if(comp.type==='swot+rte'){
+    // Analisis SWOT+RTE — gunakan data SWOT dari komponen + IFAS/EFAS
     const swotData=comp.swot||{};
     const strengths=(swotData.strengths||[]).slice(0,8).map((s,i)=>'S'+(i+1)+'. '+s).join('\n');
     const weaknesses=(swotData.weaknesses||[]).slice(0,8).map((s,i)=>'W'+(i+1)+'. '+s).join('\n');
@@ -803,12 +798,16 @@ async function aiGenerate(compId){
     const threats=(swotData.threats||[]).slice(0,6).map((s,i)=>'T'+(i+1)+'. '+s).join('\n');
     const ifeVal=typeof ife!=='undefined'?ife.toFixed(2):'2.80';
     const efeVal=typeof efe!=='undefined'?efe.toFixed(2):'2.75';
-    userPrompt=sectionCtx+`\nKonteks SWOT UIN Kiai Ageng Muhammad Besari Ponorogo (baru alih status jadi UIN Mei 2025, mengajukan BLU):\n\nSTRENGTHS:\n${strengths}\n\nWEAKNESSES:\n${weaknesses}\n\nOPPORTUNITIES:\n${opportunities}\n\nTHREATS:\n${threats}\n\nSkor IFE: ${ifeVal} | Skor EFE: ${efeVal}\n\nTugas: Tulis narasi analisis SWOT yang komprehensif mencakup: (1) metodologi analisis, (2) hasil IFAS/EFAS dengan skor, (3) posisi strategis di kuadran mana, (4) implikasi 4 strategi (SO/WO/ST/WT) dengan rekomendasi konkret untuk RSB BLU 2025-2029. Format HTML dengan h3, ul, ol. Min 4 paragraf.`;
+    userPrompt=sectionCtx+`\nKonteks SWOT UIN Kiai Ageng Muhammad Besari Ponorogo (alih status UIN Mei 2025, mengajukan BLU):\n\nSTRENGTHS:\n${strengths}\n\nWEAKNESSES:\n${weaknesses}\n\nOPPORTUNITIES:\n${opportunities}\n\nTHREATS:\n${threats}\n\nSkor IFE: ${ifeVal} | Skor EFE: ${efeVal}\n\nTugas: Tulis narasi analisis SWOT komprehensif: (1) metodologi, (2) hasil IFAS/EFAS, (3) posisi strategis kuadran, (4) implikasi 4 strategi SO/WO/ST/WT dengan rekomendasi konkret RSB BLU 2025-2029. Format HTML h3+ul+ol.`;
   } else if(comp.type==='pestle+rte'){
-    // Analisis PESTLE — baca RSB_PESTLE_DIMS
-    const pestleDims=typeof RSB_PESTLE_DIMS!=='undefined'?RSB_PESTLE_DIMS.map(d=>d.label+' (IFE:'+d.ife+', EFE:'+d.efe+')').join(' | '):'Political, Economic, Social, Technological, Legal, Environmental';
+    // Analisis PESTLE — gunakan RSB_PESTLE_DIMS
+    const pestleDims=typeof RSB_PESTLE_DIMS!=='undefined'?RSB_PESTLE_DIMS.map(d=>d.label+' (IFE:'+d.ife+', EFE:'+d.efe+')').join(' | '):'P,E,S,T,L,E';
     const kritis=typeof RSB_PESTLE_DIMS!=='undefined'?RSB_PESTLE_DIMS.filter(d=>d.ife<2.5||d.efe<2.5).map(d=>d.label).join(', ')||'Tidak ada':'—';
-    userPrompt=sectionCtx+`\nKonteks: BLU UIN Kiai Ageng Muhammad Besari Ponorogo 2025-2029\n\nDimensi PESTLE & skor: ${pestleDims}\nDimensi kritis (skor rendah): ${kritis}\n\nTugas: Tulis narasi analisis PESTLE yang mendalam mencakup 6 dimensi: Political, Economic, Social, Technological, Legal, Environmental. Setiap dimensi: (1) kondisi saat ini yang relevan bagi PTKIN/BLU, (2) peluang yang muncul, (3) ancaman yang perlu diantisipasi, (4) implikasi untuk strategi RSB BLU UIN Ponorogo 2025-2029. Format HTML dengan h3 per dimensi, ul untuk poin-poin. Gunakan data riil Indonesia 2024-2025.`;
+    userPrompt=sectionCtx+`\nKonteks: BLU UIN Kiai Ageng Muhammad Besari Ponorogo 2025-2029\nDimensi PESTLE: ${pestleDims}\nDimensi kritis: ${kritis}\n\nTugas: Tulis narasi analisis PESTLE mendalam 6 dimensi (Political, Economic, Social, Technological, Legal, Environmental). Per dimensi: kondisi saat ini, peluang, ancaman, implikasi untuk RSB BLU. Format HTML h3 per dimensi + ul. Data riil Indonesia 2024-2025.`;
+  } else if(comp.type==='swot'){
+    model=cfg.modelSync||'gpt-5-nano';
+    userPrompt=sectionCtx+`\nTugas: Generate analisis SWOT BLU UIN Ponorogo. 4 list (S/W/O/T), 5-8 item. Format HTML.`;
+  }
 
   if(!userPrompt){
     if(compId==='l4a'){await aiGenerateMatriks();return;}
