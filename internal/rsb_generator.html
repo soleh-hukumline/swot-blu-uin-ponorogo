@@ -2837,11 +2837,9 @@ function _doImportDC(exp){
           const dcYear=dcHdrs[di+3];
           const genColIdx=genHdrs.findIndex(h=>h===dcYear);
           if(genColIdx>=0&&mCells[genColIdx]){
-            const curVal=getCellValue(mCells[genColIdx]);
-            if(!curVal||curVal==='...'||curVal==='\u2014'){
-              setCellValue(mCells[genColIdx],val);
-              imported++;
-            }
+            // Selalu overwrite dari Data Unit
+            setCellValue(mCells[genColIdx],val);
+            imported++;
           }
         });
       }
