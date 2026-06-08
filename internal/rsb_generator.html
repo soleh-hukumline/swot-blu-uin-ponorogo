@@ -1781,9 +1781,13 @@ function resetTable(tblId){
   let defaults=null;
   try{ defaults=JSON.parse(wrap.dataset.defaults||'null'); }catch(e){}
   if(!defaults||!defaults.length){ alert('Data default tidak tersedia untuk tabel ini.'); return; }
-  const colCount=tbl.querySelectorAll('thead th').length-1;
+  // Use LAST thead row for colCount (handles dual-row headers correctly)
+  const theadRows=tbl.querySelectorAll('thead tr');
+  const lastTheadRow=theadRows[theadRows.length-1];
+  const colCount=lastTheadRow.querySelectorAll('th').length-1;
   const labelI=new Set();
-  tbl.querySelectorAll('thead th').forEach((th,i)=>{
+  // Detect label columns from FIRST thead row only
+  tbl.querySelectorAll('thead tr:first-child th').forEach((th,i)=>{
     const hl=(th.textContent||'').toLowerCase();
     if(['no','indikator','uraian','satuan','jenis','tujuan','sasaran','kebijakan','program','kegiatan','visi','misi','output','pelaksana','keterangan','sumber'].some(k=>hl.includes(k))||i===0) labelI.add(i);
   });
@@ -2354,7 +2358,13 @@ function loadData(){
         if(c.table&&cd.tableHTML){
           const tbl=document.getElementById(c.table.id);
           if(tbl){
-            if(cd.theadHTML)tbl.querySelector('thead').innerHTML=cd.theadHTML;
+            if(cd.theadHTML){
+              // Validate saved thead has same col count as current (avoid stale structure overwrite)
+              const tmpDiv=document.createElement('div');tmpDiv.innerHTML=cd.theadHTML;
+              const savedCols=(tmpDiv.querySelector('tr:last-child')||tmpDiv).querySelectorAll('th').length;
+              const liveCols=(tbl.querySelector('thead tr:last-child')||tbl.querySelector('thead tr')).querySelectorAll('th').length;
+              if(savedCols===liveCols) tbl.querySelector('thead').innerHTML=cd.theadHTML;
+            }
             tbl.querySelector('tbody').innerHTML=cd.tableHTML;
           }
         }
