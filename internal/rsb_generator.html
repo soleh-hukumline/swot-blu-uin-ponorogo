@@ -208,8 +208,10 @@ table.editable tr:hover .row-del{opacity:1;}
 .cell-empty:focus{outline:2px solid #1a73e8;outline-offset:-2px;background:#fff;}
 .cell-empty::placeholder{color:#d4a017;}
 .tbl-group-row td{background:#e8f0fe !important;font-weight:700;font-size:0.65rem;letter-spacing:0.5px;
-  color:#1a73e8;border:1px solid #c2d5f0;padding:0.4rem 0.6rem;}
+  color:#1e40af;border-color:rgba(59,130,246,0.2);}
 .tbl-group-row .cell-input{font-weight:700;color:#1a73e8;background:transparent;}
+.cell-continuation input.cell-label{color:#94a3b8 !important;font-style:italic;font-size:0.78rem;}
+[data-theme="dark"] .cell-continuation input.cell-label{color:#64748b !important;}
 .tbl-section-header{font-weight:700;color:var(--accent);}
 .cell-ditto{color:#c4c9d0 !important;font-style:italic;}
 .cell-ditto::placeholder{color:#dadce0;}
@@ -1737,7 +1739,7 @@ function renderTable(t,dd){
       if(isHeader) return `<td class="tbl-section-header" colspan="1">${c}</td>`;
       const isLabel=labelCols.has(ci);
       if(isLabel){
-        return `<td><input type="text" class="cell-input cell-label" value="${c.replace(/"/g,'&quot;')}" oninput="markDirty()" placeholder="${ci===0?'#':'Isi...'}"/></td>`;
+        return `<td class="${c===''&&ci>0?'cell-continuation':''}"><input type="text" class="cell-input cell-label" value="${c.replace(/"/g,'&quot;')}" oninput="markDirty()" placeholder="${ci===0?'#':c===''?'↑ (lanjutan)':'Isi...'}"/></td>`;
       }
       const isEmpty=!c||c==='...'||c==='—';
       return `<td><input type="text" class="cell-input cell-data${isEmpty?' cell-empty':''}" value="${c==='...'?'':c}" oninput="cellInput(this)" placeholder="..." data-orig="${c}"/></td>`;
@@ -1788,7 +1790,7 @@ function resetTable(tblId){
     return '<tr>'+r.map((c,ci)=>{
       const isEmpty=!c||c==='...'||c==='\u2014';
       const isLbl=labelI.has(ci);
-      if(isLbl) return '<td><input type="text" class="cell-input cell-label" value="'+c.replace(/"/g,'&quot;')+'" oninput="markDirty()" placeholder="'+(ci===0?'#':'Isi...')+'"/></td>';
+      if(isLbl) return '<td class="'+(c===''&&ci>0?'cell-continuation':'')+'"><input type="text" class="cell-input cell-label" value="'+c.replace(/"/g,'&quot;')+'" oninput="markDirty()" placeholder="'+(ci===0?'#':c===''?'↑ (lanjutan)':'Isi...')+'"/></td>';
       return '<td><input type="text" class="cell-input cell-data'+(isEmpty?' cell-empty':'')+(c==='...'?' cell-empty':'')+'" value="'+(c==='...'?'':c)+'" oninput="cellInput(this)" placeholder="..." data-orig="'+c+'"/></td>';
     }).join('')+'<td><button class="row-del" onclick="delRow(this)" title="Hapus">\u2715</button></td></tr>';
   }).join('');
