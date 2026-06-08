@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laporan RSB — Dokumen Lengkap Rencana Strategi Bisnis BLU UIN Ponorogo</title>
+<meta name="description" content="Dokumen lengkap Rencana Strategi Bisnis (RSB) BLU UIN Ponorogo — Format Resmi Penilaian BLU">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --bg:#0f172a;--surface:#1e293b;--card:rgba(30,41,59,0.95);
+  --text:#f8fafc;--muted:#94a3b8;--accent:#3b82f6;
+  --border:rgba(255,255,255,0.08);--green:#22c55e;--amber:#f59e0b;
+  --red:#ef4444;--purple:#a78bfa;--cyan:#06b6d4;--teal:#14b8a6;
+  --editor-bg:rgba(15,23,42,0.5);--editor-focus:rgba(59,130,246,0.15);
+  --sub-bg:rgba(15,23,42,0.4);
+}
+[data-theme="light"]{
+  --bg:#f1f5f9;--surface:#fff;--card:rgba(255,255,255,0.97);
+  --text:#0f172a;--muted:#64748b;--border:rgba(0,0,0,0.09);
+  --green:#16a34a;--amber:#d97706;--red:#dc2626;--purple:#7c3aed;
+  --cyan:#0891b2;--teal:#0d9488;--accent:#2563eb;
+  --editor-bg:rgba(241,245,249,0.7);--editor-focus:rgba(37,99,235,0.08);
+  --sub-bg:rgba(241,245,249,0.8);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7;}
+
+/* HEADER */
+header{display:flex;justify-content:space-between;align-items:center;
+  padding:1rem 2.5rem;background:var(--card);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+header h1{font-size:1.05rem;font-weight:700;}
+header h1 span{color:var(--accent);}
+.nav-links{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.8rem;
+  padding:0.3rem 0.7rem;border-radius:7px;border:1px solid var(--border);transition:all 0.2s;}
+.nav-links a:hover,.nav-links a.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.theme-btn{padding:0.3rem 0.8rem;border-radius:7px;border:1px solid var(--border);
+  background:transparent;color:var(--muted);cursor:pointer;font-size:0.8rem;
+  font-family:'Inter',sans-serif;transition:all 0.2s;}
+.theme-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#060d1a 0%,#0a1f3a 50%,#060d1a 100%);
+  padding:2.5rem 2.5rem 2rem;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 35% 30%,rgba(59,130,246,0.12) 0%,transparent 55%),
+             radial-gradient(ellipse at 65% 70%,rgba(167,139,250,0.08) 0%,transparent 55%);}
+.hero::after{content:'RSB BLU';position:absolute;font-size:9rem;font-weight:900;
+  color:rgba(255,255,255,0.012);bottom:-2.5rem;right:3%;font-family:'Merriweather',serif;pointer-events:none;white-space:nowrap;}
+.hero-label{font-size:0.7rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem;position:relative;}
+.hero h2{font-family:'Merriweather',serif;font-size:clamp(1.2rem,2.4vw,1.8rem);font-weight:700;color:#f8fafc;margin-bottom:0.5rem;position:relative;line-height:1.3;}
+.hero-sub{font-size:0.82rem;color:#94a3b8;max-width:720px;margin:0 auto 1rem;position:relative;}
+.hero-actions{display:flex;justify-content:center;gap:0.6rem;flex-wrap:wrap;position:relative;margin-top:1rem;}
+.hero-btn{padding:0.45rem 1.1rem;border-radius:10px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.25s;border:none;display:inline-flex;align-items:center;gap:0.4rem;}
+.hero-btn.primary{background:linear-gradient(135deg,#3b82f6,#06b6d4);color:#fff;box-shadow:0 4px 18px rgba(59,130,246,0.3);}
+.hero-btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(59,130,246,0.5);}
+.hero-btn.secondary{background:rgba(255,255,255,0.06);color:#94a3b8;border:1px solid rgba(255,255,255,0.12);}
+.hero-btn.secondary:hover{background:rgba(255,255,255,0.12);color:#f8fafc;}
+
+/* STATUS BAR */
+.status-bar{display:flex;justify-content:center;gap:2rem;padding:0.6rem 2rem;background:var(--card);border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.status-item{display:flex;align-items:center;gap:0.4rem;font-size:0.73rem;color:var(--muted);}
+.status-dot{width:8px;height:8px;border-radius:50%;animation:pulse-dot 2s ease-in-out infinite;}
+.status-dot.saved{background:var(--green);}.status-dot.unsaved{background:var(--amber);}
+@keyframes pulse-dot{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+/* TOC SIDEBAR */
+.layout{display:grid;grid-template-columns:240px 1fr;max-width:1400px;margin:0 auto;gap:0;}
+.toc{position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;padding:1.2rem 0.8rem;
+  border-right:1px solid var(--border);background:var(--card);}
+.toc-title{font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:0.8rem;padding:0 0.5rem;}
+.toc-item{display:block;padding:0.35rem 0.6rem;border-radius:7px;font-size:0.73rem;color:var(--muted);
+  cursor:pointer;transition:all 0.2s;border:1px solid transparent;margin-bottom:2px;text-decoration:none;}
+.toc-item:hover{background:var(--editor-focus);color:var(--text);border-color:rgba(59,130,246,0.15);}
+.toc-item.active{background:rgba(59,130,246,0.12);color:var(--accent);border-color:rgba(59,130,246,0.3);font-weight:600;}
+.toc-item.main{font-weight:700;color:var(--text);font-size:0.76rem;margin-top:0.5rem;}
+.toc-item .toc-badge{float:right;font-size:0.58rem;padding:1px 5px;border-radius:4px;font-weight:700;}
+.toc-badge.done{background:rgba(34,197,94,0.15);color:var(--green);}
+.toc-badge.wip{background:rgba(245,158,11,0.15);color:var(--amber);}
+.toc-badge.todo{background:rgba(148,163,184,0.1);color:var(--muted);}
+
+/* PAGE */
+.page{padding:2rem 2rem 4rem;max-width:960px;}
+
+/* SECTION */
+.doc-section{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  margin-bottom:1.5rem;overflow:hidden;transition:box-shadow 0.3s;}
+.doc-section:hover{box-shadow:0 6px 30px rgba(0,0,0,0.15);}
+.sec-header{display:flex;align-items:center;gap:0.8rem;padding:1rem 1.2rem;
+  border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);cursor:pointer;transition:background 0.2s;}
+.sec-header:hover{background:rgba(59,130,246,0.04);}
+.sec-num{min-width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  font-size:0.85rem;font-weight:900;flex-shrink:0;font-family:'Merriweather',serif;}
+.sec-num.c1{background:linear-gradient(135deg,rgba(59,130,246,0.2),rgba(6,182,212,0.12));color:var(--accent);border:1px solid rgba(59,130,246,0.25);}
+.sec-num.c2{background:linear-gradient(135deg,rgba(34,197,94,0.2),rgba(20,184,166,0.12));color:var(--green);border:1px solid rgba(34,197,94,0.25);}
+.sec-num.c3{background:linear-gradient(135deg,rgba(167,139,250,0.2),rgba(236,72,153,0.12));color:var(--purple);border:1px solid rgba(167,139,250,0.25);}
+.sec-num.c4{background:linear-gradient(135deg,rgba(245,158,11,0.2),rgba(239,68,68,0.12));color:var(--amber);border:1px solid rgba(245,158,11,0.25);}
+.sec-num.c5{background:linear-gradient(135deg,rgba(6,182,212,0.2),rgba(59,130,246,0.12));color:var(--cyan);border:1px solid rgba(6,182,212,0.25);}
+.sec-info{flex:1;}
+.sec-title{font-size:0.95rem;font-weight:700;margin-bottom:0.1rem;}
+.sec-sub{font-size:0.7rem;color:var(--muted);}
+.sec-toggle{width:28px;height:28px;border-radius:7px;border:none;background:transparent;
+  color:var(--muted);cursor:pointer;font-size:0.65rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;}
+.sec-toggle:hover{background:rgba(59,130,246,0.1);color:var(--accent);}
+.sec-export{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);background:transparent;
+  color:var(--muted);cursor:pointer;font-size:0.8rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;}
+.sec-export:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+.sec-body{transition:max-height 0.5s ease;overflow:hidden;}
+.sec-body.collapsed{max-height:0!important;}
+
+/* KOMPONEN/INDIKATOR ROW */
+.komp{margin:0;border-bottom:1px solid var(--border);}
+.komp:last-child{border-bottom:none;}
+.komp-header{display:flex;align-items:flex-start;gap:0.6rem;padding:0.7rem 1.2rem;cursor:pointer;transition:background 0.15s;position:relative;}
+.komp-header:hover{background:var(--editor-focus);}
+.komp-check{width:20px;height:20px;border-radius:5px;border:2px solid var(--border);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;
+  font-size:0.6rem;color:transparent;margin-top:2px;}
+.komp-check.checked{background:var(--green);border-color:var(--green);color:#fff;}
+.komp-check:hover{border-color:var(--accent);}
+.komp-letter{font-size:0.72rem;font-weight:800;color:var(--accent);min-width:16px;margin-top:2px;flex-shrink:0;}
+.komp-body{flex:1;min-width:0;}
+.komp-title{font-size:0.82rem;font-weight:600;color:var(--text);line-height:1.5;}
+.komp-desc{font-size:0.74rem;color:var(--muted);line-height:1.6;margin-top:2px;}
+.komp-badges{display:flex;gap:0.25rem;flex-shrink:0;align-items:center;margin-top:2px;}
+.komp-badge{font-size:0.58rem;font-weight:700;padding:2px 6px;border-radius:5px;white-space:nowrap;}
+.komp-badge.docs{background:rgba(59,130,246,0.1);color:var(--accent);border:1px solid rgba(59,130,246,0.2);}
+.komp-badge.done{background:rgba(34,197,94,0.1);color:var(--green);border:1px solid rgba(34,197,94,0.2);}
+.komp-badge.wip{background:rgba(245,158,11,0.1);color:var(--amber);border:1px solid rgba(245,158,11,0.2);}
+.komp-expand{width:22px;height:22px;border-radius:5px;border:none;background:transparent;
+  color:var(--muted);cursor:pointer;font-size:0.6rem;display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;flex-shrink:0;margin-top:2px;}
+.komp-expand:hover{background:rgba(59,130,246,0.1);color:var(--accent);}
+.komp.expanded .komp-expand{transform:rotate(180deg);color:var(--accent);}
+
+/* KOMP DETAIL */
+.komp-detail{max-height:0;overflow:hidden;transition:max-height 0.4s ease;background:var(--sub-bg);}
+.komp.expanded .komp-detail{max-height:8000px;}
+.komp-detail-inner{padding:0.8rem 1.2rem 0.8rem 3rem;border-top:1px solid var(--border);}
+
+/* Verifikasi field */
+.verif-row{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.7rem;padding:0.5rem 0.7rem;
+  border-radius:8px;background:rgba(59,130,246,0.04);border:1px solid rgba(59,130,246,0.1);}
+.verif-label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent);white-space:nowrap;}
+.verif-input{flex:1;background:transparent;border:none;border-bottom:1px dashed var(--border);
+  color:var(--text);font-size:0.8rem;font-family:'Inter',sans-serif;padding:0.2rem 0.3rem;outline:none;transition:border-color 0.2s;}
+.verif-input:focus{border-bottom-color:var(--accent);}
+.verif-select{padding:3px 8px;border-radius:6px;font-size:0.7rem;font-weight:600;border:1px solid var(--border);
+  background:transparent;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;outline:none;}
+.verif-select option{background:var(--surface);color:var(--text);}
+
+/* Sub section titles */
+.sub-title{font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--muted);margin:0.7rem 0 0.4rem;display:flex;align-items:center;gap:0.4rem;}
+.sub-title:first-child{margin-top:0;}
+
+/* Sub doc items */
+.sub-list{list-style:none;margin-bottom:0.4rem;}
+.sub-item{display:flex;align-items:flex-start;gap:0.4rem;padding:0.3rem 0.5rem;border-radius:7px;
+  margin-bottom:0.2rem;transition:all 0.15s;border:1px solid transparent;position:relative;}
+.sub-item:hover{background:rgba(59,130,246,0.04);border-color:rgba(59,130,246,0.08);}
+.sub-chk{width:16px;height:16px;border-radius:4px;border:2px solid var(--border);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;
+  font-size:0.5rem;color:transparent;margin-top:3px;}
+.sub-chk.checked{background:var(--green);border-color:var(--green);color:#fff;}
+.sub-chk:hover{border-color:var(--accent);}
+.sub-content{flex:1;min-width:0;}
+.sub-name{font-size:0.76rem;color:var(--text);outline:none;display:block;line-height:1.4;}
+.sub-name:focus{border-bottom:1px dashed var(--accent);}
+.sub-name:empty::before{content:attr(data-placeholder);color:var(--muted);opacity:0.4;}
+.sub-desc{font-size:0.68rem;color:var(--muted);outline:none;display:block;margin-top:1px;line-height:1.4;}
+.sub-desc:focus{border-bottom:1px dashed var(--accent);}
+.sub-desc:empty::before{content:attr(data-placeholder);color:var(--muted);opacity:0.35;}
+.sub-st{padding:2px 5px;border-radius:4px;font-size:0.6rem;font-weight:600;border:1px solid var(--border);
+  background:transparent;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;outline:none;flex-shrink:0;margin-top:3px;}
+.sub-st option{background:var(--surface);color:var(--text);}
+.sub-del{width:18px;height:18px;border-radius:4px;border:none;background:transparent;color:var(--muted);
+  cursor:pointer;font-size:0.6rem;opacity:0;transition:all 0.15s;display:flex;align-items:center;
+  justify-content:center;flex-shrink:0;margin-top:3px;}
+.sub-item:hover .sub-del{opacity:1;}
+.sub-del:hover{background:rgba(239,68,68,0.15);color:var(--red);}
+.add-sub{display:inline-flex;align-items:center;gap:0.25rem;padding:0.25rem 0.6rem;border-radius:6px;
+  border:1px dashed var(--border);background:transparent;color:var(--muted);cursor:pointer;
+  font-size:0.68rem;font-family:'Inter',sans-serif;transition:all 0.2s;margin-top:0.2rem;}
+.add-sub:hover{border-color:var(--accent);color:var(--accent);background:rgba(59,130,246,0.04);}
+
+/* Notes */
+.komp-notes{margin-top:0.5rem;padding:0.5rem 0.7rem;border-radius:7px;background:var(--editor-bg);
+  border:1px solid var(--border);font-size:0.76rem;color:var(--text);line-height:1.6;
+  outline:none;min-height:40px;transition:all 0.2s;}
+.komp-notes:focus{border-color:var(--accent);background:var(--editor-focus);}
+.komp-notes:empty::before{content:attr(data-placeholder);color:var(--muted);opacity:0.35;}
+
+/* SECTION EDITOR AREA */
+.sec-editor-wrap{padding:0.8rem 1.2rem 1rem;}
+.sec-editor{padding:0.7rem 0.9rem;border-radius:10px;background:var(--editor-bg);border:1px solid var(--border);
+  min-height:80px;font-size:0.8rem;color:var(--text);line-height:1.7;outline:none;transition:all 0.2s;}
+.sec-editor:focus{border-color:var(--accent);background:var(--editor-focus);}
+.sec-editor:empty::before{content:attr(data-placeholder);color:var(--muted);opacity:0.4;}
+
+/* SUMMARY */
+.summary{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;margin-top:1.5rem;}
+.summary-title{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:1rem;}
+.summary-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0.6rem;}
+.sum-card{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;
+  padding:0.7rem;text-align:center;transition:all 0.3s;position:relative;overflow:hidden;}
+.sum-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.sum-card:nth-child(1)::before{background:linear-gradient(90deg,#3b82f6,#06b6d4);}
+.sum-card:nth-child(2)::before{background:linear-gradient(90deg,#22c55e,#14b8a6);}
+.sum-card:nth-child(3)::before{background:linear-gradient(90deg,#a78bfa,#ec4899);}
+.sum-card:nth-child(4)::before{background:linear-gradient(90deg,#f59e0b,#ef4444);}
+.sum-card:nth-child(5)::before{background:linear-gradient(90deg,#06b6d4,#3b82f6);}
+.sum-val{font-size:1.3rem;font-weight:900;line-height:1;}
+.sum-lbl{font-size:0.62rem;color:var(--muted);margin-top:0.2rem;text-transform:uppercase;letter-spacing:0.4px;}
+
+/* FLOATING SAVE & TOAST */
+.save-fab{position:fixed;bottom:24px;right:24px;z-index:9999;background:linear-gradient(135deg,#22c55e,#14b8a6);
+  color:#fff;border:none;border-radius:50px;padding:10px 20px;font-size:0.82rem;font-weight:700;
+  font-family:'Inter',sans-serif;cursor:pointer;box-shadow:0 4px 20px rgba(34,197,94,0.4);
+  transition:all 0.25s;display:flex;align-items:center;gap:0.4rem;opacity:0;pointer-events:none;transform:translateY(20px);}
+.save-fab.show{opacity:1;pointer-events:auto;transform:translateY(0);}
+.save-fab:hover{transform:translateY(-3px);box-shadow:0 6px 28px rgba(34,197,94,0.6);}
+.toast{position:fixed;bottom:75px;left:50%;transform:translateX(-50%) translateY(30px);
+  background:var(--card);border:1px solid var(--green);border-radius:10px;padding:0.5rem 1.2rem;
+  font-size:0.78rem;color:var(--green);font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,0.3);
+  opacity:0;pointer-events:none;transition:all 0.4s ease;z-index:10000;backdrop-filter:blur(12px);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* PRINT */
+@media print{
+  header,.hero,.status-bar,.save-fab,.toast,.toc,.hero-actions,.sec-export,.komp-expand,
+  .add-sub,.sub-del,.sec-toggle{display:none!important;}
+  .layout{grid-template-columns:1fr!important;}
+  body{background:#fff;color:#000;}
+  .doc-section{break-inside:avoid;border:1px solid #ccc;box-shadow:none;}
+  .komp-detail{max-height:none!important;}
+  .sec-body{max-height:none!important;}
+}
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr;}
+  .toc{display:none;}
+  header{flex-direction:column;gap:0.5rem;padding:0.7rem 1rem;}
+  .page{padding:1rem;}
+  .summary-grid{grid-template-columns:repeat(2,1fr);}
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.doc-section{animation:slideUp 0.4s ease backwards;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📋 Laporan <span>RSB</span></h1>
+  <div class="nav-links">
+    <a href="index.html">🗺️ Dashboard</a>
+    <a href="matriks.html">📑 IFAS/EFAS</a>
+    <a href="kinerja.html">📊 Kinerja RSB</a>
+    <a href="sinta.html">🔬 SINTA</a>
+    <a href="swot_blu.html">⚡ SWOT-BLU</a>
+    <a href="swot_pestle.html">📋 PESTLE</a>
+    <a href="rsb_peta.html">💼 Peta RSB</a>
+    <a href="rsb_dokumen.html">📝 Dokumen RSB</a>
+    <a href="rsb_laporan.html" class="active">📋 Laporan RSB</a>
+    <a href="rsb_generator.html">🔧 Generator</a>
+    <button class="theme-btn" id="themeToggle" onclick="toggleTheme()">☀️ Tema</button>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-label">Format Resmi — Penilaian Rencana Strategi Bisnis BLU</div>
+  <h2>Dokumen Laporan RSB<br>UIN Kiai Ageng Muhammad Besari Ponorogo</h2>
+  <p class="hero-sub">Dokumen lengkap verifikasi RSB sesuai format resmi — Pendahuluan, Analisis & Strategi, Renstra Bisnis 5 Tahun, Penutup, dan Lampiran I–IV</p>
+  <div class="hero-actions">
+    <button class="hero-btn primary" onclick="saveAll()">💾 Simpan</button>
+    <button class="hero-btn secondary" onclick="window.print()">🖨️ Cetak</button>
+    <button class="hero-btn secondary" onclick="expandAllKomp()">📂 Buka Semua</button>
+    <button class="hero-btn secondary" onclick="collapseAllKomp()">📁 Tutup Semua</button>
+    <button class="hero-btn secondary" onclick="resetAll()">🔄 Reset</button>
+  </div>
+</div>
+
+<div class="status-bar">
+  <div class="status-item"><span class="status-dot saved" id="sDot"></span><span id="sText">Tersimpan</span></div>
+  <div class="status-item">📅 <span id="sTime">-</span></div>
+  <div class="status-item">📋 Komponen: <span id="sKomp" style="color:var(--accent);font-weight:700">0/0</span></div>
+  <div class="status-item">📄 Dokumen: <span id="sDocs" style="color:var(--cyan);font-weight:700">0/0</span></div>
+</div>
+
+<div class="layout">
+  <nav class="toc" id="tocNav"></nav>
+  <div class="page" id="pageContent"></div>
+</div>
+
+<button class="save-fab" id="saveFab" onclick="saveAll()">💾 Simpan</button>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   FULL RSB DOCUMENT STRUCTURE
+============================================================ */
+const DOC = [
+  { id:'s1', num:'1', cls:'c1', title:'Pendahuluan', sub:'Maksimal 4 Halaman', komponen:[
+    { letter:'a', title:'Resume Renstra K/L', desc:'', bullets:['Visi dan Misi K/L yang diturunkan ke BLU atau menjadi tusi BLU','Arah Kebijakan K/L atau Nasional'],
+      docs:[
+        {name:'Renstra Kemenag RI',desc:'Dokumen Renstra K/L periode berjalan',status:'belum'},
+        {name:'Visi & Misi Kemenag',desc:'Kutipan resmi visi misi Kementerian Agama',status:'belum'},
+        {name:'Arah Kebijakan Nasional/K/L',desc:'RPJMN, kebijakan strategis terkait PTKIN',status:'belum'},
+      ]},
+    { letter:'b', title:'Visi dan Misi BLU', desc:'', bullets:['Penuangan Visi dan Misi BLU dan keterkaitan dengan Visi dan Misi K/L','Tugas dan Fungsi BLU'],
+      docs:[
+        {name:'SK Visi Misi UIN Ponorogo',desc:'Surat keputusan penetapan visi misi',status:'belum'},
+        {name:'Matriks Keterkaitan Visi Misi K/L ↔ BLU',desc:'Tabel mapping kesesuaian',status:'belum'},
+        {name:'Dokumen Tugas & Fungsi',desc:'Statuta / OTK UIN Ponorogo',status:'belum'},
+      ]},
+    { letter:'c', title:'Target RSB', desc:'Maksud dan Tujuan yang akan dicapai BLU dari penyusunan RSB', bullets:[],
+      docs:[
+        {name:'Rumusan Maksud & Tujuan RSB',desc:'Narasi tujuan penyusunan RSB BLU',status:'belum'},
+        {name:'Target Utama RSB 5 Tahun',desc:'Summary target kunci yang ingin dicapai',status:'belum'},
+      ]},
+  ]},
+  { id:'s2', num:'2', cls:'c2', title:'Analisis dan Strategi', sub:'Maksimal 8 Halaman', komponen:[
+    { letter:'a', title:'Evaluasi Kinerja BLU', desc:'Evaluasi capaian RSB periode sebelumnya dan hambatan (untuk BLU baru mengacu kinerja RSB 5 tahun sebelumnya) atau pelaksanaan tugas dan fungsi sebelumnya', bullets:[],
+      docs:[
+        {name:'Laporan Evaluasi Kinerja 5 Tahun',desc:'Capaian kinerja 2020–2024',status:'belum'},
+        {name:'Analisis Hambatan & Kendala',desc:'Identifikasi hambatan periode sebelumnya',status:'belum'},
+        {name:'Laporan Pelaksanaan Tugas & Fungsi',desc:'Uraian pelaksanaan tusi periode lalu',status:'belum'},
+      ]},
+    { letter:'b', title:'Analisis SWOT/BSC/Fishbone', desc:'BLU melakukan analisis atas kondisi internal dan eksternal, hambatan, tantangan dan peluang', bullets:[],
+      docs:[
+        {name:'Dokumen Analisis SWOT',desc:'Matriks SWOT lengkap',status:'belum'},
+        {name:'Matriks IFAS/EFAS',desc:'Pembobotan faktor internal & eksternal',status:'belum'},
+        {name:'Analisis BSC / Fishbone (jika ada)',desc:'Analisis tambahan',status:'belum'},
+        {name:'Data Pendukung (Survei, BPS, dll)',desc:'Data kuantitatif pendukung analisis',status:'belum'},
+      ]},
+    { letter:'c', title:'Inisiatif Strategis', desc:'Strategi bisnis (sasaran strategis) yang akan dilakukan berdasarkan hasil analisis', bullets:[],
+      docs:[
+        {name:'Rumusan Sasaran Strategis',desc:'Daftar sasaran strategis dari hasil SWOT',status:'belum'},
+        {name:'Peta Strategi (Strategy Map)',desc:'Visualisasi keterkaitan sasaran',status:'belum'},
+        {name:'Inisiatif & Rencana Aksi',desc:'Langkah-langkah strategis yang akan dilakukan',status:'belum'},
+      ]},
+  ]},
+  { id:'s3', num:'3', cls:'c3', title:'Renstra Bisnis 5 Tahun', sub:'Maksimal 6 Halaman', komponen:[
+    { letter:'a', title:'Program K/L', desc:'', bullets:[],
+      docs:[
+        {name:'Daftar Program K/L Terkait',desc:'Program Kemenag yang relevan dengan BLU',status:'belum'},
+        {name:'Pemetaan Program K/L ↔ Program BLU',desc:'Tabel keterkaitan program',status:'belum'},
+      ]},
+    { letter:'b', title:'Strategi Bisnis BLU', desc:'', bullets:[],
+      docs:[
+        {name:'Dokumen Strategi Bisnis',desc:'Uraian strategi bisnis BLU 5 tahun',status:'belum'},
+        {name:'Model Bisnis BLU',desc:'Peta bisnis, sumber PNBP, unit layanan',status:'belum'},
+      ]},
+    { letter:'c', title:'Kegiatan dan Indikator', desc:'', bullets:['Kegiatan yang akan dilakukan untuk mencapai sasaran strategis antara lain yang berkaitan dengan Layanan, Keuangan, SDM, Sarana dan Prasarana, Inovasi, dan Investasi','Setiap kegiatan harus mencantumkan indikator/target capaian','Disusun dengan format sesuai Lampiran'],
+      docs:[
+        {name:'Matriks Kegiatan & Indikator',desc:'Tabel kegiatan, indikator, target per tahun',status:'belum'},
+        {name:'Rincian Kegiatan Layanan',desc:'Kegiatan terkait peningkatan layanan',status:'belum'},
+        {name:'Rincian Kegiatan Keuangan',desc:'Kegiatan terkait pengelolaan keuangan',status:'belum'},
+        {name:'Rincian Kegiatan SDM',desc:'Kegiatan pengembangan SDM',status:'belum'},
+        {name:'Rincian Kegiatan Sarpras',desc:'Kegiatan sarana prasarana',status:'belum'},
+        {name:'Rincian Kegiatan Inovasi & Investasi',desc:'Kegiatan inovasi dan investasi',status:'belum'},
+      ]},
+  ]},
+  { id:'s4', num:'4', cls:'c4', title:'Penutup', sub:'Maksimal 2 Halaman', komponen:[
+    { letter:'', title:'Simpulan dan Hal-hal Penting', desc:'Simpulan dan hal-hal penting yang perlu mendapat perhatian', bullets:[],
+      docs:[
+        {name:'Narasi Simpulan RSB',desc:'Ringkasan simpulan dokumen RSB',status:'belum'},
+        {name:'Catatan Penting & Rekomendasi',desc:'Hal-hal yang perlu perhatian khusus',status:'belum'},
+      ]},
+  ]},
+  { id:'s5', num:'5', cls:'c5', title:'Lampiran', sub:'Lampiran I–IV', komponen:[
+    { letter:'I', title:'Evaluasi Kinerja Tahun Berjalan', desc:'Kinerja tahun berjalan dalam berbagai aspek, yaitu aspek layanan, keuangan, SDM, serta sarana dan prasarana dijelaskan secara memadai.', bullets:[],
+      docs:[
+        {name:'Lampiran Kinerja Layanan',desc:'Data lengkap kinerja aspek layanan',status:'belum'},
+        {name:'Lampiran Kinerja Keuangan',desc:'Laporan keuangan, realisasi anggaran',status:'belum'},
+        {name:'Lampiran Kinerja SDM',desc:'Data SDM, rasio, kualifikasi',status:'belum'},
+        {name:'Lampiran Kinerja Sarpras',desc:'Inventaris aset, kondisi fasilitas',status:'belum'},
+      ]},
+    { letter:'II', title:'Program dan Kegiatan 5 Tahun ke Depan', desc:'', bullets:['Penjabaran mendetail atas hasil analisis SWOT: Grand Strategi disusun secara memadai berdasarkan identifikasi analisis situasi/lingkungan','Tujuan strategis','Sasaran strategis','Program utama dikaitkan dengan kegiatan strategis','Penjabaran kegiatan strategis'],
+      docs:[
+        {name:'Grand Strategy dari SWOT',desc:'Dokumen strategi besar hasil SWOT',status:'belum'},
+        {name:'Tujuan Strategis 5 Tahun',desc:'Rumusan tujuan strategis',status:'belum'},
+        {name:'Sasaran Strategis & IKU',desc:'Sasaran dan indikator kinerja utama',status:'belum'},
+        {name:'Matriks Program ↔ Kegiatan Strategis',desc:'Tabel keterkaitan program dan kegiatan',status:'belum'},
+        {name:'Penjabaran Kegiatan Strategis',desc:'Detail per kegiatan strategis',status:'belum'},
+      ]},
+    { letter:'III', title:'Proyeksi 5 Tahun ke Depan', desc:'', bullets:['Asumsi ekonomi dapat diperbandingkan dengan kondisi riil atau sumber yang valid','Proyeksi volume dan/atau kualitas pelayanan meningkat signifikan dan logis. Sebelum dan setelah menerapkan PK BLU','Proyeksi pendapatan PNBP meningkat signifikan dan realistis. Sebelum dan setelah menerapkan PK BLU','Proyeksi belanja (anggaran indikatif 5 tahun) disusun secara realistis. Sebelum dan setelah menerapkan PK BLU','Proporsi belanja dari PNBP meningkat. Sebelum dan setelah menerapkan PK BLU'],
+      docs:[
+        {name:'Data Asumsi Makro Ekonomi',desc:'Inflasi, PDB, kurs — sumber BPS/BI/APBN',status:'belum'},
+        {name:'Proyeksi Volume Layanan',desc:'Proyeksi jumlah mahasiswa, lulusan, dll',status:'belum'},
+        {name:'Proyeksi Pendapatan PNBP',desc:'Proyeksi per jenis PNBP sebelum & setelah BLU',status:'belum'},
+        {name:'Proyeksi Belanja 5 Tahun',desc:'Anggaran indikatif sebelum & setelah BLU',status:'belum'},
+        {name:'Tabel Proporsi PNBP vs RM',desc:'Perbandingan sumber dana per tahun',status:'belum'},
+      ]},
+    { letter:'IV', title:'Matriks Keterkaitan Tujuan Strategis, Sasaran Strategis, Kebijakan, Program Utama dan Kegiatan Strategis 5 Tahun Ke Depan', desc:'', bullets:['Tabel yang menunjukkan keterkaitan antara visi, misi, tujuan strategis, sasaran strategis, kebijakan, program utama, dan kegiatan strategis 5 tahun ke depan'],
+      docs:[
+        {name:'Matriks Cascading Lengkap',desc:'Visi → Misi → Tujuan → Sasaran → Kebijakan → Program → Kegiatan',status:'belum'},
+        {name:'Pohon Kinerja (Performance Tree)',desc:'Visualisasi pohon kinerja',status:'belum'},
+      ]},
+  ]},
+];
+
+/* ============================================================
+   STATE
+============================================================ */
+const SK='rsb_laporan_v1'; let dirty=false;
+
+/* ============================================================
+   RENDER
+============================================================ */
+function render(){
+  const pg=document.getElementById('pageContent');
+  const toc=document.getElementById('tocNav');
+  let ph='',th='<div class="toc-title">Daftar Isi</div>';
+  DOC.forEach((sec,si)=>{
+    th+=`<a class="toc-item main" href="#${sec.id}" onclick="scrollToSec('${sec.id}')">${sec.num}. ${sec.title}</a>`;
+    let kh='';
+    sec.komponen.forEach((k,ki)=>{
+      const uid=`${sec.id}-${ki}`;
+      th+=`<a class="toc-item" href="#${uid}" onclick="scrollToSec('${uid}')">${k.letter?k.letter+'. ':''}${k.title.substring(0,28)}${k.title.length>28?'…':''}<span class="toc-badge todo" id="toc-b-${uid}">0/${k.docs.length}</span></a>`;
+      const bulletsHtml=k.bullets.length?'<div style="margin-top:3px;">'+k.bullets.map(b=>`<div style="font-size:0.72rem;color:var(--muted);padding-left:0.8rem;position:relative;line-height:1.5;margin-bottom:1px;"><span style="position:absolute;left:0;">•</span>${b}</div>`).join('')+'</div>':'';
+      const descHtml=k.desc?`<div class="komp-desc">${k.desc}</div>`:'';
+      const docsHtml=k.docs.map((d,di)=>renderDoc(uid,di,d)).join('');
+      kh+=`
+      <div class="komp" id="${uid}" data-uid="${uid}">
+        <div class="komp-header" onclick="toggleKomp(this)">
+          <div class="komp-check" onclick="event.stopPropagation();tglCheck(this)">✓</div>
+          ${k.letter?`<div class="komp-letter">${k.letter}.</div>`:''}
+          <div class="komp-body">
+            <div class="komp-title">${k.title}</div>
+            ${descHtml}${bulletsHtml}
+          </div>
+          <div class="komp-badges"><span class="komp-badge docs" id="badge-${uid}">📄 0/${k.docs.length}</span></div>
+          <button class="komp-expand">▼</button>
+        </div>
+        <div class="komp-detail">
+          <div class="komp-detail-inner">
+            <div class="verif-row">
+              <span class="verif-label">Hasil Verifikasi:</span>
+              <input class="verif-input" id="verif-${uid}" placeholder="Tulis hasil verifikasi..." oninput="markDirty()">
+              <select class="verif-select" id="vstat-${uid}" onchange="markDirty();updBadges()">
+                <option value="belum">⬜ Belum</option><option value="proses">🟡 Proses</option>
+                <option value="selesai">✅ Selesai</option><option value="revisi">🔴 Revisi</option>
+              </select>
+            </div>
+            <div class="sub-title">📄 Dokumen yang Diperlukan</div>
+            <ul class="sub-list" id="docs-${uid}">${docsHtml}</ul>
+            <button class="add-sub" onclick="addDoc('${uid}')">+ Tambah Dokumen</button>
+            <div class="sub-title" style="margin-top:0.6rem;">📝 Catatan</div>
+            <div class="komp-notes" contenteditable="true" id="note-${uid}" data-placeholder="Catatan untuk komponen ini..." oninput="markDirty()"></div>
+          </div>
+        </div>
+      </div>`;
+    });
+    ph+=`
+    <div class="doc-section" id="${sec.id}" data-sec="${sec.id}" style="animation-delay:${si*0.08}s">
+      <div class="sec-header" onclick="tglSec(this)">
+        <div class="sec-num ${sec.cls}">${sec.num}</div>
+        <div class="sec-info"><div class="sec-title">${sec.title}</div><div class="sec-sub">${sec.sub}</div></div>
+        <button class="sec-export" onclick="event.stopPropagation();exportSec('${sec.id}','${sec.title.replace(/ /g,'_')}')" title="Export PNG">📷</button>
+        <button class="sec-toggle" title="Collapse/Expand">▼</button>
+      </div>
+      <div class="sec-body">${kh}
+        <div class="sec-editor-wrap">
+          <div class="sub-title">📝 Catatan Umum — ${sec.title}</div>
+          <div class="sec-editor" contenteditable="true" id="ed-${sec.id}" data-placeholder="Catatan umum untuk bagian ${sec.title}..." oninput="markDirty()"></div>
+        </div>
+      </div>
+    </div>`;
+  });
+  ph+=renderSummary();
+  toc.innerHTML=th;
+  pg.innerHTML=ph;
+}
+
+function renderDoc(uid,di,d){
+  return `<li class="sub-item"><div class="sub-chk${d.status==='selesai'?' checked':''}" onclick="tglSubChk(this)">✓</div><div class="sub-content"><span class="sub-name" contenteditable="true" data-placeholder="Nama dokumen..." oninput="markDirty()">${d.name}</span><span class="sub-desc" contenteditable="true" data-placeholder="Keterangan..." oninput="markDirty()">${d.desc}</span></div><select class="sub-st" onchange="markDirty();updBadges()"><option value="belum"${d.status==='belum'?' selected':''}>⬜ Belum</option><option value="proses"${d.status==='proses'?' selected':''}>🟡 Proses</option><option value="selesai"${d.status==='selesai'?' selected':''}>✅ Selesai</option></select><button class="sub-del" onclick="delDoc(this)">✕</button></li>`;
+}
+
+function renderSummary(){
+  return `<div class="summary" id="sum-panel"><div class="summary-title">📊 Ringkasan Progress Laporan RSB</div><div class="summary-grid"><div class="sum-card"><div class="sum-val" id="sv1" style="color:var(--accent)">0%</div><div class="sum-lbl">Pendahuluan</div></div><div class="sum-card"><div class="sum-val" id="sv2" style="color:var(--green)">0%</div><div class="sum-lbl">Analisis</div></div><div class="sum-card"><div class="sum-val" id="sv3" style="color:var(--purple)">0%</div><div class="sum-lbl">Renstra 5th</div></div><div class="sum-card"><div class="sum-val" id="sv4" style="color:var(--amber)">0%</div><div class="sum-lbl">Penutup</div></div><div class="sum-card"><div class="sum-val" id="sv5" style="color:var(--cyan)">0%</div><div class="sum-lbl">Lampiran</div></div></div></div>`;
+}
+
+/* ============================================================
+   INTERACTIONS
+============================================================ */
+function toggleKomp(h){h.closest('.komp').classList.toggle('expanded');}
+function tglCheck(el){el.classList.toggle('checked');markDirty();updBadges();}
+function tglSubChk(el){el.classList.toggle('checked');const li=el.closest('.sub-item');const s=li.querySelector('.sub-st');s.value=el.classList.contains('checked')?'selesai':'belum';markDirty();updBadges();}
+function tglSec(h){const b=h.nextElementSibling;b.classList.toggle('collapsed');h.querySelector('.sec-toggle').textContent=b.classList.contains('collapsed')?'▶':'▼';}
+function expandAllKomp(){document.querySelectorAll('.komp').forEach(k=>k.classList.add('expanded'));document.querySelectorAll('.sec-body').forEach(b=>b.classList.remove('collapsed'));document.querySelectorAll('.sec-toggle').forEach(t=>t.textContent='▼');}
+function collapseAllKomp(){document.querySelectorAll('.komp').forEach(k=>k.classList.remove('expanded'));}
+function scrollToSec(id){const el=document.getElementById(id);if(el){el.scrollIntoView({behavior:'smooth',block:'start'});if(el.classList.contains('komp'))el.classList.add('expanded');}}
+
+function addDoc(uid){
+  const list=document.getElementById('docs-'+uid);
+  const li=document.createElement('li');li.className='sub-item';li.style.opacity='0';li.style.transform='translateY(5px)';
+  li.innerHTML=`<div class="sub-chk" onclick="tglSubChk(this)">✓</div><div class="sub-content"><span class="sub-name" contenteditable="true" data-placeholder="Nama dokumen..." oninput="markDirty()"></span><span class="sub-desc" contenteditable="true" data-placeholder="Keterangan..." oninput="markDirty()"></span></div><select class="sub-st" onchange="markDirty();updBadges()"><option value="belum" selected>⬜ Belum</option><option value="proses">🟡 Proses</option><option value="selesai">✅ Selesai</option></select><button class="sub-del" onclick="delDoc(this)">✕</button>`;
+  list.appendChild(li);
+  requestAnimationFrame(()=>{li.style.transition='all 0.3s';li.style.opacity='1';li.style.transform='translateY(0)';});
+  setTimeout(()=>li.querySelector('.sub-name').focus(),300);
+  updBadges();markDirty();
+}
+function delDoc(btn){const li=btn.closest('.sub-item');li.style.transition='all 0.2s';li.style.opacity='0';setTimeout(()=>{li.remove();updBadges();markDirty();},200);}
+
+/* ============================================================
+   BADGES & SUMMARY
+============================================================ */
+function updBadges(){
+  let totalDocs=0,doneDocs=0,totalKomp=0,doneKomp=0;
+  document.querySelectorAll('.komp').forEach(k=>{
+    const uid=k.dataset.uid;
+    const sts=[...k.querySelectorAll('.sub-st')];
+    const tot=sts.length;
+    const dn=sts.filter(s=>s.value==='selesai').length;
+    totalDocs+=tot;doneDocs+=dn;
+    const badge=document.getElementById('badge-'+uid);
+    if(badge){
+      badge.textContent=`📄 ${dn}/${tot}`;
+      badge.className='komp-badge '+(dn===tot&&tot>0?'done':dn>0?'wip':'docs');
+    }
+    const tocB=document.getElementById('toc-b-'+uid);
+    if(tocB){tocB.textContent=`${dn}/${tot}`;tocB.className='toc-badge '+(dn===tot&&tot>0?'done':dn>0?'wip':'todo');}
+    totalKomp++;
+    if(k.querySelector('.komp-check.checked'))doneKomp++;
+  });
+  const sk=document.getElementById('sKomp');if(sk)sk.textContent=`${doneKomp}/${totalKomp}`;
+  const sd=document.getElementById('sDocs');if(sd)sd.textContent=`${doneDocs}/${totalDocs}`;
+
+  // Per-section summary
+  DOC.forEach((sec,i)=>{
+    const secEl=document.getElementById(sec.id);
+    if(!secEl)return;
+    const sts=[...secEl.querySelectorAll('.sub-st')];
+    const tot=sts.length;const dn=sts.filter(s=>s.value==='selesai').length;
+    const pct=tot>0?Math.round(dn/tot*100):0;
+    const sv=document.getElementById('sv'+(i+1));
+    if(sv){sv.textContent=pct+'%';
+      sv.style.color=pct>=80?'var(--green)':pct>=40?'var(--accent)':pct>0?'var(--amber)':'var(--muted)';
+    }
+  });
+}
+
+/* ============================================================
+   SAVE / LOAD
+============================================================ */
+function markDirty(){dirty=true;document.getElementById('saveFab').classList.add('show');
+  document.getElementById('sDot').className='status-dot unsaved';document.getElementById('sText').textContent='Belum tersimpan';}
+function markClean(){dirty=false;document.getElementById('saveFab').classList.remove('show');
+  document.getElementById('sDot').className='status-dot saved';document.getElementById('sText').textContent='Tersimpan';
+  document.getElementById('sTime').textContent=new Date().toLocaleString('id-ID');}
+
+function saveAll(){
+  const data={sections:{},timestamp:new Date().toISOString()};
+  DOC.forEach(sec=>{
+    const secEl=document.getElementById(sec.id);if(!secEl)return;
+    const sd={komponen:[],editor:''};
+    secEl.querySelectorAll('.komp').forEach(k=>{
+      const uid=k.dataset.uid;
+      const kd={
+        checked:k.querySelector('.komp-check')?.classList.contains('checked')||false,
+        expanded:k.classList.contains('expanded'),
+        verif:document.getElementById('verif-'+uid)?.value||'',
+        vstat:document.getElementById('vstat-'+uid)?.value||'belum',
+        note:document.getElementById('note-'+uid)?.innerHTML||'',
+        docs:[]
+      };
+      k.querySelectorAll('.sub-item').forEach(li=>{
+        kd.docs.push({
+          name:li.querySelector('.sub-name')?.innerHTML||'',
+          desc:li.querySelector('.sub-desc')?.innerHTML||'',
+          status:li.querySelector('.sub-st')?.value||'belum'
+        });
+      });
+      sd.komponen.push(kd);
+    });
+    const ed=document.getElementById('ed-'+sec.id);
+    if(ed)sd.editor=ed.innerHTML;
+    data.sections[sec.id]=sd;
+  });
+  try{localStorage.setItem(SK,JSON.stringify(data));markClean();showToast('✅ Dokumen tersimpan!');}
+  catch(e){showToast('❌ Gagal: '+e.message);}
+}
+
+function loadData(){
+  try{
+    const raw=localStorage.getItem(SK);if(!raw)return;
+    const data=JSON.parse(raw);
+    if(!data.sections)return;
+    DOC.forEach(sec=>{
+      const sd=data.sections[sec.id];if(!sd)return;
+      const secEl=document.getElementById(sec.id);if(!secEl)return;
+      const komps=secEl.querySelectorAll('.komp');
+      (sd.komponen||[]).forEach((kd,i)=>{
+        if(!komps[i])return;
+        const k=komps[i];const uid=k.dataset.uid;
+        if(kd.checked)k.querySelector('.komp-check')?.classList.add('checked');
+        if(kd.expanded)k.classList.add('expanded');
+        const vi=document.getElementById('verif-'+uid);if(vi)vi.value=kd.verif||'';
+        const vs=document.getElementById('vstat-'+uid);if(vs)vs.value=kd.vstat||'belum';
+        const nt=document.getElementById('note-'+uid);if(nt&&kd.note)nt.innerHTML=kd.note;
+        const list=document.getElementById('docs-'+uid);
+        if(list&&kd.docs){
+          list.innerHTML='';
+          kd.docs.forEach(d=>{
+            const li=document.createElement('li');li.className='sub-item';
+            li.innerHTML=`<div class="sub-chk${d.status==='selesai'?' checked':''}" onclick="tglSubChk(this)">✓</div><div class="sub-content"><span class="sub-name" contenteditable="true" data-placeholder="Nama dokumen..." oninput="markDirty()">${d.name}</span><span class="sub-desc" contenteditable="true" data-placeholder="Keterangan..." oninput="markDirty()">${d.desc}</span></div><select class="sub-st" onchange="markDirty();updBadges()"><option value="belum"${d.status==='belum'?' selected':''}>⬜ Belum</option><option value="proses"${d.status==='proses'?' selected':''}>🟡 Proses</option><option value="selesai"${d.status==='selesai'?' selected':''}>✅ Selesai</option></select><button class="sub-del" onclick="delDoc(this)">✕</button>`;
+            list.appendChild(li);
+          });
+        }
+      });
+      const ed=document.getElementById('ed-'+sec.id);
+      if(ed&&sd.editor)ed.innerHTML=sd.editor;
+    });
+    if(data.timestamp)document.getElementById('sTime').textContent=new Date(data.timestamp).toLocaleString('id-ID');
+    updBadges();markClean();
+  }catch(e){console.warn('Load error:',e);}
+}
+
+function resetAll(){if(!confirm('Reset semua data?'))return;localStorage.removeItem(SK);location.reload();}
+
+/* ============================================================
+   EXPORT / THEME / TOAST
+============================================================ */
+function exportSec(id,name){
+  const el=document.getElementById(id);if(!el)return;
+  const hide=el.querySelectorAll('.sec-export,.sec-toggle,.add-sub,.sub-del,.komp-expand');
+  hide.forEach(b=>b.style.visibility='hidden');
+  const dark=document.documentElement.getAttribute('data-theme')!=='light';
+  html2canvas(el,{scale:2,backgroundColor:dark?'#0f172a':'#fff',useCORS:true,logging:false}).then(c=>{
+    hide.forEach(b=>b.style.visibility='');const a=document.createElement('a');
+    a.download=`RSB_${name}_${new Date().toISOString().slice(0,10)}.png`;a.href=c.toDataURL('image/png');a.click();
+  }).catch(()=>{hide.forEach(b=>b.style.visibility='');});
+}
+function toggleTheme(){
+  const d=document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme',d?'light':'dark');
+  document.getElementById('themeToggle').textContent=d?'🌙 Tema':'☀️ Tema';
+  localStorage.setItem('rsb_lap_theme',d?'light':'dark');
+}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+// Auto-save & shortcuts
+let ast=null;
+document.addEventListener('input',()=>{if(ast)clearTimeout(ast);ast=setTimeout(()=>{if(dirty)saveAll();},5000);});
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();saveAll();}});
+window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});
+
+/* ============================================================
+   INIT
+============================================================ */
+window.addEventListener('DOMContentLoaded',()=>{
+  const t=localStorage.getItem('rsb_lap_theme');
+  if(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('themeToggle').textContent=t==='dark'?'☀️ Tema':'🌙 Tema';}
+  render();loadData();updBadges();
+});
+</script>
+</body>
+</html>

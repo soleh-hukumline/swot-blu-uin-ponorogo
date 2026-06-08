@@ -960,20 +960,11 @@ async function loadData(){
   try{
     const res=await fetch(API_URL);
     const json=await res.json();
-    if(json.ok && json.data){
-      // === SCHEMA VERSION CHECK ===
-      // Jika data KV bukan schema terbaru, abaikan dan gunakan template
+    if(json.ok && json.data && Object.keys(json.data).length>0){
       const allUnits=Object.values(json.data);
-      const hasOldSchema=allUnits.some(u=>u && u.schemaVersion && u.schemaVersion!==SCHEMA_VERSION);
-      const hasMixedSchema=allUnits.some(u=>u && !u.schemaVersion); // very old data
-      if(hasOldSchema||hasMixedSchema){
-        console.warn('☁️ KV data has old schema — skipping, using fresh template. Run clearCloudData() to purge.');
-        // Auto-clear old KV data and save fresh template
-        setTimeout(async()=>{
-          await clearCloudData();
-          console.log('✅ Old KV data auto-purged, fresh template is now baseline.');
-        },1500);
-      } else {
+      // Skip jika ada unit tanpa schemaVersion = data lama (sebelum versioning)
+      const hasOldData=allUnits.some(u=>u && !u.schemaVersion);
+      if(!hasOldData){
         cloudData=json.data;
         applyData(cloudData);
         const mergedExport={timestamp:new Date().toISOString(), tables:{}};
@@ -982,8 +973,10 @@ async function loadData(){
         });
         localStorage.setItem('rsb_dc_export',JSON.stringify(mergedExport));
         updateProgress();
-        console.log('📥 Data loaded from cloud (schema OK).');
+        console.log('Data loaded from cloud OK (schema v4).');
         return;
+      } else {
+        console.warn('KV old-schema detected — using template. Jalankan restore_kv untuk migrasi.');
       }
     }
   }catch(e){console.warn('Cloud load failed, using local:',e);}

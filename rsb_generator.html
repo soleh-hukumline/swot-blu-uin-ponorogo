@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSB Generator — Dokumen Laporan RSB BLU UIN Ponorogo</title>
+<meta name="description" content="Document builder untuk auto-generate laporan RSB BLU UIN Ponorogo">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ===== THEME ===== */
+:root{
+  --bg:#0f172a;--surface:#1e293b;--card:rgba(30,41,59,0.95);
+  --text:#f8fafc;--muted:#94a3b8;--accent:#3b82f6;
+  --border:rgba(255,255,255,0.08);--green:#22c55e;--amber:#f59e0b;
+  --red:#ef4444;--purple:#a78bfa;--cyan:#06b6d4;--teal:#14b8a6;
+  --editor-bg:rgba(15,23,42,0.6);--editor-focus:rgba(59,130,246,0.12);
+  --tbl-head:rgba(59,130,246,0.08);--tbl-alt:rgba(255,255,255,0.015);
+  --tbl-border:rgba(255,255,255,0.06);
+}
+[data-theme="light"]{
+  --bg:#f1f5f9;--surface:#fff;--card:rgba(255,255,255,0.97);
+  --text:#0f172a;--muted:#64748b;--border:rgba(0,0,0,0.08);
+  --green:#16a34a;--amber:#d97706;--red:#dc2626;--purple:#7c3aed;
+  --cyan:#0891b2;--teal:#0d9488;--accent:#2563eb;
+  --editor-bg:rgba(241,245,249,0.8);--editor-focus:rgba(37,99,235,0.06);
+  --tbl-head:rgba(37,99,235,0.06);--tbl-alt:rgba(0,0,0,0.015);
+  --tbl-border:rgba(0,0,0,0.06);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7;}
+
+/* ===== HEADER ===== */
+header{display:flex;justify-content:space-between;align-items:center;padding:0.7rem 1.5rem;
+  background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200;backdrop-filter:blur(12px);}
+header h1{font-size:0.95rem;font-weight:700;white-space:nowrap;}
+header h1 span{color:var(--accent);}
+.nav-links{display:flex;gap:0.35rem;align-items:center;flex-wrap:wrap;}
+.nav-links a,.nav-links button{color:var(--muted);text-decoration:none;font-size:0.72rem;
+  padding:0.25rem 0.55rem;border-radius:6px;border:1px solid var(--border);transition:all 0.2s;
+  background:transparent;cursor:pointer;font-family:'Inter',sans-serif;}
+.nav-links a:hover,.nav-links a.active,.nav-links button:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* ===== LAYOUT ===== */
+.layout{display:grid;grid-template-columns:220px 1fr;height:calc(100vh - 45px);}
+
+/* ===== SIDEBAR ===== */
+.sidebar{overflow-y:auto;padding:1rem 0.6rem;border-right:1px solid var(--border);background:var(--card);}
+.sb-title{font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--muted);padding:0 0.5rem;margin-bottom:0.6rem;}
+.sb-item{display:flex;align-items:center;gap:0.4rem;padding:0.35rem 0.5rem;border-radius:6px;
+  font-size:0.7rem;color:var(--muted);cursor:pointer;transition:all 0.15s;border:1px solid transparent;margin-bottom:1px;text-decoration:none;}
+.sb-item:hover{background:var(--editor-focus);color:var(--text);}
+.sb-item.active{background:rgba(59,130,246,0.12);color:var(--accent);border-color:rgba(59,130,246,0.2);font-weight:600;}
+.sb-item.main{font-weight:700;color:var(--text);font-size:0.73rem;margin-top:0.6rem;}
+.sb-item .sb-badge{margin-left:auto;font-size:0.55rem;padding:1px 5px;border-radius:4px;font-weight:700;
+  background:rgba(148,163,184,0.1);color:var(--muted);}
+.sb-badge.done{background:rgba(34,197,94,0.12);color:var(--green);}
+.sb-badge.wip{background:rgba(245,158,11,0.12);color:var(--amber);}
+.sb-sep{height:1px;background:var(--border);margin:0.5rem 0;}
+.sb-actions{padding:0.5rem;display:flex;flex-direction:column;gap:0.3rem;margin-top:0.5rem;}
+.sb-btn{padding:0.4rem 0.6rem;border-radius:7px;font-size:0.7rem;font-weight:600;cursor:pointer;
+  font-family:'Inter',sans-serif;transition:all 0.2s;border:none;display:flex;align-items:center;gap:0.3rem;justify-content:center;}
+.sb-btn.primary{background:linear-gradient(135deg,#3b82f6,#06b6d4);color:#fff;}
+.sb-btn.primary:hover{box-shadow:0 3px 12px rgba(59,130,246,0.4);}
+.sb-btn.secondary{background:rgba(255,255,255,0.05);color:var(--muted);border:1px solid var(--border);}
+.sb-btn.secondary:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* ===== MAIN CONTENT ===== */
+.main{overflow-y:auto;padding:1.5rem 2rem 4rem;}
+
+/* Section blocks */
+.sec-block{display:none;animation:fadeIn 0.3s ease;}
+.sec-block.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+.sec-head{margin-bottom:1.5rem;}
+.sec-label{font-size:0.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:0.3rem;}
+.sec-h{font-family:'Merriweather',serif;font-size:1.3rem;font-weight:700;margin-bottom:0.3rem;}
+.sec-desc{font-size:0.78rem;color:var(--muted);max-width:700px;line-height:1.6;}
+.sec-limit{display:inline-block;font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:5px;
+  background:rgba(245,158,11,0.1);color:var(--amber);border:1px solid rgba(245,158,11,0.2);margin-top:0.4rem;}
+
+/* Sub-component card */
+.comp-card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:1.2rem;overflow:hidden;}
+.comp-header{display:flex;align-items:center;gap:0.6rem;padding:0.8rem 1rem;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.015);}
+.comp-num{font-size:0.72rem;font-weight:800;color:var(--accent);min-width:18px;}
+.comp-title{font-size:0.85rem;font-weight:700;flex:1;}
+.comp-body{padding:1rem;}
+
+/* ===== RICH TEXT EDITOR ===== */
+.rte-wrap{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:0.8rem;}
+.rte-toolbar{display:flex;gap:0.2rem;padding:0.4rem 0.6rem;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.rte-btn{width:28px;height:28px;border-radius:5px;border:1px solid transparent;background:transparent;
+  color:var(--muted);cursor:pointer;font-size:0.72rem;font-family:'Inter',sans-serif;transition:all 0.15s;
+  display:flex;align-items:center;justify-content:center;}
+.rte-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+.rte-btn.active{background:rgba(59,130,246,0.15);color:var(--accent);}
+.rte-sep{width:1px;height:20px;background:var(--border);margin:4px 3px;}
+.rte-content{padding:1rem 1.2rem;min-height:180px;font-size:0.84rem;line-height:1.8;color:var(--text);
+  outline:none;background:var(--editor-bg);transition:background 0.2s;}
+.rte-content:focus{background:var(--editor-focus);}
+.rte-content:empty::before{content:attr(data-placeholder);color:var(--muted);opacity:0.45;}
+.rte-content h3{font-size:1rem;font-weight:700;margin:0.8rem 0 0.4rem;color:var(--text);}
+.rte-content ul,.rte-content ol{padding-left:1.5rem;margin:0.3rem 0;}
+.rte-footer{display:flex;justify-content:space-between;padding:0.3rem 0.8rem;background:rgba(255,255,255,0.015);
+  border-top:1px solid var(--border);font-size:0.62rem;color:var(--muted);}
+
+/* ===== EDITABLE TABLE ===== */
+.tbl-wrap{overflow-x:auto;margin-bottom:0.8rem;border:1px solid var(--tbl-border);border-radius:10px;}
+.tbl-actions{display:flex;gap:0.3rem;padding:0.4rem 0.6rem;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--tbl-border);}
+.tbl-act{padding:0.2rem 0.5rem;border-radius:5px;border:1px solid var(--border);background:transparent;
+  color:var(--muted);cursor:pointer;font-size:0.65rem;font-family:'Inter',sans-serif;transition:all 0.15s;}
+.tbl-act:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+table.editable{width:100%;border-collapse:collapse;font-size:0.78rem;}
+table.editable th{background:var(--tbl-head);color:var(--text);font-weight:700;font-size:0.7rem;
+  text-transform:uppercase;letter-spacing:0.5px;padding:0.5rem 0.6rem;text-align:left;
+  border-bottom:2px solid var(--tbl-border);white-space:nowrap;position:sticky;top:0;}
+table.editable td{padding:0.4rem 0.6rem;border-bottom:1px solid var(--tbl-border);vertical-align:top;}
+table.editable tr:nth-child(even){background:var(--tbl-alt);}
+table.editable tr:hover{background:var(--editor-focus);}
+table.editable td[contenteditable]{outline:none;min-width:60px;transition:background 0.15s;}
+table.editable td[contenteditable]:focus{background:rgba(59,130,246,0.08);box-shadow:inset 0 0 0 1px var(--accent);}
+table.editable td[contenteditable]:empty::before{content:attr(data-ph);color:var(--muted);opacity:0.3;font-style:italic;}
+.row-del{width:20px;height:20px;border:none;background:transparent;color:var(--muted);cursor:pointer;
+  font-size:0.6rem;opacity:0;transition:opacity 0.15s;border-radius:4px;}
+table.editable tr:hover .row-del{opacity:1;}
+.row-del:hover{background:rgba(239,68,68,0.15);color:var(--red);}
+
+/* ===== SWOT TABLE ===== */
+.swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-bottom:0.8rem;}
+.swot-quad{border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.swot-quad-head{padding:0.5rem 0.8rem;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);}
+.swot-quad-head.str{background:rgba(34,197,94,0.08);color:var(--green);}
+.swot-quad-head.wk{background:rgba(239,68,68,0.08);color:var(--red);}
+.swot-quad-head.opp{background:rgba(59,130,246,0.08);color:var(--accent);}
+.swot-quad-head.thr{background:rgba(245,158,11,0.08);color:var(--amber);}
+.swot-quad-body{padding:0.6rem;min-height:100px;}
+.swot-item{display:flex;gap:0.4rem;margin-bottom:0.3rem;font-size:0.76rem;}
+.swot-item-num{font-weight:700;color:var(--muted);min-width:22px;flex-shrink:0;}
+.swot-item-text{flex:1;outline:none;line-height:1.5;}
+.swot-item-text:focus{border-bottom:1px dashed var(--accent);}
+.swot-item-text:empty::before{content:'Tulis item...';color:var(--muted);opacity:0.3;}
+.swot-add{width:100%;padding:0.3rem;border:1px dashed var(--border);border-radius:6px;background:transparent;
+  color:var(--muted);cursor:pointer;font-size:0.65rem;font-family:'Inter',sans-serif;transition:all 0.15s;margin-top:0.3rem;}
+.swot-add:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ===== PREVIEW MODE ===== */
+.preview-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.7);display:none;
+  justify-content:center;align-items:flex-start;padding:2rem;overflow-y:auto;backdrop-filter:blur(4px);}
+.preview-overlay.show{display:flex;}
+.preview-paper{background:#fff;color:#1a1a1a;width:210mm;min-height:297mm;padding:25mm 20mm;
+  font-family:'Merriweather','Times New Roman',serif;font-size:12pt;line-height:1.8;box-shadow:0 8px 40px rgba(0,0,0,0.4);position:relative;}
+.preview-close{position:fixed;top:1rem;right:1rem;z-index:501;padding:0.5rem 1rem;border-radius:8px;
+  background:var(--red);color:#fff;border:none;cursor:pointer;font-size:0.85rem;font-weight:700;font-family:'Inter',sans-serif;}
+.preview-paper h1{font-size:16pt;text-align:center;margin-bottom:8pt;}
+.preview-paper h2{font-size:14pt;margin:16pt 0 8pt;border-bottom:1px solid #ccc;padding-bottom:4pt;}
+.preview-paper h3{font-size:12pt;margin:12pt 0 6pt;}
+.preview-paper p{margin-bottom:8pt;text-align:justify;}
+.preview-paper table{width:100%;border-collapse:collapse;margin:8pt 0;font-size:10pt;}
+.preview-paper table th,.preview-paper table td{border:1px solid #999;padding:4pt 6pt;text-align:left;}
+.preview-paper table th{background:#e8e8e8;font-weight:bold;}
+
+/* ===== TOAST & FAB ===== */
+.save-fab{position:fixed;bottom:20px;right:20px;z-index:300;background:linear-gradient(135deg,#22c55e,#14b8a6);
+  color:#fff;border:none;border-radius:50px;padding:10px 20px;font-size:0.8rem;font-weight:700;
+  font-family:'Inter',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(34,197,94,0.4);
+  transition:all 0.25s;display:flex;align-items:center;gap:0.4rem;opacity:0;pointer-events:none;transform:translateY(16px);}
+.save-fab.show{opacity:1;pointer-events:auto;transform:translateY(0);}
+.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--card);border:1px solid var(--green);border-radius:10px;padding:0.5rem 1.2rem;
+  font-size:0.78rem;color:var(--green);font-weight:600;box-shadow:0 6px 24px rgba(0,0,0,0.3);
+  opacity:0;pointer-events:none;transition:all 0.3s;z-index:400;backdrop-filter:blur(10px);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ===== PRINT ===== */
+@media print{
+  header,.sidebar,.save-fab,.toast,.rte-toolbar,.rte-footer,.tbl-actions,.row-del,
+  .swot-add,.nav-links,.sb-actions,.preview-close{display:none!important;}
+  .layout{grid-template-columns:1fr!important;}
+  .sec-block{display:block!important;}
+  body{background:#fff;color:#000;font-size:11pt;}
+  .main{padding:0!important;overflow:visible!important;}
+  .comp-card{break-inside:avoid;border:1px solid #ccc;box-shadow:none;}
+  table.editable th{background:#eee!important;}
+}
+@media(max-width:800px){
+  .layout{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+  .main{padding:1rem;}
+  .swot-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🔧 RSB <span>Generator</span></h1>
+  <div class="nav-links">
+    <a href="index.html">🗺️ Dashboard</a>
+    <a href="kinerja.html">📊 Kinerja</a>
+    <a href="swot_blu.html">⚡ SWOT</a>
+    <a href="rsb_peta.html">💼 Peta RSB</a>
+    <a href="rsb_dokumen.html">📝 Dokumen</a>
+    <a href="rsb_laporan.html">📋 Laporan</a>
+    <a href="rsb_generator.html" class="active">🔧 Generator</a>
+    <button onclick="toggleTheme()">☀️</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main" id="mainContent"></main>
+</div>
+
+<button class="save-fab" id="saveFab" onclick="saveAll()">💾 Simpan</button>
+<div class="toast" id="toast"></div>
+
+<!-- PREVIEW OVERLAY -->
+<div class="preview-overlay" id="previewOverlay">
+  <button class="preview-close" onclick="closePreview()">✕ Tutup Preview</button>
+  <div class="preview-paper" id="previewPaper"></div>
+</div>
+
+<script>
+/* ============================================================
+   DOCUMENT STRUCTURE
+============================================================ */
+const SECTIONS = [
+  {
+    id:'bab1', num:'BAB I', title:'Pendahuluan', limit:'Maksimal 4 Halaman', cls:'accent',
+    components:[
+      { id:'b1a', letter:'A', title:'Resume Rencana Strategis K/L',
+        type:'rte',
+        template:'<h3>1. Visi dan Misi Kementerian Agama</h3><p>Kementerian Agama Republik Indonesia memiliki visi <b>"Kementerian Agama yang Profesional dan Andal dalam Membangun Masyarakat yang Saleh, Moderat, Cerdas, dan Unggul untuk Mewujudkan Indonesia Maju yang Berdaulat, Mandiri, dan Berkepribadian"</b>.</p><p>Misi Kementerian Agama meliputi:</p><ol><li>Meningkatkan kualitas pendidikan agama dan keagamaan yang moderat, inklusif, dan bermutu.</li><li>Meningkatkan kualitas pelayanan kehidupan beragama yang adil dan merata.</li><li>Memperkuat moderasi beragama untuk mengukuhkan toleransi, kerukunan, dan harmoni sosial.</li><li>Meningkatkan kualitas penyelenggaraan ibadah haji dan umrah yang transparan dan akuntabel.</li><li>Mewujudkan tata kelola pemerintahan yang bersih, akuntabel, dan terpercaya.</li></ol><h3>2. Arah Kebijakan Nasional dan K/L</h3><p>Berdasarkan <b>RPJMN 2025–2029</b> dan <b>Renstra Kemenag 2025–2029</b>, arah kebijakan nasional di bidang pendidikan tinggi keagamaan meliputi:</p><ul><li>Peningkatan akses dan mutu pendidikan tinggi keagamaan melalui transformasi digital dan akreditasi internasional.</li><li>Penguatan riset dan inovasi pada perguruan tinggi keagamaan untuk mendukung daya saing nasional.</li><li>Pengembangan Badan Layanan Umum (BLU) pada perguruan tinggi keagamaan sebagai instrumen peningkatan kualitas layanan dan kemandirian keuangan.</li><li>Implementasi Merdeka Belajar Kampus Merdeka (MBKM) pada PTKIN.</li><li>Internasionalisasi perguruan tinggi keagamaan Islam.</li></ul><h3>3. Tugas dan Fungsi BLU</h3><p>UIN Kiai Ageng Muhammad Besari Ponorogo, berdasarkan Peraturan Presiden dan Statuta, memiliki tugas menyelenggarakan pendidikan tinggi keagamaan Islam dalam bidang ilmu agama Islam dan ilmu umum secara multidisiplin. Fungsi utama meliputi:</p><ol><li>Pelaksanaan dan pengembangan pendidikan akademik dan profesional bidang ilmu agama Islam dan ilmu umum.</li><li>Pelaksanaan penelitian untuk pengembangan ilmu pengetahuan, teknologi, dan seni berbasis nilai keislaman.</li><li>Pelaksanaan pengabdian kepada masyarakat yang bermanfaat bagi pembangunan.</li><li>Pelaksanaan pembinaan civitas akademika dan hubungan dengan lingkungan.</li><li>Pelaksanaan kegiatan layanan administrasi umum, keuangan, dan kepegawaian.</li></ol>',
+        placeholder:'Tuliskan resume Rencana Strategis K/L: visi misi Kemenag, arah kebijakan nasional/K/L, serta tugas dan fungsi BLU...'
+      },
+      { id:'b1b', letter:'B', title:'Visi dan Misi BLU',
+        type:'rte',
+        template:'<h3>1. Visi UIN Kiai Ageng Muhammad Besari Ponorogo</h3><p><b>"Menjadi Universitas Islam Negeri yang Unggul, Moderat, dan Berdaya Saing di Tingkat Nasional dan Internasional pada Tahun 2030"</b></p><h3>2. Misi UIN Ponorogo</h3><ol><li>Menyelenggarakan pendidikan tinggi yang berkualitas, inovatif, dan berbasis integrasi keilmuan.</li><li>Mengembangkan penelitian yang kompetitif dan berkontribusi pada pengembangan ilmu pengetahuan serta peradaban Islam.</li><li>Melaksanakan pengabdian kepada masyarakat yang memberdayakan dan berkelanjutan.</li><li>Membangun tata kelola universitas yang transparan, akuntabel, dan profesional.</li><li>Mengembangkan kerjasama nasional dan internasional yang strategis dan produktif.</li><li>Memperkuat moderasi beragama sebagai nilai inti kehidupan kampus.</li></ol><h3>3. Keterkaitan dengan Visi Misi K/L</h3><p>Visi UIN Ponorogo memiliki keterkaitan langsung dengan Visi Kementerian Agama, khususnya pada aspek:</p><ul><li><b>Profesional dan Andal</b> → Misi 4 UIN tentang tata kelola profesional dan akuntabel.</li><li><b>Masyarakat Cerdas dan Unggul</b> → Misi 1 UIN tentang pendidikan berkualitas dan inovatif.</li><li><b>Moderat</b> → Misi 6 UIN tentang penguatan moderasi beragama.</li><li><b>Berdaulat dan Mandiri</b> → Tujuan BLU untuk kemandirian keuangan dan layanan.</li></ul><h3>4. Tugas dan Fungsi</h3><p>Berdasarkan Statuta UIN Kiai Ageng Muhammad Besari Ponorogo (Peraturan Menteri Agama), tugas pokok dan fungsi mencakup:</p><ol><li>Penyelenggaraan Tri Dharma Perguruan Tinggi: pendidikan, penelitian, dan pengabdian masyarakat.</li><li>Pembinaan civitas akademika dalam kerangka ilmu pengetahuan dan nilai-nilai keislaman.</li><li>Pengelolaan administrasi umum, keuangan, aset, dan sumber daya manusia.</li><li>Pelayanan mahasiswa, alumni, dan pemangku kepentingan.</li></ol>',
+        placeholder:'Tuliskan visi dan misi BLU UIN Ponorogo, keterkaitan dengan visi misi K/L, serta tugas dan fungsi...'
+      },
+      { id:'b1c', letter:'C', title:'Target RSB',
+        type:'rte',
+        template:'<h3>1. Maksud Penyusunan RSB</h3><p>Rencana Strategi Bisnis (RSB) BLU UIN Kiai Ageng Muhammad Besari Ponorogo periode 2025–2029 disusun dengan maksud:</p><ol><li>Menyediakan dokumen perencanaan strategis bisnis yang komprehensif sebagai acuan pengelolaan BLU.</li><li>Menetapkan arah pengembangan layanan, keuangan, SDM, dan sarana prasarana selama 5 tahun ke depan.</li><li>Memenuhi persyaratan administratif dalam proses pengajuan status Pola Keuangan BLU sesuai PMK No. 129/PMK.05/2020.</li></ol><h3>2. Tujuan RSB</h3><p>Tujuan penyusunan RSB ini meliputi:</p><ol><li>Meningkatkan kualitas dan kapasitas layanan pendidikan, penelitian, dan pengabdian masyarakat.</li><li>Mencapai kemandirian finansial melalui optimalisasi sumber PNBP dan diversifikasi pendapatan.</li><li>Membangun tata kelola BLU yang transparan, akuntabel, dan berorientasi pada hasil.</li><li>Memperkuat daya saing institusional di tingkat nasional dan regional.</li></ol><h3>3. Target Utama 5 Tahun (2025–2029)</h3><p>Target strategis utama dalam periode RSB ini:</p><ul><li><b>Layanan:</b> Peningkatan prodi terakreditasi Unggul dari 37,9% menjadi 48,2%.</li><li><b>SDM:</b> Peningkatan dosen S3 dari 29,67% menjadi 40%, rasio dosen:mahasiswa dari 1:44 menjadi 1:30.</li><li><b>Keuangan:</b> Peningkatan pendapatan PNBP minimal 15% per tahun.</li><li><b>Penelitian:</b> Peningkatan publikasi Scopus dan sitasi internasional.</li><li><b>Mahasiswa:</b> Peningkatan jumlah mahasiswa dari 10.182 menjadi ~14.500.</li><li><b>Infrastruktur:</b> Pengembangan smart campus dan green campus.</li></ul>',
+        placeholder:'Tuliskan maksud, tujuan, dan target utama 5 tahun yang ingin dicapai BLU melalui penyusunan RSB...'
+      },
+    ]
+  },
+  {
+    id:'bab2', num:'BAB II', title:'Analisis dan Strategi', limit:'Maksimal 8 Halaman', cls:'green',
+    components:[
+      { id:'b2a', letter:'A', title:'Evaluasi Kinerja BLU — Narasi',
+        type:'rte',
+        template:'<h3>1. Evaluasi Capaian Kinerja Periode 2020–2024</h3><p>Evaluasi terhadap capaian kinerja UIN Ponorogo selama 5 tahun terakhir (2020–2024) menunjukkan tren positif di beberapa aspek, namun masih terdapat gap yang perlu diperbaiki.</p><h3>A. Aspek Layanan Pendidikan</h3><p>Jumlah mahasiswa aktif meningkat dari 8.500 (2020) menjadi 10.182 (2024) atau pertumbuhan rata-rata 4,7% per tahun. Akreditasi institusi naik ke peringkat "Unggul" dari BAN-PT. Jumlah prodi terakreditasi "Unggul" meningkat dari 3 menjadi 11 prodi (37,9%). Namun, tingkat kelulusan tepat waktu masih 62,26% dan perlu ditingkatkan.</p><h3>B. Aspek Keuangan</h3><p>Pendapatan PNBP tumbuh rata-rata 8,3% per tahun, terutama dari UKT mahasiswa baru dan sewa fasilitas. Realisasi belanja rata-rata mencapai 94,5% dari pagu. Namun, ketergantungan pada Rupiah Murni (RM) masih tinggi dan proporsi PNBP terhadap total belanja perlu ditingkatkan.</p><h3>C. Aspek SDM</h3><p>Jumlah dosen meningkat dari 290 menjadi 329 orang. Dosen bergelar S3 naik dari 21% menjadi 29,67%. Guru Besar bertambah dari 8 menjadi 15 orang. Namun, 43,5% dosen masih berstatus Asisten Ahli dan rasio dosen:mahasiswa 1:44 masih di atas standar ideal 1:30.</p><h3>D. Aspek Sarana dan Prasarana</h3><p>Infrastruktur berkembang signifikan melalui dana SBSN, termasuk gedung perkuliahan baru, laboratorium, dan fasilitas olahraga. Total nilai aset meningkat. Namun, fasilitas digital dan smart campus masih perlu dikembangkan.</p><h3>2. Hambatan dan Kendala</h3><ol><li>Status Satker (belum BLU) membatasi fleksibilitas pengelolaan keuangan dan PNBP.</li><li>Kebijakan efisiensi anggaran nasional (Inpres 1/2025) mengurangi alokasi belanja.</li><li>Keterbatasan rekrutmen dosen PNS baru dari kuota pusat.</li><li>Proses transformasi dari IAIN ke UIN memerlukan adaptasi organisasi dan tata kelola.</li><li>Persaingan ketat antar PTKIN dalam perebutan mahasiswa berkualitas.</li></ol>',
+        placeholder:'Tuliskan evaluasi capaian kinerja periode sebelumnya dan hambatan...'
+      },
+      { id:'b2a1', letter:'', title:'📊 Kinerja Aspek Layanan Pendidikan',
+        type:'table',
+        table:{
+          id:'tbl-ev-layanan',
+          headers:['No','Indikator Kinerja','Satuan','2020','2021','2022','2023','Target 2024','Realisasi 2024','Capaian (%)','Keterangan'],
+          rows:[
+            ['1','Jumlah mahasiswa aktif','Orang','8.500','8.920','9.200','9.450','10.000','10.182','101,8%','Pertumbuhan 4,7%/tahun'],
+            ['2','Jumlah mahasiswa baru','Orang','...','...','...','...','3.200','3.356','104,9%','Peminat meningkat'],
+            ['3','Jumlah lulusan','Orang','...','...','...','...','...','...','...',''],
+            ['4','Jumlah program studi','Prodi','22','24','26','27','28','28','100%','Bertambah 6 prodi'],
+            ['5','Prodi terakreditasi Unggul','Prodi','3','4','6','8','10','11','110%','37,9% dari total'],
+            ['6','Prodi terakreditasi Baik Sekali','Prodi','...','...','...','...','8','8','100%','27,6% dari total'],
+            ['7','Akreditasi institusi','Peringkat','B','B','Unggul','Unggul','Unggul','Unggul','100%','Naik ke Unggul 2022'],
+            ['8','Tingkat kelulusan tepat waktu','%','58','59,5','60','61','65','62,26','95,8%','Perlu peningkatan'],
+            ['9','IPK rata-rata lulusan','Nilai','3,45','3,47','3,48','3,50','3,50','3,52','100,6%','Stabil baik'],
+            ['10','Masa tunggu kerja lulusan','Bulan','9,2','8,8','8,5','8,0','< 8','7,6','105,3%','Tren membaik'],
+            ['11','Kepuasan mahasiswa (IKM)','%','72','74','75','77','80','78,5','98,1%','Survei online'],
+            ['12','Peserta MBKM','Orang','—','—','...','...','...','...','...','Program mulai 2021'],
+          ]
+        }
+      },
+      { id:'b2a2', letter:'', title:'💰 Kinerja Aspek Keuangan',
+        type:'table',
+        table:{
+          id:'tbl-ev-keuangan',
+          headers:['No','Indikator Kinerja','Satuan','2020','2021','2022','2023','Target 2024','Realisasi 2024','Capaian (%)','Keterangan'],
+          rows:[
+            ['1','Pendapatan PNBP total','Rp Juta','...','...','...','...','...','...','...','Tumbuh 8,3%/tahun'],
+            ['2','PNBP dari UKT/SPP','Rp Juta','...','...','...','...','...','...','...','Sumber utama'],
+            ['3','PNBP dari Asrama/Ma\'had','Rp Juta','...','...','...','...','...','...','...',''],
+            ['4','PNBP dari Sewa & Jasa','Rp Juta','...','...','...','...','...','...','...',''],
+            ['5','Pagu belanja total','Rp Juta','...','...','...','...','...','...','...',''],
+            ['6','Realisasi belanja','%','92','93','94','94','95','94,5','99,5%','Stabil baik'],
+            ['7','Belanja pegawai (51)','Rp Juta','...','...','...','...','...','...','...',''],
+            ['8','Belanja barang (52)','Rp Juta','...','...','...','...','...','...','...',''],
+            ['9','Belanja modal (53)','Rp Juta','...','...','...','...','...','...','...',''],
+            ['10','Proporsi PNBP/total belanja','%','...','...','...','...','...','...','...','Perlu ditingkatkan'],
+            ['11','Nilai SAKIP','Nilai','68','70','72','75','80','78','97,5%','BB, target A'],
+          ]
+        }
+      },
+      { id:'b2a3', letter:'', title:'👥 Kinerja Aspek SDM',
+        type:'table',
+        table:{
+          id:'tbl-ev-sdm',
+          headers:['No','Indikator Kinerja','Satuan','2020','2021','2022','2023','Target 2024','Realisasi 2024','Capaian (%)','Keterangan'],
+          rows:[
+            ['1','Jumlah dosen tetap (PNS)','Orang','290','300','310','320','330','329','99,7%','Bertambah 39 orang'],
+            ['2','Dosen S3 (Doktor)','Orang','61','65','70','75','...','81','...','Dari 21% ke 24,6%'],
+            ['3','Dosen S3','%','21,0','21,7','22,6','23,4','30','29,67','98,9%','Target 40% (2029)'],
+            ['4','Guru Besar (Profesor)','Orang','8','9','10','12','15','15','100%','Bertambah 7 orang'],
+            ['5','Lektor Kepala','Orang','35','38','40','43','50','47','94%','Perlu percepatan'],
+            ['6','Lektor','Orang','110','115','118','120','...','123','...',''],
+            ['7','Asisten Ahli','Orang','136','137','141','143','...','143','...','43,5%, prioritas naik'],
+            ['8','Rasio dosen:mahasiswa','Rasio','1:29','1:30','1:30','1:30','1:35','1:44','77,3%','Mhs naik lebih cepat'],
+            ['9','Dosen bersertifikat pendidik','%','55','58','62','65','75','70','93,3%','Target 85% (2029)'],
+            ['10','Tenaga kependidikan','Orang','150','152','155','158','170','162','95,3%','PNS + PPNPN'],
+          ]
+        }
+      },
+      { id:'b2a4', letter:'', title:'🔬 Kinerja Aspek Penelitian & Publikasi',
+        type:'table',
+        table:{
+          id:'tbl-ev-riset',
+          headers:['No','Indikator Kinerja','Satuan','2020','2021','2022','2023','Target 2024','Realisasi 2024','Capaian (%)','Keterangan'],
+          rows:[
+            ['1','Publikasi Scopus (kumulatif)','Dokumen','80','100','125','155','200','183','91,5%','Perlu percepatan'],
+            ['2','Sitasi Scopus (kumulatif)','Sitasi','250','350','450','580','700','690','98,6%','CPR 2,04'],
+            ['3','Publikasi Q1','Dokumen','15','22','30','40','...','51','...','Meningkat signifikan'],
+            ['4','Publikasi Q2','Dokumen','8','12','18','23','...','28','...',''],
+            ['5','Jurnal SINTA terakreditasi','Jurnal','4','5','6','7','10','8','80%','Perlu penambahan'],
+            ['6','Jurnal internasional terindeks','Jurnal','0','0','0','1','1','1','100%','Target 4 (2029)'],
+            ['7','HKI/Paten granted','Jumlah','0','0','0','0','2','0','0%','Target baru'],
+            ['8','Buku ber-ISBN','Judul','...','...','...','...','...','...','...',''],
+            ['9','Hibah penelitian eksternal','Jumlah','...','...','...','...','...','...','...','DIKTIS, Kemendikti'],
+            ['10','Dana penelitian internal','Rp Juta','...','...','...','...','...','...','...',''],
+          ]
+        }
+      },
+      { id:'b2a5', letter:'', title:'🏗️ Kinerja Aspek Sarana & Prasarana',
+        type:'table',
+        table:{
+          id:'tbl-ev-sarpras',
+          headers:['No','Indikator Kinerja','Satuan','2020','2021','2022','2023','Target 2024','Realisasi 2024','Capaian (%)','Keterangan'],
+          rows:[
+            ['1','Luas lahan kampus','Hektar','...','...','...','...','...','...','...','Milik negara'],
+            ['2','Luas bangunan total','m²','...','...','...','...','...','...','...','Termasuk SBSN baru'],
+            ['3','Gedung perkuliahan','Unit','...','...','...','...','...','...','...',''],
+            ['4','Laboratorium','Unit','...','...','...','...','...','...','...','Sains, bahasa, IT'],
+            ['5','Koleksi perpustakaan','Judul','20.000','22.000','24.000','25.500','27.000','27.000','100%','Target 30.000 (2029)'],
+            ['6','Bandwidth internet','Mbps','...','...','...','...','...','...','...','Perlu upgrade'],
+            ['7','Titik CCTV','Titik','...','...','...','...','...','...','...',''],
+            ['8','Asrama Ma\'had','Unit','...','...','...','...','...','...','...','Putra & putri'],
+          ]
+        }
+      },
+      { id:'b2a6', letter:'', title:'🤝 Kinerja Aspek Pengabdian Masyarakat',
+        type:'table',
+        table:{
+          id:'tbl-ev-pkm',
+          headers:['No','Indikator Kinerja','Satuan','2020','2021','2022','2023','Target 2024','Realisasi 2024','Capaian (%)','Keterangan'],
+          rows:[
+            ['1','Jumlah kegiatan PkM','Kegiatan','...','...','...','...','...','...','...',''],
+            ['2','Desa/kelurahan binaan','Desa','...','...','...','...','...','...','...',''],
+            ['3','Kerjasama aktif (MoU)','MoU','150','170','190','210','250','240','96%','Target 440 (2029)'],
+            ['4','Dana PkM internal','Rp Juta','...','...','...','...','...','...','...',''],
+            ['5','Hibah PkM eksternal','Jumlah','...','...','...','...','...','...','...',''],
+            ['6','Dosen terlibat PkM','%','...','...','...','...','...','...','...',''],
+          ]
+        }
+      },
+
+
+      { id:'b2b', letter:'B', title:'Analisis SWOT/BSC/Fishbone',
+        type:'swot+rte',
+        template:'<h3>1. Metodologi Analisis</h3><p>Analisis kondisi internal dan eksternal UIN Ponorogo dilakukan menggunakan metode <b>SWOT Analysis</b> (Strengths, Weaknesses, Opportunities, Threats) yang dikombinasikan dengan <b>matriks IFAS/EFAS</b> (Internal/External Factor Analysis Summary) untuk menentukan posisi strategis institusi.</p><h3>2. Hasil Analisis IFAS</h3><p>Berdasarkan pembobotan dan rating terhadap faktor internal:</p><ul><li><b>Total Skor Strengths (S):</b> ... (dari 9 faktor kekuatan)</li><li><b>Total Skor Weaknesses (W):</b> ... (dari 6 faktor kelemahan)</li><li><b>Total Skor IFE:</b> ... (Skor > 2,50 menunjukkan posisi internal yang kuat)</li></ul><h3>3. Hasil Analisis EFAS</h3><p>Berdasarkan pembobotan dan rating terhadap faktor eksternal:</p><ul><li><b>Total Skor Opportunities (O):</b> ... (dari 6 faktor peluang)</li><li><b>Total Skor Threats (T):</b> ... (dari 6 faktor ancaman)</li><li><b>Total Skor EFE:</b> ... (Skor > 2,50 menunjukkan kemampuan merespon faktor eksternal yang baik)</li></ul><h3>4. Posisi Strategis</h3><p>Berdasarkan matriks IE (Internal-External), UIN Ponorogo berada pada <b>Kuadran ...</b> yang menunjukkan strategi <b>...</b> (Growth/Stability/Retrenchment). Posisi ini mengindikasikan bahwa institusi sebaiknya menerapkan strategi <b>SO (Strengths-Opportunities)</b> dengan memanfaatkan kekuatan internal untuk menangkap peluang eksternal.</p><h3>5. Implikasi Strategis</h3><p>Hasil analisis SWOT memberikan implikasi strategis sebagai berikut:</p><ol><li><b>Strategi SO:</b> Memanfaatkan status UIN dan akreditasi Unggul untuk memperluas layanan dan meningkatkan PNBP.</li><li><b>Strategi WO:</b> Mengatasi kelemahan SDM dan publikasi melalui peluang kerjasama dan regulasi BLU.</li><li><b>Strategi ST:</b> Menggunakan kekuatan infrastruktur dan monopoli geografis untuk menghadapi persaingan.</li><li><b>Strategi WT:</b> Meminimalisir kelemahan internal dan ancaman eksternal melalui reformasi tata kelola.</li></ol>',
+        placeholder:'Tuliskan narasi hasil analisis SWOT, posisi strategis, dan implikasi strategis...',
+        swot:{
+          strengths:['Perubahan status dari IAIN menjadi UIN per Mei 2025, membuka peluang pengembangan prodi sains dan teknologi','Akreditasi Institusi "Unggul" dari BAN-PT, menunjukkan kualitas tata kelola dan akademik yang terjamin','329 dosen tetap dengan 81 bergelar S3 (24,6%) dan 15 Guru Besar, modal SDM yang kuat','Monopoli geografis sebagai satu-satunya PTKIN di Kabupaten Ponorogo dan Madiun Raya (catchment area 4 kabupaten)','Infrastruktur kampus memadai dari dana SBSN: gedung perkuliahan, laboratorium, Ma\'had Al-Jami\'ah','7 unit PNBP aktif yang sudah berjalan dan menghasilkan pendapatan','Sistem informasi akademik GAPURA terintegrasi untuk layanan mahasiswa','28 program studi aktif dengan 11 prodi terakreditasi Unggul (37,9%)','Ma\'had Al-Jami\'ah sebagai keunggulan pembinaan karakter dan keagamaan mahasiswa'],
+          weaknesses:['Status masih Satker (belum BLU) — membatasi fleksibilitas pengelolaan keuangan dan pemanfaatan PNBP','Output publikasi Scopus relatif rendah (183 dokumen, CPR 2,04) dibanding PTKIN yang sudah BLU','Rasio dosen:mahasiswa 1:44, masih di atas standar ideal 1:25–1:30 (BAN-PT)','43,5% dosen (143 orang) masih berjabatan fungsional Asisten Ahli, menghambat akreditasi prodi','Belum memiliki dokumen RSB, Standar Pelayanan Minimal (SPM), dan kebijakan tata kelola AI','Brand awareness dan reputasi nasional masih rendah dibanding UIN besar (Jakarta, Yogyakarta, Malang)','Ketergantungan tinggi pada dana Rupiah Murni (RM) dari APBN','Sistem informasi keuangan dan aset belum terintegrasi penuh untuk mendukung pelaporan BLU'],
+          opportunities:['Momentum nasional pengembangan BLU PTKIN: 28 PTKIN telah berstatus BLU, mendorong dukungan regulasi','Alokasi APBN untuk pendidikan Rp757,8 triliun (2025), termasuk pengembangan PTKIN','APK Pendidikan Tinggi baru 34,11% (2024), masih besar ruang pertumbuhan jumlah mahasiswa','Permendiktisaintek No. 39/2025 membuka peluang pembukaan prodi baru lintas bidang (sains, teknologi, kesehatan)','Potensi 10+ sumber PNBP baru: LSP, pusat bahasa, teaching factory, klinik kesehatan, inkubator bisnis','Regulasi BLU (PMK 129/2020 jo PMK 202/2022) memberikan fleksibilitas keuangan signifikan','Tren digitalisasi pendidikan membuka peluang program studi online dan hybrid learning','Demand pasar kerja tinggi untuk lulusan dengan kompetensi terintegrasi agama-sains-teknologi'],
+          threats:['Instruksi Presiden No. 1/2025 tentang efisiensi anggaran — berpotensi mengurangi alokasi belanja K/L','28 PTKIN BLU yang sudah ada sebagai kompetitor dalam merebut mahasiswa dan pendanaan','Ketidakpastian ekonomi global (dampak kebijakan perdagangan internasional) mempengaruhi daya beli masyarakat','Gap tata kelola dan kompetensi digital/AI yang memerlukan investasi besar','Urbanisasi generasi muda ke kota besar (Surabaya, Jakarta) mengurangi potensi mahasiswa lokal','Dualisme regulasi antara Kemenag dan Kemendiktisaintek menciptakan kompleksitas tata kelola PTKIN']
+        }
+      },
+      { id:'b2c', letter:'C', title:'Inisiatif Strategis',
+        type:'rte+table',
+        template:'<h3>1. Sasaran Strategis</h3><p>Berdasarkan hasil analisis SWOT dan evaluasi kinerja, ditetapkan sasaran strategis BLU UIN Ponorogo periode 2025–2029 sebagai berikut. Sasaran ini disusun mengacu pada kerangka Balanced Scorecard (BSC) yang mencakup 4 perspektif: Pemangku Kepentingan, Proses Internal, Pertumbuhan & Pembelajaran, dan Keuangan.</p><h3>2. Peta Strategi</h3><p>Peta strategi menggambarkan keterkaitan sebab-akibat antar sasaran strategis. Peningkatan kapasitas SDM dan infrastruktur (perspektif pertumbuhan) akan mendorong perbaikan proses internal (layanan dan tata kelola), yang pada gilirannya meningkatkan kepuasan pemangku kepentingan dan kemandirian keuangan.</p><h3>3. Inisiatif Strategis Utama</h3><p>Untuk mencapai sasaran strategis tersebut, dirumuskan 10 inisiatif strategis utama yang akan dijabarkan dalam program dan kegiatan 5 tahun:</p>',
+        placeholder:'Tuliskan sasaran strategis dan inisiatif/strategi yang akan dilakukan berdasarkan hasil analisis...',
+        table:{
+          id:'tbl-inisiatif',
+          headers:['No','Perspektif BSC','Sasaran Strategis','Indikator Kinerja Utama','Baseline 2024','Target 2029','Inisiatif/Strategi'],
+          rows:[
+            ['1','Pemangku Kepentingan','Peningkatan kualitas lulusan yang kompetitif','Masa tunggu kerja lulusan','7,6 bulan','< 6 bulan','Penguatan link & match dengan dunia kerja, sertifikasi kompetensi, program magang MBKM'],
+            ['2','Pemangku Kepentingan','Peningkatan akreditasi prodi','% Prodi terakreditasi Unggul','37,9%','48,2%','Pendampingan akreditasi intensif, peningkatan mutu proses pembelajaran OBE'],
+            ['3','Pemangku Kepentingan','Peningkatan kepuasan layanan','Indeks Kepuasan Mahasiswa','78,5%','88%','Digitalisasi layanan, pelatihan service excellence, feedback system'],
+            ['4','Proses Internal','Peningkatan kualitas penelitian dan publikasi','Publikasi Scopus','183','500+','Program akselerasi publikasi, research grant, visiting professor'],
+            ['5','Proses Internal','Peningkatan relevansi kurikulum','% Prodi menerapkan OBE','...','100%','Workshop kurikulum OBE, benchmarking best practices'],
+            ['6','Proses Internal','Penguatan tata kelola BLU','Nilai SAKIP','78 (BB)','90 (A)','Implementasi SPIP, optimalisasi SPI, reformasi birokrasi'],
+            ['7','Pertumbuhan','Peningkatan kapasitas dan kualitas dosen','% Dosen S3','29,67%','40%','Beasiswa S3 DN/LN, rekrutmen dosen baru, tugas belajar'],
+            ['8','Pertumbuhan','Percepatan jabatan fungsional dosen','% Asisten Ahli','43,5%','< 25%','Program mentoring, workshop PAK, insentif publikasi'],
+            ['9','Pertumbuhan','Pengembangan infrastruktur digital','% Layanan berbasis TI','...','85%','Smart campus, LMS, digital library, e-office'],
+            ['10','Keuangan','Kemandirian dan diversifikasi PNBP','Pertumbuhan PNBP per tahun','8,3%','15%','Pengembangan 10+ unit bisnis baru, optimalisasi tarif, efisiensi belanja'],
+          ]
+        }
+      },
+    ]
+  },
+  {
+    id:'bab3', num:'BAB III', title:'Rencana Strategis Bisnis 5 Tahun', limit:'Maksimal 6 Halaman', cls:'purple',
+    components:[
+      { id:'b3a', letter:'A', title:'Program Kementerian/Lembaga',
+        type:'rte+table',
+        template:'<p>BLU UIN Ponorogo beroperasi di bawah naungan Kementerian Agama Republik Indonesia. Program-program K/L yang relevan dan menjadi acuan dalam penyusunan kegiatan BLU meliputi:</p>',
+        placeholder:'Tuliskan program K/L yang relevan dengan BLU...',
+        table:{
+          id:'tbl-program-kl',
+          headers:['No','Program K/L','Kode','Sasaran Program K/L','Keterkaitan dengan BLU UIN Ponorogo'],
+          rows:[
+            ['1','Program Pendidikan Tinggi Keagamaan Islam','054.08.01','Meningkatnya kualitas dan akses pendidikan tinggi keagamaan Islam','Inti — seluruh kegiatan pendidikan, penelitian, dan PkM BLU'],
+            ['2','Program Dukungan Manajemen','054.01.01','Meningkatnya kualitas tata kelola K/L','Mendukung — reformasi birokrasi dan akuntabilitas BLU'],
+            ['3','Program Bimbingan Masyarakat Islam','054.03.01','Meningkatnya kualitas layanan keagamaan Islam','Kontributif — Ma\'had, pembinaan keagamaan kampus'],
+            ['4','Program Riset dan Inovasi','054.08.02','Meningkatnya kontribusi riset untuk pembangunan','Mendukung — penelitian dan publikasi ilmiah dosen'],
+          ]
+        }
+      },
+      { id:'b3b', letter:'B', title:'Strategi Bisnis BLU',
+        type:'rte',
+        template:'<h3>1. Model Bisnis BLU</h3><p>Model bisnis BLU UIN Ponorogo dibangun dengan pendekatan <b>triple helix</b> yang mengintegrasikan peran akademik, pemerintah, dan industri. Komponen model bisnis meliputi:</p><ul><li><b>Value Proposition:</b> Pendidikan tinggi Islam berkualitas dengan integrasi keilmuan, moderasi beragama, dan keunggulan lokal di kawasan Madiun Raya.</li><li><b>Customer Segments:</b> Mahasiswa S1/S2/S3, masyarakat umum, instansi pemerintah, dunia usaha/industri.</li><li><b>Revenue Streams:</b> UKT, asrama, sewa fasilitas, jasa konsultasi, sertifikasi, unit produksi, kerjasama.</li><li><b>Key Resources:</b> SDM dosen berkualitas, infrastruktur modern, brand UIN, jaringan alumni.</li></ul><h3>2. Sumber Pendapatan PNBP</h3><p>Sumber pendapatan PNBP BLU dikelompokkan menjadi:</p><h3>A. PNBP Aktif (7 Unit Eksisting)</h3><ol><li><b>UKT/SPP Mahasiswa</b> — sumber utama PNBP dari 10.182 mahasiswa aktif.</li><li><b>Asrama Ma\'had Al-Jami\'ah</b> — biaya penginapan dan pembinaan.</li><li><b>Sewa Gedung & Aula</b> — penyewaan fasilitas untuk acara eksternal.</li><li><b>Perpustakaan & Jasa Informasi</b> — layanan digital dan keanggotaan.</li><li><b>Pusat Pengembangan Bahasa</b> — kursus dan sertifikasi bahasa.</li><li><b>Kerjasama Pelatihan</b> — diklat, workshop, seminar berbayar.</li><li><b>Jasa Konsultasi & Penelitian</b> — penelitian kolaboratif dengan pihak eksternal.</li></ol><h3>B. PNBP Potensial (10 Unit Pengembangan)</h3><ol><li>Lembaga Sertifikasi Profesi (LSP-P1) — sertifikasi kompetensi bidang syariah, pendidikan, IT.</li><li>Teaching Factory — produksi berbasis kampus.</li><li>Pusat Studi & Konsultasi — kajian hukum Islam, ekonomi syariah, mediasi.</li><li>Klinik Kesehatan Kampus — layanan kesehatan dasar.</li><li>Unit Produksi Halal — pengujian dan sertifikasi produk halal.</li><li>Inkubator Bisnis — pendampingan startup mahasiswa dan UMKM.</li><li>Digital Learning Hub — program online dan hybrid berbayar.</li><li>Pusat Pelatihan IT & AI — kursus komputasi, data science.</li><li>Wisata Edukasi & Religi — paket wisata kampus dan pesantren.</li><li>Co-Working Space & Event — penyewaan ruang kerja bersama.</li></ol><h3>3. Keunggulan Kompetitif</h3><p>Keunggulan kompetitif BLU UIN Ponorogo dibanding PTKIN lain:</p><ul><li><b>Monopoli geografis:</b> Satu-satunya UIN di kawasan Madiun Raya (Ponorogo, Madiun, Magetan, Ngawi, Pacitan).</li><li><b>Akreditasi Unggul:</b> Salah satu dari sedikit PTKIN di Jawa Timur dengan akreditasi institusi Unggul.</li><li><b>Infrastruktur modern:</b> Gedung dan fasilitas baru dari dana SBSN.</li><li><b>Integrasi keilmuan:</b> Status UIN memungkinkan pengembangan prodi lintas bidang.</li><li><b>Ma\'had Al-Jami\'ah:</b> Pembinaan karakter unik yang tidak dimiliki PTN umum.</li></ul>',
+        placeholder:'Tuliskan strategi bisnis BLU: model bisnis, sumber PNBP, keunggulan kompetitif...'
+      },
+      { id:'b3c', letter:'C', title:'Kegiatan dan Indikator',
+        type:'rte+table',
+        template:'<p>Kegiatan untuk mencapai sasaran strategis disusun mencakup 6 aspek utama: <b>Layanan, Keuangan, SDM, Sarana & Prasarana, Inovasi, dan Investasi</b>. Setiap kegiatan dilengkapi indikator kinerja terukur dan target capaian per tahun selama 5 tahun (2025–2029). Kegiatan disusun berdasarkan cascading dari sasaran strategis ke program dan kegiatan operasional.</p>',
+        placeholder:'Tuliskan narasi pengantar kegiatan dan indikator...',
+        table:{
+          id:'tbl-kegiatan',
+          headers:['No','Aspek','Kegiatan','Indikator Kinerja','Satuan','Baseline 2024','2025','2026','2027','2028','2029'],
+          rows:[
+            ['','LAYANAN','','','','','','','','',''],
+            ['1','Layanan','Peningkatan mutu akreditasi prodi','Prodi terakreditasi Unggul','%','37,9','39,3','41,1','43,6','46,4','48,2'],
+            ['2','Layanan','Peningkatan kelulusan tepat waktu','Lulusan tepat waktu (≤ n semester)','%','62,26','64,5','66,5','68,5','70,5','72,5'],
+            ['3','Layanan','Pengembangan MBKM','Mahasiswa mengikuti program MBKM','%','...','25','35','45','55','65'],
+            ['4','Layanan','Peningkatan daya saing lulusan','Masa tunggu kerja lulusan','Bulan','7,6','7,2','6,8','6,5','6,3','6,1'],
+            ['5','Layanan','Pembukaan prodi baru','Jumlah prodi baru dibuka','Prodi','0','1','1','1','1','1'],
+            ['6','Layanan','Pengembangan program Pascasarjana','Mahasiswa S2/S3 aktif','Orang','...','...','...','...','...','...'],
+            ['','KEUANGAN','','','','','','','','',''],
+            ['7','Keuangan','Optimalisasi pendapatan PNBP','Total pendapatan PNBP','Rp Miliar','...','...','...','...','...','...'],
+            ['8','Keuangan','Peningkatan efisiensi belanja','% Efisiensi belanja barang','%','...','5','7','9','10','12'],
+            ['9','Keuangan','Diversifikasi sumber pendapatan','Jumlah unit PNBP aktif','Unit','7','8','9','10','11','12'],
+            ['10','Keuangan','Peningkatan proporsi PNBP','Proporsi PNBP terhadap total belanja','%','...','...','...','...','...','...'],
+            ['11','Keuangan','Peningkatan akuntabilitas','Nilai SAKIP','Nilai','78','80','83','85','88','90'],
+            ['','SUMBER DAYA MANUSIA','','','','','','','','',''],
+            ['12','SDM','Peningkatan kualifikasi dosen S3','Dosen berkualifikasi S3','%','29,67','32','34','36','38','40'],
+            ['13','SDM','Percepatan jabatan fungsional','Dosen minimal Lektor','%','56,5','60','65','70','73','75'],
+            ['14','SDM','Rekrutmen dosen baru','Dosen baru direkrut','Orang','...','10','10','15','15','15'],
+            ['15','SDM','Peningkatan kompetensi tendik','Tendik mengikuti diklat/sertifikasi','%','...','30','40','50','60','70'],
+            ['16','SDM','Sertifikasi dosen','Dosen bersertifikat pendidik','%','70','73','76','79','82','85'],
+            ['17','SDM','Perbaikan rasio dosen:mahasiswa','Rasio dosen:mahasiswa','Rasio','1:44','1:40','1:37','1:35','1:32','1:30'],
+            ['','SARANA & PRASARANA','','','','','','','','',''],
+            ['18','Sarpras','Pengembangan smart campus','Layanan berbasis TI','%','...','40','50','60','70','80'],
+            ['19','Sarpras','Pengembangan green campus','Indeks green campus','Nilai','NA','50','55','60','65','75'],
+            ['20','Sarpras','Penambahan koleksi perpustakaan','Judul buku/jurnal','Judul','27.000','27.600','28.200','28.800','29.400','30.000'],
+            ['21','Sarpras','Pengembangan laboratorium','Lab terakreditasi/tersertifikasi','Unit','...','...','...','...','...','...'],
+            ['22','Sarpras','Peningkatan bandwidth internet','Kapasitas bandwidth','Mbps','...','...','...','...','...','...'],
+            ['','INOVASI','','','','','','','','',''],
+            ['23','Inovasi','Pengembangan e-learning','Mata kuliah berbasis LMS','%','...','30','45','60','75','85'],
+            ['24','Inovasi','Peningkatan publikasi internasional','Jurnal internasional terindeks','Jurnal','1','1','2','2','3','4'],
+            ['25','Inovasi','Perolehan HKI/Paten','Paten granted','Paten','0','1','2','4','6','8'],
+            ['26','Inovasi','Pengembangan produk inovasi','Prototype/produk inovasi','Produk','...','2','4','6','8','10'],
+            ['','INVESTASI','','','','','','','','',''],
+            ['27','Investasi','Pengembangan unit bisnis baru','Unit bisnis PNBP baru beroperasi','Unit','0','1','2','3','4','5'],
+            ['28','Investasi','Pembangunan fasilitas pendukung','Gedung/fasilitas baru','Unit','...','1','1','1','1','1'],
+            ['29','Investasi','Pengembangan kerjasama strategis','MoU aktif dengan industri/pemerintah','MoU','240','280','320','360','400','440'],
+            ['30','Investasi','Pengembangan LSP dan sertifikasi','Skema sertifikasi aktif','Skema','0','2','4','6','8','10'],
+          ]
+        }
+      },
+    ]
+  },
+  {
+    id:'bab4', num:'BAB IV', title:'Penutup', limit:'Maksimal 2 Halaman', cls:'amber',
+    components:[
+      { id:'b4a', letter:'', title:'Simpulan dan Hal-hal Penting',
+        type:'rte',
+        template:'<h3>1. Simpulan</h3><p>Berdasarkan analisis situasi internal dan eksternal, evaluasi kinerja 5 tahun terakhir, serta proyeksi ke depan, Rencana Strategi Bisnis (RSB) BLU UIN Kiai Ageng Muhammad Besari Ponorogo periode 2025–2029 disusun dengan memperhatikan:</p><ol><li><b>Potensi pertumbuhan yang signifikan</b> — Status UIN baru (2025), akreditasi Unggul, dan monopoli geografis di Madiun Raya memberikan landasan kuat untuk pengembangan layanan dan peningkatan pendapatan PNBP.</li><li><b>Kebutuhan penguatan SDM</b> — Peningkatan kualifikasi dosen S3, percepatan jabatan fungsional, dan perbaikan rasio dosen:mahasiswa menjadi prioritas utama.</li><li><b>Diversifikasi pendapatan</b> — Pengembangan 10+ unit bisnis PNBP baru akan mengurangi ketergantungan pada dana RM dan meningkatkan kemandirian finansial.</li><li><b>Transformasi digital</b> — Implementasi smart campus, e-learning, dan digitalisasi layanan menjadi kunci daya saing ke depan.</li></ol><h3>2. Hal-hal Penting yang Perlu Mendapat Perhatian</h3><ol><li><b>Proses penetapan BLU</b> — Diperlukan dukungan penuh dari Kementerian Agama dan Kementerian Keuangan untuk percepatan penetapan status PK BLU.</li><li><b>Kapasitas tata kelola</b> — Perlu pembentukan dan pelatihan tim pengelola keuangan BLU, Satuan Pengawas Internal (SPI), dan Dewan Pengawas.</li><li><b>Regulasi tarif</b> — Penyusunan dan penetapan tarif layanan BLU memerlukan kajian mendalam dan persetujuan Menteri Keuangan.</li><li><b>Manajemen perubahan</b> — Transisi dari Satker ke BLU memerlukan sosialisasi dan change management yang terstruktur kepada seluruh civitas akademika.</li><li><b>Monitoring dan evaluasi</b> — Diperlukan sistem monev berkala (triwulanan) untuk memastikan capaian target RSB berjalan sesuai rencana.</li></ol><h3>3. Rekomendasi</h3><p>Rekomendasi strategis yang diajukan:</p><ol><li>Mempercepat penyiapan kelengkapan administratif BLU (RSB, RBA, SPM, Tarif Layanan, SOP Keuangan).</li><li>Membentuk Tim Task Force BLU yang melibatkan unsur pimpinan, keuangan, hukum, dan akademik.</li><li>Mengintensifkan koordinasi dengan Ditjen Pendidikan Islam Kemenag dan Ditjen Perbendaharaan Kemenkeu.</li><li>Melakukan studi banding ke PTKIN BLU yang telah berhasil (UIN Malang, UIN Yogyakarta, UIN Jakarta).</li><li>Mengalokasikan anggaran khusus untuk capacity building tata kelola BLU.</li></ol>',
+        placeholder:'Tuliskan simpulan, hal-hal penting yang perlu perhatian, dan rekomendasi...'
+      },
+    ]
+  },
+  {
+    id:'lamp1', num:'LAMPIRAN I', title:'Evaluasi Kinerja Tahun Berjalan', limit:'', cls:'cyan',
+    components:[
+      { id:'l1a', letter:'', title:'Kinerja Aspek Layanan', type:'rte+table',
+        template:'<p>Kinerja aspek layanan pendidikan UIN Ponorogo tahun berjalan (2024) meliputi penyelenggaraan pendidikan, penelitian, dan pengabdian masyarakat. Berikut data target dan realisasi kinerja layanan:</p>',
+        placeholder:'Narasi kinerja aspek layanan...',
+        table:{ id:'tbl-layanan',
+          headers:['No','Indikator Layanan','Satuan','Target 2024','Realisasi 2024','Capaian (%)','Keterangan'],
+          rows:[['1','Jumlah mahasiswa aktif','Orang','10.000','10.182','101,8%','Meningkat dari 9.450 (2023)'],
+            ['2','Jumlah mahasiswa baru','Orang','3.200','3.356','104,9%','Peminat meningkat 12%'],
+            ['3','Jumlah lulusan','Orang','...','...','...',''],
+            ['4','Tingkat kelulusan tepat waktu','%','65','62,26','95,8%','Perlu program percepatan'],
+            ['5','IPK rata-rata lulusan','Nilai','3,50','3,52','100,6%','Baik'],
+            ['6','Masa tunggu kerja lulusan','Bulan','< 8','7,6','105,3%','Tracer study 2024'],
+            ['7','Prodi terakreditasi Unggul','Prodi','10','11','110%','37,9% dari total prodi'],
+            ['8','Prodi terakreditasi Baik Sekali','Prodi','8','8','100%','27,6% dari total prodi'],
+            ['9','Jumlah MoU kerjasama aktif','MoU','250','240','96%','Domestik & internasional'],
+            ['10','Kepuasan mahasiswa (IKM)','%','80','78,5','98,1%','Perlu peningkatan layanan digital'],
+            ['11','Jumlah program studi','Prodi','28','28','100%','S1:22, S2:5, S3:1'],
+            ['12','Peserta MBKM','Orang','...','...','...','Program pertukaran & magang'],
+          ]}},
+      { id:'l1b', letter:'', title:'Kinerja Aspek Keuangan', type:'rte+table',
+        template:'<p>Kinerja aspek keuangan mencakup realisasi pendapatan dan belanja. Berikut data keuangan tahun berjalan:</p>',
+        placeholder:'Narasi kinerja aspek keuangan...',
+        table:{ id:'tbl-keuangan',
+          headers:['No','Uraian','Kode MAK','Pagu/Target (Rp Juta)','Realisasi (Rp Juta)','% Realisasi','Keterangan'],
+          rows:[['','PENDAPATAN','','','','',''],
+            ['1','Pendapatan PNBP — UKT','...','...','...','...','Sumber utama PNBP'],
+            ['2','Pendapatan PNBP — Asrama','...','...','...','...','Ma\'had Al-Jami\'ah'],
+            ['3','Pendapatan PNBP — Sewa','...','...','...','...','Gedung & fasilitas'],
+            ['4','Pendapatan PNBP — Lainnya','...','...','...','...','Jasa, kerjasama, dll'],
+            ['5','Total Pendapatan PNBP','','...','...','...',''],
+            ['','BELANJA','','','','',''],
+            ['6','Belanja Pegawai','51','...','...','...','Gaji & tunjangan'],
+            ['7','Belanja Barang & Jasa','52','...','...','...','Operasional'],
+            ['8','Belanja Modal','53','...','...','...','Aset tetap'],
+            ['9','Belanja Bantuan Sosial','57','...','...','...','Beasiswa'],
+            ['10','Total Belanja','','...','...','...',''],
+            ['','RASIO KEUANGAN','','','','',''],
+            ['11','Proporsi PNBP/Total Belanja','','','','...%','Target meningkat'],
+            ['12','Efisiensi Belanja Barang','','','','...%',''],
+            ['13','Nilai SAKIP','','','','78','Predikat BB'],
+          ]}},
+      { id:'l1c', letter:'', title:'Kinerja Aspek SDM', type:'rte+table',
+        template:'<p>Profil SDM UIN Ponorogo per Desember 2024 meliputi data dosen tetap dan tenaga kependidikan:</p>',
+        placeholder:'Narasi kinerja aspek SDM...',
+        table:{ id:'tbl-sdm',
+          headers:['No','Uraian','Jumlah','%','Keterangan'],
+          rows:[['','DOSEN TETAP (PNS)','329','100%',''],
+            ['1','Dosen S3 (Doktor)','81','24,6%','Target 40% (2029)'],
+            ['2','Dosen S2 (Magister)','246','74,8%','Prioritas studi lanjut S3'],
+            ['3','Dosen S1','2','0,6%','Proses studi lanjut'],
+            ['','JABATAN FUNGSIONAL DOSEN','','',''],
+            ['4','Guru Besar (Profesor)','15','4,6%','Target 25 (2029)'],
+            ['5','Lektor Kepala','47','14,3%','Target 70 (2029)'],
+            ['6','Lektor','123','37,4%',''],
+            ['7','Asisten Ahli','143','43,5%','Prioritas percepatan naik jabatan'],
+            ['8','Tenaga Pengajar','1','0,3%',''],
+            ['','TENAGA KEPENDIDIKAN','','',''],
+            ['9','Tendik PNS','...','...',''],
+            ['10','Tendik PPNPN/Kontrak','...','...',''],
+            ['11','Total Tendik','162','100%',''],
+            ['','RASIO & KUALITAS','','',''],
+            ['12','Rasio Dosen:Mahasiswa','1:44','','Target ideal 1:25–1:30'],
+            ['13','Dosen Bersertifikat Pendidik','...','70%','Target 85% (2029)'],
+            ['14','Dosen dengan Sertifikat Kompetensi','...','...','Profesi/industri'],
+          ]}},
+      { id:'l1d', letter:'', title:'Kinerja Aspek Sarana & Prasarana', type:'rte+table',
+        template:'<p>Kondisi sarana dan prasarana kampus UIN Ponorogo per 2024. Infrastruktur utama telah berkembang signifikan melalui pembiayaan SBSN:</p>',
+        placeholder:'Narasi kinerja aspek sarana & prasarana...',
+        table:{ id:'tbl-sarpras',
+          headers:['No','Jenis Sarana/Prasarana','Jumlah/Kapasitas','Kondisi','Luas (m²)','Tahun Bangun/Renovasi','Keterangan'],
+          rows:[['1','Gedung Rektorat','1 unit','Baik','...','...','Pusat administrasi'],
+            ['2','Gedung Perkuliahan','... unit','Baik','...','...','Termasuk SBSN baru'],
+            ['3','Laboratorium Sains','... unit','Baik','...','...','Fisika, Kimia, Bio, Komputer'],
+            ['4','Laboratorium Bahasa','... unit','Baik','...','...',''],
+            ['5','Laboratorium Komputer/IT','... unit','Baik','...','...',''],
+            ['6','Perpustakaan Pusat','1 unit','Baik','...','...','Koleksi 27.000 judul'],
+            ['7','Masjid Kampus','1 unit','Baik','...','...','Kapasitas ... jamaah'],
+            ['8','Asrama Ma\'had Al-Jami\'ah','... unit','Baik','...','...','Putra & putri'],
+            ['9','Gedung Olahraga / GOR','1 unit','Baik','...','...',''],
+            ['10','Lapangan Olahraga','... unit','Baik','...','...','Futsal, basket, voli'],
+            ['11','Aula / Auditorium','... unit','Baik','...','...','Kapasitas ... orang'],
+            ['12','Kantin Mahasiswa','... unit','Cukup','...','...','Perlu pengembangan'],
+            ['13','Klinik Kesehatan','1 unit','Cukup','...','...','Layanan dasar'],
+            ['14','Parkir','... area','Cukup','...','...','Perlu perluasan'],
+            ['15','Jaringan Internet','... Mbps','Cukup','','','Perlu upgrade bandwidth'],
+            ['16','CCTV & Keamanan','... titik','Baik','','',''],
+            ['17','Total Luas Lahan','... Ha','','','','Milik negara'],
+            ['18','Total Luas Bangunan','... m²','','','',''],
+          ]}},
+    ]
+  },
+  {
+    id:'lamp2', num:'LAMPIRAN II', title:'Program dan Kegiatan 5 Tahun ke Depan', limit:'', cls:'green',
+    components:[
+      { id:'l2a', letter:'', title:'Grand Strategy', type:'rte',
+        template:'<h3>Grand Strategy BLU UIN Ponorogo 2025–2029</h3><p>Berdasarkan hasil analisis SWOT dan posisi pada matriks IE, grand strategy BLU UIN Ponorogo ditetapkan sebagai <b>Strategi Pertumbuhan (Growth Strategy)</b> dengan penekanan pada:</p><ol><li><b>Penetrasi Pasar (Market Penetration):</b> Meningkatkan jumlah mahasiswa melalui peningkatan mutu layanan, promosi aktif, dan perluasan akses di wilayah Madiun Raya.</li><li><b>Pengembangan Produk (Product Development):</b> Membuka prodi baru bidang sains, teknologi, dan kesehatan sesuai status UIN; mengembangkan program sertifikasi dan pelatihan profesional.</li><li><b>Pengembangan Pasar (Market Development):</b> Memperluas jangkauan ke luar Madiun Raya, mahasiswa internasional, dan segmen profesional melalui program online/hybrid.</li><li><b>Diversifikasi (Diversification):</b> Mengembangkan 10+ unit bisnis PNBP baru (LSP, teaching factory, klinik, inkubator) untuk mengurangi ketergantungan pada UKT.</li></ol><h3>Strategi TOWS</h3><ul><li><b>SO Strategy:</b> Memanfaatkan status UIN dan akreditasi Unggul (S1,S2) untuk membuka prodi baru (O4) dan mengakses peluang PNBP baru (O5).</li><li><b>WO Strategy:</b> Memanfaatkan regulasi BLU (O6) untuk mengatasi keterbatasan fleksibilitas keuangan (W1) dan meningkatkan publikasi melalui program insentif (W2+O1).</li><li><b>ST Strategy:</b> Menggunakan monopoli geografis (S4) dan infrastruktur modern (S5) untuk menghadapi persaingan PTKIN BLU (T2) dan urbanisasi (T5).</li><li><b>WT Strategy:</b> Memperbaiki rasio dosen (W3) dan jabatan fungsional (W4) untuk menghadapi tuntutan efisiensi (T1) dan kompetisi (T2).</li></ul>',
+        placeholder:'Tuliskan grand strategy dari hasil analisis SWOT...'
+      },
+      { id:'l2b', letter:'', title:'Tujuan dan Sasaran Strategis', type:'table',
+        table:{ id:'tbl-sasaran',
+          headers:['No','Tujuan Strategis','Sasaran Strategis','Indikator Kinerja Utama (IKU)','Satuan','Baseline','Target 2029','Penanggung Jawab'],
+          rows:[['1','Meningkatkan kualitas dan akses pendidikan','Peningkatan mutu akademik','Prodi terakreditasi Unggul','%','37,9','48,2','Wakil Rektor I'],
+            ['2','','Peningkatan daya saing lulusan','Masa tunggu kerja lulusan','Bulan','7,6','< 6','Wakil Rektor III'],
+            ['3','','Perluasan akses pendidikan','Jumlah mahasiswa aktif','Orang','10.182','~14.500','Wakil Rektor I'],
+            ['4','Meningkatkan kualitas penelitian & PkM','Peningkatan output penelitian','Publikasi Scopus per tahun','Jumlah','183','500+','LPPM'],
+            ['5','','Peningkatan HKI','Paten granted','Jumlah','0','8','LPPM'],
+            ['6','','Penguatan PkM berbasis riset','Desa/kelurahan binaan','Desa','...','20+','LPPM'],
+            ['7','Mewujudkan tata kelola BLU profesional','Peningkatan akuntabilitas','Nilai SAKIP','Nilai','78','90','Wakil Rektor II'],
+            ['8','','Kemandirian keuangan','Proporsi PNBP/Total belanja','%','...','...','Wakil Rektor II'],
+            ['9','Mengembangkan SDM unggul','Peningkatan kualifikasi dosen','Dosen S3','%','29,67','40','Kepegawaian'],
+            ['10','','Percepatan jabatan fungsional','Dosen min. Lektor','%','56,5','75','Kepegawaian'],
+          ]}},
+      { id:'l2c', letter:'', title:'Program Utama dan Kegiatan Strategis', type:'table',
+        table:{ id:'tbl-progkeg',
+          headers:['No','Program Utama','Kegiatan Strategis','Output/Deliverable','Pelaksana','2025','2026','2027','2028','2029'],
+          rows:[['1','Peningkatan Mutu Akademik','Akreditasi prodi Unggul','Prodi Unggul baru','LP2M','1','1','2','1','1'],
+            ['2','','Pengembangan kurikulum OBE','Prodi menerapkan OBE','Wakil Rektor I','10','15','20','25','28'],
+            ['3','','Pembukaan prodi baru','Prodi baru operasional','Wakil Rektor I','1','1','1','1','1'],
+            ['4','Pengembangan SDM','Beasiswa S3 DN/LN','Dosen menempuh S3','Kepegawaian','5','5','7','7','8'],
+            ['5','','Program percepatan jabfung','Dosen naik jabatan','Kepegawaian','15','20','20','25','25'],
+            ['6','','Visiting professor/scholar','Dosen melakukan visiting','Kerjasama','3','5','5','7','7'],
+            ['7','Pengembangan Riset & Inovasi','Research grant internal','Penelitian didanai','LPPM','50','60','70','80','100'],
+            ['8','','Akselerasi publikasi Scopus','Artikel Scopus','LPPM','40','60','80','100','120'],
+            ['9','','Pendaftaran HKI/Paten','Paten diajukan','LPPM','2','3','4','5','5'],
+            ['10','Pengembangan Bisnis BLU','Operasionalisasi unit PNBP baru','Unit bisnis baru','Wakil Rektor II','1','2','3','4','5'],
+            ['11','','Pembangunan LSP-P1','Skema sertifikasi aktif','LSP','2','4','6','8','10'],
+            ['12','','Pengembangan digital campus','Layanan online baru','UPT TI','3','5','7','9','12'],
+            ['13','Penguatan Tata Kelola','Implementasi SPIP','SOP keuangan BLU','SPI','✓','✓','✓','✓','✓'],
+            ['14','','Pengembangan SIM terintegrasi','Modul SIM baru','UPT TI','2','3','3','2','2'],
+            ['15','Pengembangan Kerjasama','MoU strategis baru','MoU aktif','Kerjasama','40','40','40','40','40'],
+          ]}},
+    ]
+  },
+  {
+    id:'lamp3', num:'LAMPIRAN III', title:'Proyeksi 5 Tahun ke Depan', limit:'', cls:'purple',
+    components:[
+      { id:'l3a', letter:'', title:'Asumsi Makro Ekonomi', type:'rte+table',
+        template:'<p>Asumsi makro ekonomi yang digunakan sebagai dasar proyeksi bersumber dari data resmi BPS, Bank Indonesia, dan Nota Keuangan APBN. Asumsi ini divalidasi dengan kondisi riil dan tren 5 tahun terakhir.</p>',
+        placeholder:'Narasi asumsi makro ekonomi...',
+        table:{ id:'tbl-asumsi',
+          headers:['No','Indikator Ekonomi','Sumber Data','Realisasi 2024','2025','2026','2027','2028','2029','Keterangan'],
+          rows:[['1','Pertumbuhan PDB (%)','BPS/APBN','5,05','5,2','5,3','5,4','5,5','5,6','Tren moderat naik'],
+            ['2','Inflasi (%)','BPS/BI','2,72','3,0','2,8','2,7','2,6','2,5','Target BI 2,5±1%'],
+            ['3','Kurs USD/IDR','BI','15.800','16.100','16.000','15.900','15.800','15.700','Asumsi stabil'],
+            ['4','BI Rate (%)','BI','6,00','5,75','5,50','5,25','5,00','5,00','Tren penurunan'],
+            ['5','UMR Jawa Timur (Rp Juta)','Disnaker','2,1','2,2','2,3','2,4','2,5','2,6','Pertumbuhan ~5%'],
+            ['6','APK Pendidikan Tinggi (%)','BPS','34,11','35','36','37','38','39','Target meningkat'],
+            ['7','Alokasi Fungsi Pendidikan APBN (Rp T)','Kemenkeu','757,8','...','...','...','...','...','Min 20% APBN'],
+          ]}},
+      { id:'l3b', letter:'', title:'Proyeksi Volume dan Kualitas Layanan', type:'rte+table',
+        template:'<p>Proyeksi volume dan kualitas layanan disusun dalam dua skenario: sebelum dan setelah menerapkan Pola Keuangan BLU. Penerapan PK BLU memungkinkan fleksibilitas yang lebih tinggi dalam pengelolaan sumber daya sehingga diproyeksikan terjadi percepatan peningkatan layanan.</p>',
+        placeholder:'Narasi proyeksi volume layanan...',
+        table:{ id:'tbl-proy-vol',
+          headers:['No','Indikator Layanan','Kondisi 2024','Sebelum PK BLU','','','','','Setelah PK BLU','','','',''],
+          subheaders:['','','','2025','2026','2027','2028','2029','2025','2026','2027','2028','2029'],
+          rows:[['1','Jumlah Mahasiswa Aktif','10.182','10.500','10.800','11.100','11.400','11.700','10.500','11.200','12.000','13.000','14.500'],
+            ['2','Jumlah Program Studi','28','29','29','30','30','31','29','30','32','34','35'],
+            ['3','Prodi Unggul (%)','37,9','39','40','41','42','43','39','42','45','47','48,2'],
+            ['4','Kelulusan Tepat Waktu (%)','62,26','63','64','65','66','67','64','67','69','71','72,5'],
+            ['5','Masa Tunggu Kerja (Bulan)','7,6','7,4','7,2','7,0','6,8','6,6','7,2','6,8','6,5','6,2','6,0'],
+            ['6','Kepuasan Mahasiswa (%)','78,5','79','80','81','82','83','80','83','85','87','88'],
+            ['7','Dosen S3 (%)','29,67','31','32','33','34','35','32','34','36','38','40'],
+            ['8','Publikasi Scopus (kumulatif)','183','210','240','280','320','370','220','280','350','420','500'],
+          ]}},
+      { id:'l3c', letter:'', title:'Proyeksi Pendapatan PNBP', type:'rte+table',
+        template:'<p>Proyeksi pendapatan PNBP disusun berdasarkan sumber pendapatan eksisting dan potensi pengembangan unit bisnis baru. Skenario setelah BLU memproyeksikan percepatan pertumbuhan PNBP karena fleksibilitas tarif dan diversifikasi layanan.</p>',
+        placeholder:'Narasi proyeksi pendapatan PNBP...',
+        table:{ id:'tbl-proy-pnbp',
+          headers:['No','Jenis PNBP','Realisasi 2024 (Rp Juta)','Sebelum PK BLU (Rp Juta)','','','','','Setelah PK BLU (Rp Juta)','','','',''],
+          subheaders:['','','','2025','2026','2027','2028','2029','2025','2026','2027','2028','2029'],
+          rows:[['1','UKT/SPP','...','...','...','...','...','...','...','...','...','...','...'],
+            ['2','Asrama Ma\'had','...','...','...','...','...','...','...','...','...','...','...'],
+            ['3','Sewa Gedung & Fasilitas','...','...','...','...','...','...','...','...','...','...','...'],
+            ['4','Pusat Bahasa','...','...','...','...','...','...','...','...','...','...','...'],
+            ['5','Kerjasama & Pelatihan','...','...','...','...','...','...','...','...','...','...','...'],
+            ['6','Perpustakaan & Jasa Info','...','...','...','...','...','...','...','...','...','...','...'],
+            ['7','Jasa Konsultasi & Riset','...','...','...','...','...','...','...','...','...','...','...'],
+            ['8','LSP-P1 (baru)','—','—','—','...','...','...','—','...','...','...','...'],
+            ['9','Teaching Factory (baru)','—','—','—','—','...','...','—','—','...','...','...'],
+            ['10','Klinik Kesehatan (baru)','—','—','—','—','...','...','—','—','...','...','...'],
+            ['11','Unit Bisnis Lainnya (baru)','—','—','—','—','—','...','—','—','—','...','...'],
+            ['','TOTAL PNBP','...','...','...','...','...','...','...','...','...','...','...'],
+          ]}},
+      { id:'l3d', letter:'', title:'Proyeksi Belanja 5 Tahun', type:'rte+table',
+        template:'<p>Proyeksi belanja disusun berdasarkan kebutuhan pengembangan layanan, SDM, dan infrastruktur. Skenario setelah BLU memungkinkan alokasi belanja yang lebih fleksibel dengan memanfaatkan pendapatan PNBP secara langsung.</p>',
+        placeholder:'Narasi proyeksi belanja...',
+        table:{ id:'tbl-proy-belanja',
+          headers:['No','Jenis Belanja','Realisasi 2024 (Rp Juta)','Sebelum PK BLU (Rp Juta)','','','','','Setelah PK BLU (Rp Juta)','','','',''],
+          subheaders:['','','','2025','2026','2027','2028','2029','2025','2026','2027','2028','2029'],
+          rows:[['1','Belanja Pegawai (51)','...','...','...','...','...','...','...','...','...','...','...'],
+            ['2','Belanja Barang & Jasa (52)','...','...','...','...','...','...','...','...','...','...','...'],
+            ['3','Belanja Modal (53)','...','...','...','...','...','...','...','...','...','...','...'],
+            ['4','Belanja Bantuan Sosial (57)','...','...','...','...','...','...','...','...','...','...','...'],
+            ['','TOTAL BELANJA','...','...','...','...','...','...','...','...','...','...','...'],
+          ]}},
+      { id:'l3e', letter:'', title:'Proporsi Belanja PNBP vs Rupiah Murni', type:'rte+table',
+        template:'<p>Tabel berikut menunjukkan proyeksi peningkatan proporsi belanja yang bersumber dari PNBP terhadap total belanja. Peningkatan proporsi PNBP mencerminkan kemandirian finansial BLU.</p>',
+        placeholder:'Narasi proporsi belanja...',
+        table:{ id:'tbl-proporsi',
+          headers:['Tahun','Skenario','Total Belanja (Rp Juta)','Dari PNBP (Rp Juta)','Dari RM (Rp Juta)','Proporsi PNBP (%)','Keterangan'],
+          rows:[['2024','Realisasi','...','...','...','...','Baseline'],
+            ['2025','Sebelum BLU','...','...','...','...',''],
+            ['2025','Setelah BLU','...','...','...','...',''],
+            ['2026','Sebelum BLU','...','...','...','...',''],
+            ['2026','Setelah BLU','...','...','...','...',''],
+            ['2027','Sebelum BLU','...','...','...','...',''],
+            ['2027','Setelah BLU','...','...','...','...',''],
+            ['2028','Sebelum BLU','...','...','...','...',''],
+            ['2028','Setelah BLU','...','...','...','...',''],
+            ['2029','Sebelum BLU','...','...','...','...',''],
+            ['2029','Setelah BLU','...','...','...','...','Target kemandirian'],
+          ]}},
+    ]
+  },
+  {
+    id:'lamp4', num:'LAMPIRAN IV', title:'Matriks Keterkaitan', limit:'', cls:'accent',
+    components:[
+      { id:'l4a', letter:'', title:'Matriks Keterkaitan Visi → Misi → Tujuan → Sasaran → Kebijakan → Program → Kegiatan 5 Tahun',
+        type:'rte+table',
+        template:'<p>Tabel berikut menunjukkan keterkaitan antara visi, misi, tujuan strategis, sasaran strategis, kebijakan, program utama, dan kegiatan strategis BLU UIN Ponorogo periode 2025–2029. Matriks ini memastikan <i>alignment</i> dan konsistensi dari level strategis hingga operasional.</p>',
+        placeholder:'Tuliskan narasi pengantar matriks keterkaitan...',
+        table:{ id:'tbl-cascading',
+          headers:['Visi','Misi','Tujuan Strategis','Sasaran Strategis','Kebijakan','Program Utama','Kegiatan Strategis 5 Tahun'],
+          rows:[['UIN yang Unggul, Moderat, dan Berdaya Saing di Tingkat Nasional dan Internasional 2030','Misi 1: Pendidikan berkualitas, inovatif, integrasi keilmuan','Meningkatkan kualitas dan akses pendidikan','Peningkatan mutu akademik','Peningkatan mutu berkelanjutan','Peningkatan Mutu Akademik','Akreditasi prodi Unggul, kurikulum OBE, pembukaan prodi baru'],
+            ['','','','Peningkatan daya saing lulusan','Link & match dunia kerja','','Program MBKM, sertifikasi, magang industri'],
+            ['','','Perluasan akses pendidikan','Peningkatan jumlah mahasiswa','Promosi dan perluasan jangkauan','','Penerimaan mahasiswa baru, program online/hybrid'],
+            ['','Misi 2: Penelitian kompetitif','Meningkatkan kualitas riset & PkM','Peningkatan output penelitian','Akselerasi riset dan publikasi','Pengembangan Riset & Inovasi','Research grant, akselerasi publikasi Scopus, HKI'],
+            ['','','','Penguatan PkM berbasis riset','PkM terintegrasi riset','','Desa binaan, kemitraan industri'],
+            ['','Misi 4: Tata kelola profesional','Mewujudkan tata kelola BLU profesional','Peningkatan akuntabilitas','Reformasi birokrasi dan tata kelola BLU','Penguatan Tata Kelola','Implementasi SPIP, SIM terintegrasi, SPI'],
+            ['','','','Kemandirian keuangan','Diversifikasi dan optimalisasi PNBP','Pengembangan Bisnis BLU','Operasionalisasi unit PNBP baru, LSP, digital campus'],
+            ['','Misi 5: Kerjasama strategis','Mengembangkan SDM unggul','Peningkatan kualifikasi dosen','Investasi SDM berkelanjutan','Pengembangan SDM','Beasiswa S3, visiting scholar, percepatan jabfung'],
+            ['','','','Penguatan kerjasama','Kerjasama strategis nasional & internasional','Pengembangan Kerjasama','MoU strategis, joint research, student exchange'],
+          ]}
+      },
+    ]
+  },
+];
+
+/* ============================================================
+   STATE
+============================================================ */
+const SK='rsb_generator_v3';
+let dirty=false, activeSection='bab1';
+
+/* ============================================================
+   RENDER
+============================================================ */
+function renderSidebar(){
+  let h='<div class="sb-title">Daftar Isi</div>';
+  SECTIONS.forEach(s=>{
+    h+=`<a class="sb-item main${s.id===activeSection?' active':''}" onclick="goTo('${s.id}')">${s.num}: ${s.title.substring(0,22)}${s.title.length>22?'…':''}</a>`;
+    s.components.forEach(c=>{
+      h+=`<a class="sb-item" onclick="goTo('${s.id}')">${c.letter?c.letter+'. ':''}${c.title.substring(0,24)}${c.title.length>24?'…':''}<span class="sb-badge" id="sbg-${c.id}">—</span></a>`;
+    });
+  });
+  h+=`<div class="sb-sep"></div>
+  <div class="sb-actions">
+    <button class="sb-btn primary" onclick="showPreview()">👁️ Preview Dokumen</button>
+    <button class="sb-btn secondary" onclick="window.print()">🖨️ Cetak / PDF</button>
+    <button class="sb-btn secondary" onclick="saveAll()">💾 Simpan</button>
+    <button class="sb-btn secondary" onclick="resetAll()">🔄 Reset</button>
+  </div>`;
+  document.getElementById('sidebar').innerHTML=h;
+}
+
+function renderMain(){
+  let h='';
+  SECTIONS.forEach(s=>{
+    let ch='';
+    s.components.forEach(c=>{
+      ch+=`<div class="comp-card" id="card-${c.id}">
+        <div class="comp-header"><span class="comp-num">${c.letter||'•'}</span><span class="comp-title">${c.title}</span></div>
+        <div class="comp-body">${renderComponent(c)}</div>
+      </div>`;
+    });
+    h+=`<div class="sec-block${s.id===activeSection?' active':''}" id="sec-${s.id}">
+      <div class="sec-head">
+        <div class="sec-label">${s.num}</div>
+        <h2 class="sec-h">${s.title}</h2>
+        <div class="sec-desc">${s.components.map(c=>(c.letter?c.letter+'. ':'')+c.title).join(' · ')}</div>
+        ${s.limit?`<span class="sec-limit">📄 ${s.limit}</span>`:''}
+      </div>
+      ${ch}
+    </div>`;
+  });
+  document.getElementById('mainContent').innerHTML=h;
+}
+
+function renderComponent(c){
+  let h='';
+  if(c.type.includes('swot')) h+=renderSwot(c);
+  if(c.type.includes('rte')) h+=renderRTE(c);
+  if(c.type.includes('table')&&c.table) h+=renderTable(c.table);
+  return h;
+}
+
+function renderRTE(c){
+  return `<div class="rte-wrap" id="rte-${c.id}">
+    <div class="rte-toolbar">
+      <button class="rte-btn" onclick="fmt('bold')" title="Bold"><b>B</b></button>
+      <button class="rte-btn" onclick="fmt('italic')" title="Italic"><i>I</i></button>
+      <button class="rte-btn" onclick="fmt('underline')" title="Underline"><u>U</u></button>
+      <div class="rte-sep"></div>
+      <button class="rte-btn" onclick="fmt('formatBlock','h3')" title="Heading" style="font-size:0.65rem;">H3</button>
+      <button class="rte-btn" onclick="fmt('insertUnorderedList')" title="Bullet List">•</button>
+      <button class="rte-btn" onclick="fmt('insertOrderedList')" title="Numbered">1.</button>
+      <div class="rte-sep"></div>
+      <button class="rte-btn" onclick="loadTemplate('${c.id}')" title="Muat Template" style="font-size:0.6rem;">📋</button>
+    </div>
+    <div class="rte-content" contenteditable="true" id="ed-${c.id}" data-placeholder="${c.placeholder||'Tulis di sini...'}" oninput="markDirty();updBadge('${c.id}')"></div>
+    <div class="rte-footer"><span id="wc-${c.id}">0 kata</span><span>Auto-save aktif</span></div>
+  </div>`;
+}
+
+function renderTable(t){
+  const hasSub=!!t.subheaders;
+  let thRow1='',thRow2='';
+  if(hasSub){
+    // Complex header with subheaders (for Sebelum/Setelah BLU tables)
+    let mainI=0;
+    const spans=[];let ci=0;
+    // Calculate colspan groups from subheaders
+    t.headers.forEach((h,i)=>{
+      if(h===''&&i>0){
+        spans[spans.length-1].span++;
+      }else{
+        spans.push({text:h,span:1,idx:i});
+      }
+    });
+    spans.forEach(s=>{
+      thRow1+=`<th${s.span>1?' colspan="'+s.span+'"':''}>${s.text}</th>`;
+    });
+    thRow2=t.subheaders.filter(s=>s!=='').map(s=>`<th>${s}</th>`).join('');
+  }else{
+    thRow1=t.headers.map(h=>`<th>${h}</th>`).join('');
+  }
+  let rows=t.rows.map((r,ri)=>{
+    const cells=r.map((c,ci)=>`<td contenteditable="true" data-ph="..." oninput="markDirty()">${c}</td>`).join('');
+    return `<tr>${cells}<td><button class="row-del" onclick="delRow(this)" title="Hapus baris">✕</button></td></tr>`;
+  }).join('');
+
+  return `<div class="tbl-wrap" id="tw-${t.id}">
+    <div class="tbl-actions">
+      <button class="tbl-act" onclick="addRow('${t.id}')">+ Tambah Baris</button>
+      <button class="tbl-act" onclick="addCol('${t.id}')">+ Tambah Kolom</button>
+    </div>
+    <table class="editable" id="${t.id}">
+      <thead><tr>${thRow1}<th></th></tr>${hasSub?'<tr>'+thRow2+'<th></th></tr>':''}</thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+}
+
+function renderSwot(c){
+  const s=c.swot;
+  const quads=[
+    {key:'strengths',label:'Strengths (Kekuatan)',cls:'str',prefix:'S',items:s.strengths},
+    {key:'weaknesses',label:'Weaknesses (Kelemahan)',cls:'wk',prefix:'W',items:s.weaknesses},
+    {key:'opportunities',label:'Opportunities (Peluang)',cls:'opp',prefix:'O',items:s.opportunities},
+    {key:'threats',label:'Threats (Ancaman)',cls:'thr',prefix:'T',items:s.threats},
+  ];
+  let h='<div class="swot-grid">';
+  quads.forEach(q=>{
+    let items=q.items.map((t,i)=>`<div class="swot-item"><span class="swot-item-num">${q.prefix}${i+1}</span><span class="swot-item-text" contenteditable="true" oninput="markDirty()">${t}</span></div>`).join('');
+    h+=`<div class="swot-quad" id="swot-${q.key}"><div class="swot-quad-head ${q.cls}">${q.label}</div><div class="swot-quad-body">${items}<button class="swot-add" onclick="addSwotItem('${q.key}','${q.prefix}')">+ Tambah</button></div></div>`;
+  });
+  h+='</div>';
+  return h;
+}
+
+/* ============================================================
+   INTERACTIONS
+============================================================ */
+function goTo(id){
+  activeSection=id;
+  document.querySelectorAll('.sec-block').forEach(el=>el.classList.remove('active'));
+  document.getElementById('sec-'+id)?.classList.add('active');
+  document.querySelectorAll('.sb-item.main').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.sb-item.main').forEach(el=>{
+    if(el.textContent.includes(SECTIONS.find(s=>s.id===id)?.title?.substring(0,8)||''))el.classList.add('active');
+  });
+  document.querySelector('.main')?.scrollTo(0,0);
+}
+
+function fmt(cmd,val){
+  if(cmd==='formatBlock')document.execCommand(cmd,false,'<'+(val||'p')+'>');
+  else document.execCommand(cmd,false,null);
+}
+
+function loadTemplate(cid){
+  const sec=SECTIONS.flatMap(s=>s.components).find(c=>c.id===cid);
+  if(!sec||!sec.template)return;
+  const ed=document.getElementById('ed-'+cid);
+  if(!ed)return;
+  if(ed.innerHTML.replace(/<br>|<p><\/p>/g,'').trim().length>0){
+    if(!confirm('Konten saat ini akan diganti dengan template. Lanjutkan?'))return;
+  }
+  ed.innerHTML=sec.template;
+  markDirty();updBadge(cid);
+}
+
+function addRow(tid){
+  const tbl=document.getElementById(tid);if(!tbl)return;
+  const cols=tbl.querySelector('thead tr').children.length;
+  const tr=document.createElement('tr');
+  for(let i=0;i<cols-1;i++){
+    const td=document.createElement('td');td.contentEditable='true';td.dataset.ph='...';td.setAttribute('oninput','markDirty()');
+    tr.appendChild(td);
+  }
+  const tdDel=document.createElement('td');
+  tdDel.innerHTML='<button class="row-del" onclick="delRow(this)" title="Hapus">✕</button>';
+  tr.appendChild(tdDel);
+  tbl.querySelector('tbody').appendChild(tr);
+  markDirty();
+}
+function delRow(btn){const tr=btn.closest('tr');tr.remove();markDirty();}
+function addCol(tid){
+  const tbl=document.getElementById(tid);if(!tbl)return;
+  // Add header
+  const ths=tbl.querySelectorAll('thead tr');
+  ths.forEach(tr=>{
+    const th=document.createElement('th');th.contentEditable='true';th.textContent='Kolom Baru';
+    tr.insertBefore(th,tr.lastElementChild);
+  });
+  // Add cells
+  tbl.querySelectorAll('tbody tr').forEach(tr=>{
+    const td=document.createElement('td');td.contentEditable='true';td.dataset.ph='...';td.setAttribute('oninput','markDirty()');
+    tr.insertBefore(td,tr.lastElementChild);
+  });
+  markDirty();
+}
+
+function addSwotItem(key,prefix){
+  const quad=document.getElementById('swot-'+key);if(!quad)return;
+  const body=quad.querySelector('.swot-quad-body');
+  const items=body.querySelectorAll('.swot-item');
+  const num=items.length+1;
+  const div=document.createElement('div');div.className='swot-item';
+  div.innerHTML=`<span class="swot-item-num">${prefix}${num}</span><span class="swot-item-text" contenteditable="true" oninput="markDirty()"></span>`;
+  body.insertBefore(div,body.querySelector('.swot-add'));
+  div.querySelector('.swot-item-text').focus();
+  markDirty();
+}
+
+function updBadge(cid){
+  const ed=document.getElementById('ed-'+cid);if(!ed)return;
+  const text=ed.innerText||'';
+  const words=text.trim().split(/\s+/).filter(w=>w.length>0).length;
+  const wc=document.getElementById('wc-'+cid);
+  if(wc)wc.textContent=words+' kata';
+  const badge=document.getElementById('sbg-'+cid);
+  if(badge){
+    if(words>30){badge.textContent='✓';badge.className='sb-badge done';}
+    else if(words>0){badge.textContent='...';badge.className='sb-badge wip';}
+    else{badge.textContent='—';badge.className='sb-badge';}
+  }
+}
+
+/* ============================================================
+   PREVIEW
+============================================================ */
+function showPreview(){
+  let html='<h1>RENCANA STRATEGI BISNIS (RSB)<br>BLU UIN KIAI AGENG MUHAMMAD BESARI PONOROGO<br>PERIODE 2025–2029</h1>';
+  SECTIONS.forEach(s=>{
+    html+=`<h2>${s.num}: ${s.title.toUpperCase()}</h2>`;
+    s.components.forEach(c=>{
+      html+=`<h3>${c.letter?c.letter+'. ':''}${c.title}</h3>`;
+      // RTE content
+      const ed=document.getElementById('ed-'+c.id);
+      if(ed)html+=ed.innerHTML;
+      // SWOT
+      if(c.type.includes('swot')){
+        ['strengths','weaknesses','opportunities','threats'].forEach(key=>{
+          const quad=document.getElementById('swot-'+key);
+          if(quad){
+            const items=quad.querySelectorAll('.swot-item-text');
+            const label=key.charAt(0).toUpperCase()+key.slice(1);
+            html+=`<p><b>${label}:</b></p><ul>`;
+            items.forEach(it=>{if(it.textContent.trim())html+=`<li>${it.textContent}</li>`;});
+            html+='</ul>';
+          }
+        });
+      }
+      // Table
+      if(c.table){
+        const tbl=document.getElementById(c.table.id);
+        if(tbl)html+=`<table>${tbl.innerHTML.replace(/class="[^"]*"/g,'').replace(/<button[^>]*>.*?<\/button>/g,'')}</table>`;
+      }
+    });
+  });
+  document.getElementById('previewPaper').innerHTML=html;
+  document.getElementById('previewOverlay').classList.add('show');
+}
+function closePreview(){document.getElementById('previewOverlay').classList.remove('show');}
+
+/* ============================================================
+   SAVE / LOAD
+============================================================ */
+function markDirty(){
+  dirty=true;
+  document.getElementById('saveFab').classList.add('show');
+}
+
+function saveAll(){
+  const data={sections:{},timestamp:new Date().toISOString()};
+  SECTIONS.forEach(s=>{
+    data.sections[s.id]={};
+    s.components.forEach(c=>{
+      const cd={};
+      const ed=document.getElementById('ed-'+c.id);
+      if(ed)cd.rte=ed.innerHTML;
+      if(c.table){
+        const tbl=document.getElementById(c.table.id);
+        if(tbl){
+          cd.tableHTML=tbl.querySelector('tbody').innerHTML;
+          cd.theadHTML=tbl.querySelector('thead').innerHTML;
+        }
+      }
+      if(c.type.includes('swot')){
+        cd.swot={};
+        ['strengths','weaknesses','opportunities','threats'].forEach(key=>{
+          const quad=document.getElementById('swot-'+key);
+          if(quad){
+            cd.swot[key]=[...quad.querySelectorAll('.swot-item-text')].map(el=>el.innerHTML);
+          }
+        });
+      }
+      data.sections[s.id][c.id]=cd;
+    });
+  });
+  try{
+    localStorage.setItem(SK,JSON.stringify(data));
+    dirty=false;
+    document.getElementById('saveFab').classList.remove('show');
+    showToast('✅ Dokumen tersimpan!');
+  }catch(e){showToast('❌ Gagal: '+e.message);}
+}
+
+function loadData(){
+  try{
+    const raw=localStorage.getItem(SK);if(!raw)return;
+    const data=JSON.parse(raw);if(!data.sections)return;
+    SECTIONS.forEach(s=>{
+      if(!data.sections[s.id])return;
+      s.components.forEach(c=>{
+        const cd=data.sections[s.id][c.id];if(!cd)return;
+        const ed=document.getElementById('ed-'+c.id);
+        if(ed&&cd.rte)ed.innerHTML=cd.rte;
+        if(c.table&&cd.tableHTML){
+          const tbl=document.getElementById(c.table.id);
+          if(tbl){
+            if(cd.theadHTML)tbl.querySelector('thead').innerHTML=cd.theadHTML;
+            tbl.querySelector('tbody').innerHTML=cd.tableHTML;
+          }
+        }
+        if(c.type.includes('swot')&&cd.swot){
+          ['strengths','weaknesses','opportunities','threats'].forEach(key=>{
+            const quad=document.getElementById('swot-'+key);
+            if(!quad||!cd.swot[key])return;
+            const body=quad.querySelector('.swot-quad-body');
+            const addBtn=body.querySelector('.swot-add');
+            body.querySelectorAll('.swot-item').forEach(el=>el.remove());
+            const prefix=key==='strengths'?'S':key==='weaknesses'?'W':key==='opportunities'?'O':'T';
+            cd.swot[key].forEach((text,i)=>{
+              const div=document.createElement('div');div.className='swot-item';
+              div.innerHTML=`<span class="swot-item-num">${prefix}${i+1}</span><span class="swot-item-text" contenteditable="true" oninput="markDirty()">${text}</span>`;
+              body.insertBefore(div,addBtn);
+            });
+          });
+        }
+        updBadge(c.id);
+      });
+    });
+  }catch(e){console.warn('Load error:',e);}
+}
+
+function resetAll(){if(!confirm('Reset semua konten?'))return;localStorage.removeItem(SK);location.reload();}
+
+/* ============================================================
+   UTILS
+============================================================ */
+function toggleTheme(){
+  const d=document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme',d?'light':'dark');
+  localStorage.setItem('rsb_gen_theme',d?'light':'dark');
+}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+let ast=null;
+document.addEventListener('input',()=>{if(ast)clearTimeout(ast);ast=setTimeout(()=>{if(dirty)saveAll();},5000);});
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();saveAll();}});
+window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});
+
+/* ============================================================
+   INIT
+============================================================ */
+window.addEventListener('DOMContentLoaded',()=>{
+  const t=localStorage.getItem('rsb_gen_theme');
+  if(t)document.documentElement.setAttribute('data-theme',t);
+  renderSidebar();
+  renderMain();
+  loadData();
+  SECTIONS.flatMap(s=>s.components).forEach(c=>updBadge(c.id));
+});
+</script>
+</body>
+</html>
