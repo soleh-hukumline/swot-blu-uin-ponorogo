@@ -442,7 +442,6 @@ table.editable tr:hover .row-del{opacity:1;}
     <a href="tarif_blu.html"><i class='fa-solid fa-file-invoice-dollar'></i> Tarif BLU</a>
     <button onclick="toggleTheme()"><i class='fa-solid fa-sun' id='theme-icon'></i></button>
     <button onclick="backupLokal()" title="Backup data ke folder lokal" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;padding:0.35rem 0.75rem;border-radius:8px;cursor:pointer;font-size:0.8rem;font-weight:600;display:flex;align-items:center;gap:0.4rem;"><i class='fa-solid fa-box-archive'></i> Backup</button>
-    <button onclick="loadBackup()" title="Load/Restore dari file backup JSON" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;padding:0.35rem 0.75rem;border-radius:8px;cursor:pointer;font-size:0.8rem;font-weight:600;display:flex;align-items:center;gap:0.4rem;"><i class='fa-solid fa-folder-open'></i> Load Backup</button>
   </div>
 </header>
 
@@ -2618,54 +2617,6 @@ async function backupLokal(){
   showToast('💾 Backup didownload: '+filename);
 }
 
-async function loadBackup(){
-  // Chrome/Edge: File System Access API
-  if(window.showOpenFilePicker){
-    try{
-      const [fh]=await window.showOpenFilePicker({
-        types:[{description:'RSB Backup JSON',accept:{'application/json':['.json']}}],
-        startIn:'documents',multiple:false
-      });
-      const file=await fh.getFile();
-      const txt=await file.text();
-      JSON.parse(txt);
-      if(!confirm('Load "'+file.name+'"? Data saat ini akan ditimpa.'))return;
-      localStorage.setItem(SK,txt);
-      dirty=false;
-      showToast('\u2705 Di-load: '+file.name);
-      setTimeout(()=>location.reload(true),400);
-      return;
-    }catch(e){if(e.name==='AbortError')return;}
-  }
-  // Safari/Firefox: modal dengan file input + textarea paste
-  const ov=document.createElement('div');
-  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:99999;display:flex;align-items:center;justify-content:center;';
-  ov.innerHTML='<div style="background:#1e293b;border-radius:16px;padding:1.5rem;width:min(580px,92vw);box-shadow:0 20px 60px rgba(0,0,0,.6);">'+
-    '<h3 style="color:#fff;margin:0 0 .8rem;">\uD83D\uDCC2 Load Backup JSON</h3>'+
-    '<input type="file" id="lbFI" accept=".json" style="display:block;width:100%;color:#e2e8f0;margin-bottom:.6rem;">'+
-    '<textarea id="lbTA" placeholder="Atau paste isi JSON di sini..." style="width:100%;height:150px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:8px;padding:.6rem;font-size:.75rem;font-family:monospace;resize:vertical;box-sizing:border-box;"></textarea>'+
-    '<div style="display:flex;gap:.6rem;margin-top:.8rem;justify-content:flex-end;">'+
-    '<button id="lbCancel" style="background:#334155;color:#fff;border:none;padding:.45rem 1rem;border-radius:8px;cursor:pointer;">Batal</button>'+
-    '<button id="lbOK" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;padding:.45rem 1.2rem;border-radius:8px;cursor:pointer;font-weight:600;">\u2705 Load & Reload</button>'+
-    '</div></div>';
-  document.body.appendChild(ov);
-  document.getElementById('lbFI').onchange=function(e){
-    const f=e.target.files[0];if(!f)return;
-    const r=new FileReader();r.onload=ev=>{document.getElementById('lbTA').value=ev.target.result;};r.readAsText(f);
-  };
-  document.getElementById('lbCancel').onclick=()=>document.body.removeChild(ov);
-  document.getElementById('lbOK').onclick=function(){
-    const txt=document.getElementById('lbTA').value.trim();
-    if(!txt){alert('Kosong! Pilih file atau paste JSON.');return;}
-    try{JSON.parse(txt);}catch(e2){alert('JSON tidak valid: '+e2.message);return;}
-    localStorage.setItem(SK,txt);
-    dirty=false; // bypass beforeunload
-    document.body.removeChild(ov); // remove overlay before reload
-    showToast('\u2705 Backup di-load! Reloading...');
-    setTimeout(()=>location.reload(true),400);
-  };
-}
-
 function loadData(){
   try{
     const raw=localStorage.getItem(SK);if(!raw)return;
@@ -3362,8 +3313,7 @@ async function exportDOCX(){
       function proc(n){
         if(n.nodeType===3){const t=n.textContent.trim();if(t)ps.push(new Paragraph({children:[new TextRun({text:t,size:24,font:'Times New Roman'})]}));return;}
         if(n.nodeType!==1)return;const tag=n.tagName.toLowerCase();
-        if(tag==='h2'||tag==='h3'||tag==='h4'){
-          ps.push(new Paragraph({children:[new TextRun({text:n.textContent,bold:true,size:tag==='h2'?26:24,font:'Times New Roman'})],spacing:{before:240,after:120}}));
+        if(tag==='h3'){ps.push(new Paragraph({children:[new TextRun({text:n.textContent,bold:true,size:24,font:'Times New Roman'})],spacing:{before:240,after:120}}));
         }else if(tag==='p'){
           const rs=[];
           n.childNodes.forEach(c=>{
@@ -3383,47 +3333,26 @@ async function exportDOCX(){
             });
             ps.push(new Paragraph({children:rs,indent:{left:720},spacing:{after:60}}));
           });
-        }else if(tag==='table'){
-          // Tabel di dalam RTE (mis: sync table dari Lampiran I)
-          const dt=tblToDocx(n);
-          if(dt){ps.push(new Paragraph({spacing:{before:100}}));ps.push(dt);ps.push(new Paragraph({spacing:{after:200}}));}
         }else{n.childNodes.forEach(c=>proc(c));}
       }
       d.childNodes.forEach(c=>proc(c));return ps;
     }
 
-    function cellText(c){
-      // Baca nilai: cek input/textarea dulu, lalu textContent
-      const inp=c.querySelector('input,textarea,select');
-      if(inp) return (inp.value||'').trim();
-      return c.textContent.trim();
-    }
-
     function tblToDocx(el){
-      if(!el)return null;
-      const rows=el.querySelectorAll('tr');if(!rows.length)return null;
+      if(!el)return null;const rows=el.querySelectorAll('tr');if(!rows.length)return null;
       const drs=[];
       rows.forEach((tr,ri)=>{
-        const cells=tr.querySelectorAll('th,td');
-        if(!cells.length)return;
-        const dcs=[];
+        const cells=tr.querySelectorAll('th,td');const dcs=[];
         cells.forEach(c=>{
           const isH=c.tagName==='TH'||ri===0;
-          const txt=cellText(c);
-          const cs=parseInt(c.getAttribute('colspan')||1);
-          const rs=parseInt(c.getAttribute('rowspan')||1);
           dcs.push(new TableCell({
-            children:[new Paragraph({children:[new TextRun({text:txt,bold:isH,size:20,font:'Times New Roman'})],spacing:{after:0},alignment:isH?AlignmentType.CENTER:AlignmentType.LEFT})],
-            shading:isH?{type:ShadingType.CLEAR,fill:'1F3864',color:'FFFFFF'}:{type:ShadingType.CLEAR,fill:'FFFFFF'},
-            columnSpan:cs>1?cs:undefined,
-            rowSpan:rs>1?rs:undefined,
-            margins:{top:80,bottom:80,left:100,right:100}
+            children:[new Paragraph({children:[new TextRun({text:c.textContent.trim(),bold:isH,size:20,font:'Times New Roman'})],spacing:{after:0}})],
+            shading:isH?{type:ShadingType.CLEAR,fill:'D9E2F3'}:undefined
           }));
         });
-        if(dcs.length)drs.push(new TableRow({children:dcs,tableHeader:ri===0}));
+        drs.push(new TableRow({children:dcs}));
       });
-      if(!drs.length)return null;
-      return new Table({rows:drs,width:{size:100,type:WidthType.PERCENTAGE},layout:TableLayoutType.FIXED});
+      return new Table({rows:drs,width:{size:100,type:WidthType.PERCENTAGE}});
     }
 
     const ch=[];
@@ -3455,13 +3384,7 @@ async function exportDOCX(){
       sec.components.forEach(comp=>{
         const ct=comp.letter?`${comp.letter}. ${comp.title}`:comp.title;
         ch.push(new Paragraph({children:[new TextRun({text:ct,bold:true,size:24,font:'Times New Roman'})],heading:HeadingLevel.HEADING_2,spacing:{before:300,after:150}}));
-        // --- Narasi RTE ---
-        const rteEl=document.getElementById(`rte-${comp.id}`);
-        const edEl=document.getElementById(`ed-${comp.id}`);
-        const rteContent=rteEl?.innerHTML||edEl?.innerHTML||'';
-        if(rteContent)ch.push(...htmlToParas(rteContent));
-
-        // --- SWOT quadrants ---
+        if(comp.type.includes('rte')||comp.type==='swot+rte'){const rte=document.getElementById(`rte-${comp.id}`);if(rte)ch.push(...htmlToParas(rte.innerHTML));}
         if(comp.type==='swot+rte'){
           const labels={str:'STRENGTHS (Kekuatan)',wk:'WEAKNESSES (Kelemahan)',opp:'OPPORTUNITIES (Peluang)',thr:'THREATS (Ancaman)'};
           ['str','wk','opp','thr'].forEach(qk=>{
@@ -3472,26 +3395,9 @@ async function exportDOCX(){
             });
           });
         }
-
-        // --- Tabel editable (rte+table, table-only) ---
-        const tblSel=[
-          `#comp-${comp.id} table.editable`,  // tabel editable standar
-          `#comp-${comp.id} .tbl-wrap table`,  // wrapped table
-        ];
-        if(comp.table){tblSel.push(`#${comp.table.id}`);} // tabel by ID
-        let tblFound=false;
-        for(const sel of tblSel){
-          const te=document.querySelector(sel);
-          if(te&&!tblFound){
-            const dt=tblToDocx(te);
-            if(dt){ch.push(new Paragraph({spacing:{before:120}}));ch.push(dt);ch.push(new Paragraph({spacing:{after:240}}));tblFound=true;}
-          }
-        }
-
-        // --- Lampiran IV: Cascading table (input-based) ---
-        if(comp.id==='l4a'){
-          const ct=document.getElementById('tbl-cascading');
-          if(ct){const dt=tblToDocx(ct);if(dt){ch.push(new Paragraph({spacing:{before:120}}));ch.push(dt);ch.push(new Paragraph({spacing:{after:240}}));}}
+        if(comp.type.includes('table')||comp.table){
+          const te=document.querySelector(`#comp-${comp.id} table.editable`);
+          if(te){const dt=tblToDocx(te);if(dt){ch.push(new Paragraph({spacing:{before:100}}));ch.push(dt);ch.push(new Paragraph({spacing:{after:200}}));}}
         }
       });
       if(si<SECTIONS.length-1)ch.push(new Paragraph({children:[new PageBreak()]}));
