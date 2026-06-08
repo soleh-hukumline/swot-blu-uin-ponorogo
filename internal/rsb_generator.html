@@ -2832,12 +2832,17 @@ function _doImportDC(exp){
         const dcVals=dcRow.cells.slice(3);
         const genHdrs=[...genTbl.querySelectorAll('thead th')].map(th=>th.textContent.trim());
         const dcHdrs=dcRow.headers;
+        // Lindungi baris kalkulasi: Total, SAKIP, Proporsi, Opini, Predikat
+        // Jangan overwrite kecuali label DC juga mengandung kata kunci yg sama
+        const genLabel=getCellValue(mCells[1]||mCells[0]).toLowerCase();
+        const PROTECTED=['sakip','opini bpk','predikat sakip','proporsi pnbp','total belanja','total realisasi','rasio realisasi'];
+        const isProtected=PROTECTED.some(k=>genLabel.includes(k)&&!dcLabel.includes(k.split(' ')[0]));
+        if(isProtected)return;
         dcVals.forEach((val,di)=>{
           if(!val||val==='...'||val==='\u2014')return;
           const dcYear=dcHdrs[di+3];
           const genColIdx=genHdrs.findIndex(h=>h===dcYear);
           if(genColIdx>=0&&mCells[genColIdx]){
-            // Selalu overwrite dari Data Unit
             setCellValue(mCells[genColIdx],val);
             imported++;
           }
