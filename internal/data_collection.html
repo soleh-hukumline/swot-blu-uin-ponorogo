@@ -7,6 +7,7 @@
 <meta name="description" content="Form pengisian data RSB BLU UIN Ponorogo per unit kerja"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <style>
 :root{--bg:#f8fafc;--card:#fff;--text:#1e293b;--muted:#94a3b8;--border:#e2e8f0;--accent:#2563eb;
   --green:#16a34a;--red:#dc2626;--amber:#d97706;--purple:#7c3aed;--cyan:#0891b2;
@@ -151,6 +152,18 @@ table.data-tbl td.col-act{padding:0;text-align:center;border:1px solid #d0d7de;}
 .tbl-delete-btn{margin-left:0.4rem;background:none;border:none;color:#cbd5e1;cursor:pointer;
   font-size:0.65rem;padding:0.2rem 0.4rem;border-radius:4px;transition:all 0.15s;}
 .tbl-delete-btn:hover{background:#fef2f2;color:#dc2626;}
+/* Export dropdown per tabel */
+.tbl-export-wrap{position:relative;margin-left:auto;display:flex;gap:0.25rem;}
+.tbl-export-btn{display:inline-flex;align-items:center;gap:0.25rem;padding:0.2rem 0.5rem;
+  border-radius:5px;font-size:0.6rem;font-weight:600;font-family:'Inter',sans-serif;
+  cursor:pointer;border:none;transition:all 0.15s;white-space:nowrap;}
+.tbl-export-btn.csv{background:#e0f2fe;color:#0369a1;border:1px solid #bae6fd;}
+.tbl-export-btn.csv:hover{background:#0369a1;color:#fff;}
+.tbl-export-btn.xlsx{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0;}
+.tbl-export-btn.xlsx:hover{background:#15803d;color:#fff;}
+/* Sidebar export split buttons */
+.sb-btn-group{display:flex;gap:0.25rem;margin-bottom:0.3rem;}
+.sb-btn-group .sb-btn{margin-bottom:0;flex:1;font-size:0.62rem;}
 </style>
 </head>
 <body>
@@ -555,7 +568,12 @@ function renderSidebar(){
   h+=`<div class="sb-actions">
     <button class="sb-btn primary" onclick="saveAll()"><i class="fa-solid fa-floppy-disk"></i> Simpan & Sync</button>
     <div style="font-size:0.58rem;color:#64748b;text-align:center;padding:0.2rem;"><i class="fa-solid fa-arrows-rotate" style="color:#16a34a"></i> Auto-sync ke RSB Generator saat Save</div>
-    <button class="sb-btn secondary" onclick="exportCSV()"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+    <div class="sb-btn-group">
+      <button class="sb-btn secondary" style="background:#e0f2fe;color:#0369a1;border:1px solid #bae6fd" onclick="exportUnitCSV(activeUnit)"><i class="fa-solid fa-file-csv"></i> CSV Unit</button>
+      <button class="sb-btn secondary" style="background:#dcfce7;color:#15803d;border:1px solid #bbf7d0" onclick="exportUnitExcel(activeUnit)"><i class="fa-solid fa-file-excel"></i> Excel Unit</button>
+    </div>
+    <button class="sb-btn export" onclick="exportAllExcel()"><i class="fa-solid fa-file-excel"></i> Export Semua → 1 Excel</button>
+    <button class="sb-btn secondary" onclick="exportCSVAll()"><i class="fa-solid fa-file-csv"></i> Export Semua → CSV</button>
     <button class="sb-btn secondary" onclick="backupKV()" style="background:#fef3c7;border-color:#f59e0b;color:#92400e"><i class="fa-solid fa-download"></i> Backup KV</button>
     <button class="sb-btn secondary" onclick="if(confirm('Reset semua data?'))resetAll()"><i class="fa-solid fa-rotate"></i> Reset</button>
   </div>`;
@@ -611,6 +629,10 @@ function renderMain(){
           <i class="fa-solid fa-table" style="color:${u.colorHex}"></i>
           <span class="tbl-card-title">${tbl.title}</span>
           <span class="tbl-card-ref"><i class="fa-solid fa-link"></i> ${tbl.ref}</span>
+          <div class="tbl-export-wrap">
+            <button class="tbl-export-btn csv" onclick="exportTableCSV('${tbl.id}','${u.name.replace(/'/g,"\\'").replace(/"/g,"&quot;")}','${tbl.title.replace(/'/g,"\\'").replace(/"/g,"&quot;")}')" title="Export tabel ini ke CSV"><i class="fa-solid fa-file-csv"></i> CSV</button>
+            <button class="tbl-export-btn xlsx" onclick="exportTableExcel('${tbl.id}','${u.name.replace(/'/g,"\\'").replace(/"/g,"&quot;")}','${tbl.title.replace(/'/g,"\\'").replace(/"/g,"&quot;")}')" title="Export tabel ini ke Excel"><i class="fa-solid fa-file-excel"></i> Excel</button>
+          </div>
         </div>
         <div class="tbl-card-body">
           ${renderTable(tbl)}
@@ -626,9 +648,13 @@ function renderMain(){
           <i class="fa-solid fa-table" style="color:${u.colorHex}"></i>
           <span class="tbl-card-title">${ct.title}</span>
           <span class="tbl-card-ref"><i class="fa-solid fa-link"></i> ${ct.ref}</span>
-          <button class="tbl-delete-btn" onclick="deleteCustomDcTable('${customKey}',${ci})" title="Hapus tabel">
-            <i class="fa-solid fa-trash-can"></i> Hapus
-          </button>
+          <div class="tbl-export-wrap">
+            <button class="tbl-export-btn csv" onclick="exportTableCSV('${ct.id}','${u.name.replace(/'/g,"\\'").replace(/"/g,"&quot;")}','${ct.title.replace(/'/g,"\\'").replace(/"/g,"&quot;")}')" title="Export ke CSV"><i class="fa-solid fa-file-csv"></i> CSV</button>
+            <button class="tbl-export-btn xlsx" onclick="exportTableExcel('${ct.id}','${u.name.replace(/'/g,"\\'").replace(/"/g,"&quot;")}','${ct.title.replace(/'/g,"\\'").replace(/"/g,"&quot;")}')" title="Export ke Excel"><i class="fa-solid fa-file-excel"></i> Excel</button>
+            <button class="tbl-delete-btn" onclick="deleteCustomDcTable('${customKey}',${ci})" title="Hapus tabel">
+              <i class="fa-solid fa-trash-can"></i> Hapus
+            </button>
+          </div>
         </div>
         <div class="tbl-card-body">
           ${renderTable(ct)}
@@ -926,26 +952,195 @@ function resetAll(){
   showToast('Data di-reset!');
 }
 
-async function exportCSV(){
-  await saveAll();
-  let csv='Unit,Tabel,'+['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'].join(',')+'\n';
+/* ============================================================
+   EXPORT UTILITIES — CSV & Excel per Tabel / per Unit / Semua
+   ============================================================ */
+
+// --- Helper: baca data dari DOM tabel ---
+function _readTableDOM(tblId){
+  const tbl=document.getElementById(tblId);
+  if(!tbl)return null;
+  const headers=[...tbl.querySelectorAll('thead th')]
+    .map(th=>th.textContent.trim()).filter((_,i)=>{
+      // buang kolom action (th terakhir yang kosong)
+      const allTh=tbl.querySelectorAll('thead th');
+      return i<allTh.length-1;
+    });
+  const rows=[];
+  tbl.querySelectorAll('tbody tr').forEach(tr=>{
+    if(tr.classList.contains('section-row'))return;
+    const cells=[];
+    tr.querySelectorAll('.cell-input').forEach(inp=>cells.push(inp.value||''));
+    rows.push(cells);
+  });
+  return {headers, rows};
+}
+
+// --- Helper: escape CSV cell ---
+function _csvCell(v){
+  const s=String(v??'');
+  return (s.includes(',')||s.includes('"')||s.includes('\n'))
+    ? '"'+s.replace(/"/g,'""')+'"' : s;
+}
+
+// --- Helper: download CSV blob ---
+function _downloadCSV(content, filename){
+  const blob=new Blob(['\uFEFF'+content],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=filename;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+// --- Helper: buat worksheet XLSX dengan styling header ---
+function _makeSheet(headers, rows, colorHex){
+  const data=[headers,...rows];
+  const ws=XLSX.utils.aoa_to_sheet(data);
+  // Header row styling
+  const headerColor=(colorHex||'#2563eb').replace('#','');
+  const range=XLSX.utils.decode_range(ws['!ref']);
+  for(let C=range.s.c;C<=range.e.c;C++){
+    const addr=XLSX.utils.encode_cell({r:0,c:C});
+    if(ws[addr]){
+      ws[addr].s={
+        font:{bold:true,color:{rgb:'FFFFFF'}},
+        fill:{fgColor:{rgb:headerColor.toUpperCase()}},
+        alignment:{horizontal:'center',wrapText:true}
+      };
+    }
+  }
+  // Auto column width
+  ws['!cols']=headers.map((h,i)=>({
+    wch:Math.max(h.length+2,...rows.map(r=>String(r[i]??'').length),8)
+  }));
+  return ws;
+}
+
+// --- Helper: download XLSX workbook ---
+function _downloadXLSX(wb, filename){
+  XLSX.writeFile(wb,filename);
+}
+
+// === EXPORT 1 TABEL (CSV) ===
+function exportTableCSV(tblId, unitName, tblTitle){
+  const d=_readTableDOM(tblId);
+  if(!d){showToast('❌ Tabel tidak ditemukan');return;}
+  let csv=[d.headers.map(_csvCell).join(',')];
+  d.rows.forEach(row=>csv.push(row.map(_csvCell).join(',')));
+  const safe=tblTitle.replace(/[^a-zA-Z0-9]/g,'_').substring(0,40);
+  _downloadCSV(csv.join('\n'), safe+'_'+new Date().toISOString().slice(0,10)+'.csv');
+  showToast('<i class="fa-solid fa-check"></i> CSV tabel berhasil diunduh!');
+}
+
+// === EXPORT 1 TABEL (Excel) ===
+function exportTableExcel(tblId, unitName, tblTitle){
+  const d=_readTableDOM(tblId);
+  if(!d){showToast('❌ Tabel tidak ditemukan');return;}
+  if(typeof XLSX==='undefined'){showToast('❌ Library Excel belum siap, coba lagi');return;}
+  // Cari warna unit
+  const u=UNITS.find(u=>u.tables.some(t=>t.id===tblId));
+  const colorHex=u?u.colorHex:'#2563eb';
+  const wb=XLSX.utils.book_new();
+  // Sheet 1: data tabel
+  const ws=_makeSheet(d.headers,d.rows,colorHex);
+  const sheetName=(tblTitle.substring(0,28)||'Data').replace(/[\[\]\*\?:\/\\]/g,'_');
+  XLSX.utils.book_append_sheet(wb,ws,sheetName);
+  const safe=tblTitle.replace(/[^a-zA-Z0-9]/g,'_').substring(0,40);
+  _downloadXLSX(wb, safe+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  showToast('<i class="fa-solid fa-check"></i> Excel tabel berhasil diunduh!');
+}
+
+// === EXPORT 1 UNIT — semua tabel → 1 CSV ===
+function exportUnitCSV(unitId){
+  const u=UNITS.find(x=>x.id===unitId);
+  if(!u){showToast('❌ Unit tidak ditemukan');return;}
+  let csv='';
+  u.tables.forEach(t=>{
+    const d=_readTableDOM(t.id);
+    if(!d)return;
+    // Judul tabel sebagai section header
+    csv+='# '+t.title+'\n';
+    csv+=d.headers.map(_csvCell).join(',')+'\n';
+    d.rows.forEach(row=>csv+=row.map(_csvCell).join(',')+'\n');
+    csv+='\n';
+  });
+  const safe=u.name.replace(/[^a-zA-Z0-9]/g,'_').substring(0,30);
+  _downloadCSV(csv, 'unit_'+safe+'_'+new Date().toISOString().slice(0,10)+'.csv');
+  showToast('<i class="fa-solid fa-check"></i> CSV unit '+u.name+' berhasil diunduh!');
+}
+
+// === EXPORT 1 UNIT — semua tabel → 1 Excel (tiap tabel = 1 sheet) ===
+function exportUnitExcel(unitId){
+  const u=UNITS.find(x=>x.id===unitId);
+  if(!u){showToast('❌ Unit tidak ditemukan');return;}
+  if(typeof XLSX==='undefined'){showToast('❌ Library Excel belum siap, coba lagi');return;}
+  const wb=XLSX.utils.book_new();
+  u.tables.forEach(t=>{
+    const d=_readTableDOM(t.id);
+    if(!d)return;
+    const ws=_makeSheet(d.headers,d.rows,u.colorHex);
+    const sheetName=t.title.substring(0,28).replace(/[\[\]\*\?:\/\\]/g,'_');
+    XLSX.utils.book_append_sheet(wb,ws,sheetName);
+  });
+  if(wb.SheetNames.length===0){showToast('Tidak ada tabel untuk diekspor');return;}
+  const safe=u.name.replace(/[^a-zA-Z0-9]/g,'_').substring(0,30);
+  _downloadXLSX(wb, 'unit_'+safe+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  showToast('<i class="fa-solid fa-check"></i> Excel unit '+u.name+' berhasil diunduh! ('+wb.SheetNames.length+' sheet)');
+}
+
+// === EXPORT SEMUA — semua unit & tabel → 1 Excel (tiap tabel = 1 sheet) ===
+function exportAllExcel(){
+  if(typeof XLSX==='undefined'){showToast('❌ Library Excel belum siap, coba lagi');return;}
+  showToast('<i class="fa-solid fa-spinner fa-spin"></i> Menyiapkan Excel...');
+  const wb=XLSX.utils.book_new();
+  let sheetCount=0;
   UNITS.forEach(u=>{
     u.tables.forEach(t=>{
-      const tbl=document.getElementById(t.id);
-      if(!tbl)return;
-      tbl.querySelectorAll('tbody tr:not(.section-row)').forEach(tr=>{
-        const cells=['"'+u.name+'"','"'+t.title+'"'];
-        tr.querySelectorAll('.cell-input').forEach(inp=>cells.push('"'+(inp.value||'')+'"'));
-        csv+=cells.join(',')+'\n';
+      const d=_readTableDOM(t.id);
+      if(!d)return;
+      const ws=_makeSheet(d.headers,d.rows,u.colorHex);
+      // Prefix nama sheet dengan kode unit (max 31 chars)
+      const prefix=u.id.substring(0,6).toUpperCase();
+      const tblShort=t.title.substring(0,22).replace(/[\[\]\*\?:\/\\]/g,'_');
+      const sheetName=(prefix+'_'+tblShort).substring(0,31);
+      XLSX.utils.book_append_sheet(wb,ws,sheetName);
+      sheetCount++;
+    });
+  });
+  if(sheetCount===0){showToast('Tidak ada data untuk diekspor');return;}
+  _downloadXLSX(wb, 'data_rsb_semua_unit_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  showToast('<i class="fa-solid fa-check"></i> Excel semua unit berhasil diunduh! ('+sheetCount+' sheet)');
+}
+
+// === EXPORT SEMUA — semua unit & tabel → 1 CSV besar ===
+async function exportCSVAll(){
+  await saveAll(true);
+  let csv='Unit,Tabel,Referensi';
+  // Ambil max headers dari semua tabel
+  let maxCols=0;
+  UNITS.forEach(u=>u.tables.forEach(t=>{
+    const d=_readTableDOM(t.id);
+    if(d&&d.headers.length>maxCols)maxCols=d.headers.length;
+  }));
+  for(let i=0;i<maxCols;i++)csv+=',Kolom'+(i+1);
+  csv+='\n';
+  UNITS.forEach(u=>{
+    u.tables.forEach(t=>{
+      const d=_readTableDOM(t.id);
+      if(!d)return;
+      d.rows.forEach(row=>{
+        const line=[_csvCell(u.name),_csvCell(t.title),_csvCell(t.ref),...row.map(_csvCell)];
+        csv+=line.join(',')+'\n';
       });
     });
   });
-  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='data_rsb_per_unit_'+new Date().toISOString().slice(0,10)+'.csv';
-  a.click();
-  showToast('CSV downloaded!');
+  _downloadCSV(csv,'data_rsb_semua_unit_'+new Date().toISOString().slice(0,10)+'.csv');
+  showToast('<i class="fa-solid fa-check"></i> CSV semua unit berhasil diunduh!');
 }
+
+// Legacy alias (tetap kompatibel)
+async function exportCSV(){return exportCSVAll();}
 
 async function backupKV(){
   showToast('🔄 Mengunduh backup KV...');
