@@ -1771,6 +1771,7 @@ function renderTable(t,dd){
   let rows=t.rows.map((r,ri)=>{
     // Pad row to match header count
     while(r.length<colCount) r.push('...');
+    r=r.slice(0,colCount); // Trim excess cells — prevents overflow beyond header columns
     const isHeader=r[0]===''&&r[1]&&r[1]===r[1].toUpperCase()&&r[1].length>3&&!r[1].includes('.');
     const cells=r.map((c,ci)=>{
       if(dd&&dd[ci]){
@@ -1830,6 +1831,7 @@ function resetTable(tblId){
   const tbody=tbl.querySelector('tbody');
   tbody.innerHTML=defaults.map(r=>{
     while(r.length<colCount) r.push('...');
+    r=r.slice(0,colCount);
     const isHdr=r[0]===''&&r[1]&&r[1]===r[1].toUpperCase()&&r[1].length>3&&!r[1].includes('.');
     if(isHdr) return '<tr class="tbl-group-row">'+r.map(c=>'<td class="tbl-section-header"><input type="text" class="cell-input" value="'+c.replace(/"/g,'&quot;')+'" oninput="markDirty()"/></td>').join('')+'<td><button class="row-del" onclick="delRow(this)" title="Hapus">\u2715</button></td></tr>';
     return '<tr>'+r.map((c,ci)=>{
