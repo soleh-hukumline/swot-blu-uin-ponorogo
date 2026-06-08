@@ -976,7 +976,8 @@ async function aiGenerateMatriks(){
   const SYS=`Kamu adalah konsultan penyusun RSB BLU PTKIN Indonesia, pakar regulasi PMK 76/2025 dan PER-11/PB/2025.
 Tugasmu: buat isian Matriks Keterkaitan Lampiran IV RSB BLU yang komprehensif dan terukur.
 Output HARUS berupa JSON array yang valid — array of arrays, 7 elemen per baris:
-["visi","misi","tujuan","sasaran","kebijakan","program","kegiatan"]
+["visi","misi","tujuan","sasaran","kebijakan","program","kegiatan","indikator_target"]
+Elemen ke-8 berisi kode IKSP/IKSK/IKT + target kuantitatif (mis: "IKSK.2132.3.2: Prodi Unggul 37,9%→48,2% (2029)").
 Jangan tambahkan teks apapun di luar JSON array. Mulai langsung dengan [.`;
 
   const USR=`Buat rekomendasi LENGKAP 16-20 baris Matriks Keterkaitan RSB BLU UIN Kiai Ageng Muhammad Besari Ponorogo 2025-2029 berdasarkan VISI-MISI RESMI berikut.
@@ -1035,6 +1036,7 @@ INSTRUKSI KATEGORISASI:
 - Kuadran ${quad} → bobot strategi ekspansi/SO lebih besar (BLU, PNBP, prodi baru)
 - Dimensi PESTLE kritis (${pestleKritis}) → tambah sasaran mitigasi spesifik
 - Kolom "Sasaran Strategis" → WAJIB mengacu IKSP di atas (mis: "Peningkatan persentase prodi akreditasi Unggul dari 37,9% ke 48,2%")
+- Kolom "Indikator & Target" (ke-8) → cantumkan kode resmi (IKSP/IKSK/IKT) + target 2029 (mis: "IKSK.2132.3.2: Prodi Unggul 48,2%; IKSK.2132.4.1: Dosen S3 40%")
 - Kolom "Program Utama" → cantumkan "(BAB III)" atau "(Lamp II)" di akhir nama program  
 - Kolom "Kegiatan Strategis" → WAJIB sertakan target kuantitatif dari IKSK/IKT (mis: "target: Dosen S3 40% pada 2029")
 - Kebijakan: kalimat kebijakan formal (awali dengan "Peningkatan/Penguatan/Pengembangan/Percepatan")
@@ -1700,25 +1702,25 @@ const SECTIONS = [
         template:'<p>Tabel berikut menunjukkan keterkaitan antara visi, misi, tujuan strategis, sasaran strategis, kebijakan, program utama, dan kegiatan strategis BLU UIN Ponorogo 2025\u20132029. Matriks ini menjamin <i>alignment</i> dari level strategis hingga operasional, mencakup <b>program renstra (BAB III)</b> maupun <b>program bisnis BLU (Lampiran II)</b>.</p>',
         placeholder:'Tuliskan narasi pengantar matriks keterkaitan...',
         table:{ id:'tbl-cascading',
-          headers:['Visi','Misi','Tujuan Strategis','Sasaran Strategis','Kebijakan','Program Utama','Kegiatan Strategis 5 Tahun'],
+          headers:['Visi','Misi','Tujuan Strategis','Sasaran Strategis','Kebijakan','Program Utama','Kegiatan Strategis 5 Tahun','Indikator & Target (IKSP/IKSK/IKT)'],
           rows:[
-            ['Mewujudkan universitas yang unggul dalam pengembangan jejaring keislaman, keilmuan, dan kebudayaan','Misi 1: Pendidikan dan pengajaran inovatif (keislaman-keilmuan-kebudayaan)','Meningkatkan kualitas dan akses pendidikan','Peningkatan mutu akademik','Peningkatan mutu berkelanjutan','Peningkatan Mutu Akademik (BAB III)','Akreditasi prodi Unggul, kurikulum OBE, pembukaan prodi baru'],
-            ['','','','Peningkatan daya saing lulusan','Link & match dunia kerja','','Program MBKM, sertifikasi profesi, magang industri'],
-            ['','','Perluasan akses pendidikan','Peningkatan jumlah mahasiswa','Promosi dan perluasan jangkauan','','Penerimaan maba, program online/hybrid'],
-            ['','','','Pengembangan layanan digital','Digitalisasi pendidikan','Digital Learning Hub (Lamp II)','Platform online, program hybrid berbayar (target: 500 peserta 2029)'],
-            ['','Misi 2: Penelitian berbasis jejaring keislaman, keilmuan, kebudayaan','Meningkatkan kualitas riset & PkM','Peningkatan output penelitian','Akselerasi riset dan publikasi','Pengembangan Riset & Inovasi (BAB III)','Research grant, akselerasi Scopus, pendaftaran HKI/Paten'],
-            ['','','','Penguatan PkM berbasis riset','PkM terintegrasi riset','','Desa binaan, kemitraan industri, jasa konsultasi'],
-            ['','','','Komersialisasi riset','Monetisasi inovasi','Inkubator Bisnis (Lamp II)','Pendampingan startup, lisensi HKI (target: 20 tenant 2029)'],
-            ['','Misi 3: Pengabdian masyarakat untuk mewujudkan masyarakat moderat','Meningkatkan kontribusi sosial','Pelayanan kesehatan masyarakat','Layanan kesehatan terjangkau','Klinik Kesehatan Kampus (Lamp II)','Pembangunan klinik, layanan mahasiswa & umum (target: 3.000 pasien/th)'],
-            ['','Misi 4: Kerja sama meningkatkan kepercayaan masyarakat (Tridharma PT)','Mewujudkan tata kelola BLU profesional','Peningkatan akuntabilitas','Reformasi birokrasi dan tata kelola BLU','Penguatan Tata Kelola (BAB III)','Implementasi SPIP, SIM terintegrasi, SPI'],
-            ['','','','Kemandirian keuangan','Diversifikasi dan optimalisasi PNBP','Optimalisasi PNBP Eksisting (Lamp II)','Penyesuaian tarif UKT BLU, asrama, sewa gedung'],
-            ['','','','','','Pengembangan Unit Bisnis Baru (Lamp II)','LSP-P1, Teaching Factory, Co-Working Space'],
-            ['','','','Penetapan tarif BLU','Tarif layanan berbasis regulasi','Penetapan Tarif BLU (Lamp II)','Kajian tarif, usulan Menkeu, SK Tarif (target: 10 jenis tarif 2029)'],
-            ['','','','Organ BLU lengkap','Pemenuhan organ pengelola BLU','Pembentukan Organ BLU (Lamp II)','Dewan Pengawas, SPI, SOP Keuangan BLU'],
-            ['','Misi 4: Kerja sama meningkatkan kepercayaan masyarakat (Tridharma PT)','Mengembangkan SDM unggul','Peningkatan kualifikasi dosen','Investasi SDM berkelanjutan','Pengembangan SDM (BAB III)','Beasiswa S3, visiting scholar, percepatan jabfung'],
-            ['','','','Sertifikasi kompetensi','Peningkatan kompetensi terukur','LSP-P1 Sertifikasi (Lamp II)','Uji kompetensi, sertifikasi IT/AI (target: 500 peserta/th)'],
-            ['','','','Pelatihan profesional','Capacity building berbayar','Pusat Pelatihan & Sertifikasi (Lamp II)','Diklat profesional, program sertifikasi (target: 15 program 2029)'],
-            ['','','Memperluas kerjasama strategis','Kemitraan bisnis revenue-sharing','Kerjasama strategis menghasilkan','Kerjasama Revenue-Sharing (Lamp II)','MoU bisnis, joint program PEMDA, pemanfaatan aset (target: 30 MoU 2029)'],
+            ['Mewujudkan universitas yang unggul dalam pengembangan jejaring keislaman, keilmuan, dan kebudayaan','Misi 1: Pendidikan dan pengajaran inovatif (keislaman-keilmuan-kebudayaan)','Meningkatkan kualitas dan akses pendidikan','Peningkatan mutu akademik','Peningkatan mutu berkelanjutan','Peningkatan Mutu Akademik (BAB III)','Akreditasi prodi Unggul, kurikulum OBE, pembukaan prodi baru','IKSK.2132.3.2: Prodi Unggul 37,9%→48,2% (2029); IKT9: Prodi baru 0→3'],
+            ['','','','Peningkatan daya saing lulusan','Link & match dunia kerja','','Program MBKM, sertifikasi profesi, magang industri','IKSK.2132.5.1: MBKM 0→12,5%; IKSK.2132.5.4: Lulusan STEM 3,80%→7,92%'],
+            ['','','Perluasan akses pendidikan','Peningkatan jumlah mahasiswa','Promosi dan perluasan jangkauan','','Penerimaan maba, program online/hybrid','IKSP.6.2: Mahasiswa +7,9%/th; IKSK.2132.2.2: Animo maba→4,9%/th'],
+            ['','','','Pengembangan layanan digital','Digitalisasi pendidikan','Digital Learning Hub (Lamp II)','Platform online, program hybrid berbayar (target: 500 peserta 2029)','IKT3: Layanan digital 10%→50%; IKT8: Jangkauan PMB digital→20.000'],
+            ['','Misi 2: Penelitian berbasis jejaring keislaman, keilmuan, kebudayaan','Meningkatkan kualitas riset & PkM','Peningkatan output penelitian','Akselerasi riset dan publikasi','Pengembangan Riset & Inovasi (BAB III)','Research grant, akselerasi Scopus, pendaftaran HKI/Paten','IKSK.2312.8.2: Sitasi intl 69,5%→77%; IKSK.2312.8.5: Paten 0→8 (2029)'],
+            ['','','','Penguatan PkM berbasis riset','PkM terintegrasi riset','','Desa binaan, kemitraan industri, jasa konsultasi','IKSK.2132.6.4: Kerjasama PkM 34,25%→40,5%; IKT20: PkM dana luar 0→5'],
+            ['','','','Komersialisasi riset','Monetisasi inovasi','Inkubator Bisnis (Lamp II)','Pendampingan startup, lisensi HKI (target: 20 tenant 2029)','IKSK.2312.8.6: Riset dimanfaatkan DUDI 2%→6%; IKT19: Penelitian dana luar 2→8'],
+            ['','Misi 3: Pengabdian masyarakat untuk mewujudkan masyarakat moderat','Meningkatkan kontribusi sosial','Pelayanan kesehatan masyarakat','Layanan kesehatan terjangkau','Klinik Kesehatan Kampus (Lamp II)','Pembangunan klinik, layanan mahasiswa & umum (target: 3.000 pasien/th)','IKT4: Unit kelembagaan 1→10; IKSP.11.1: Indeks keberagamaan 80%→82%'],
+            ['','Misi 4: Kerja sama meningkatkan kepercayaan masyarakat (Tridharma PT)','Mewujudkan tata kelola BLU profesional','Peningkatan akuntabilitas','Reformasi birokrasi dan tata kelola BLU','Penguatan Tata Kelola (BAB III)','Implementasi SPIP, SIM terintegrasi, SPI','IKSP.13.2: SAKIP 90 (stabil); IKT22: SPIP 3,639→4,00 (2029)'],
+            ['','','','Kemandirian keuangan','Diversifikasi dan optimalisasi PNBP','Optimalisasi PNBP Eksisting (Lamp II)','Penyesuaian tarif UKT BLU, asrama, sewa gedung','IKSK.2135.1.1: Nilai anggaran 91→96; IKSK.2135.3.2: Tindak lanjut 50%→90%'],
+            ['','','','','','Pengembangan Unit Bisnis Baru (Lamp II)','LSP-P1, Teaching Factory, Co-Working Space','IKSK.2132.5.5: Sertifikasi kompetensi 3,47%→5,87%; IKT3: Layanan digital→50%'],
+            ['','','','Penetapan tarif BLU','Tarif layanan berbasis regulasi','Penetapan Tarif BLU (Lamp II)','Kajian tarif, usulan Menkeu, SK Tarif (target: 10 jenis tarif 2029)','IKSK.2135.1.1: Nilai anggaran 91→96 (2029)'],
+            ['','','','Organ BLU lengkap','Pemenuhan organ pengelola BLU','Pembentukan Organ BLU (Lamp II)','Dewan Pengawas, SPI, SOP Keuangan BLU','IKSK.2135.4.1: Profesionalisme ASN 60→88; IKSK.2135.3.2: TL pemeriksaan→90%'],
+            ['','Misi 4: Kerja sama meningkatkan kepercayaan masyarakat (Tridharma PT)','Mengembangkan SDM unggul','Peningkatan kualifikasi dosen','Investasi SDM berkelanjutan','Pengembangan SDM (BAB III)','Beasiswa S3, visiting scholar, percepatan jabfung','IKSK.2132.4.1: Dosen S3 29,67%→40%; IKSK.2132.4.3: Lektor+ 81,32%→86%'],
+            ['','','','Sertifikasi kompetensi','Peningkatan kompetensi terukur','LSP-P1 Sertifikasi (Lamp II)','Uji kompetensi, sertifikasi IT/AI (target: 500 peserta/th)','IKSP.8.2: Sertifikasi dosen+tendik 40%→59%; IKSK.2132.4.4: Peningkatan kompetensi→76,68%'],
+            ['','','','Pelatihan profesional','Capacity building berbayar','Pusat Pelatihan & Sertifikasi (Lamp II)','Diklat profesional, program sertifikasi (target: 15 program 2029)','IKSK.2132.4.5: Dosen narasumber nasional/intl 31,67%→49,25% (2029)'],
+            ['','','Memperluas kerjasama strategis','Kemitraan bisnis revenue-sharing','Kerjasama strategis menghasilkan','Kerjasama Revenue-Sharing (Lamp II)','MoU bisnis, joint program PEMDA, pemanfaatan aset (target: 30 MoU 2029)','IKSP.10.1: Kerjasama aktif 48%→67,5%; IKSK.2132.6.1: MoU 240→440 (2029)'],
           ]}
       },
     ]
