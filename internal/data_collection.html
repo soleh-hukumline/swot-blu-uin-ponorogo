@@ -221,7 +221,7 @@ table.data-tbl td.col-act{padding:0;text-align:center;border:1px solid #d0d7de;}
 /* ============================================================
    UNIT DEFINITIONS & DATA TABLES
 ============================================================ */
-const SK='rsb_datacollect_v2'; // v2: fresh start — old v1 localStorage data ignored
+const SK='rsb_datacollect_v2'; // v2: bersih dari cache browser lama
 const SCHEMA_VERSION='2026-06-08-v4'; // Bump when template structure changes → old KV data skipped
 const UNITS=[
   {
@@ -623,8 +623,7 @@ function renderSidebar(){
     <button class="sb-btn export" onclick="exportAllExcel()"><i class="fa-solid fa-file-excel"></i> Export Semua → 1 Excel</button>
     <button class="sb-btn secondary" onclick="exportCSVAll()"><i class="fa-solid fa-file-csv"></i> Export Semua → CSV</button>
     <button class="sb-btn secondary" onclick="backupKV()" style="background:#fef3c7;border-color:#f59e0b;color:#92400e"><i class="fa-solid fa-download"></i> Backup KV</button>
-    <button class="sb-btn secondary" onclick="if(confirm('Reset semua data lokal?'))resetAll()"><i class="fa-solid fa-rotate"></i> Reset Lokal</button>
-    <button id="btn-reset-server" class="sb-btn secondary" onclick="resetAllFull()" style="background:#fef2f2;border-color:#fca5a5;color:#b91c1c"><i class="fa-solid fa-rotate-right"></i> Bersihkan Cache</button>
+    <button class="sb-btn secondary" onclick="if(confirm('Reset semua data?'))resetAll()"><i class="fa-solid fa-rotate"></i> Reset</button>
   </div>`;
   document.getElementById('sidebar').innerHTML=h;
 }
@@ -969,7 +968,7 @@ async function loadData(){
       });
       localStorage.setItem('rsb_dc_export',JSON.stringify(mergedExport));
       updateProgress();
-      console.log('Data loaded from cloud.');
+      console.log('📥 Data loaded from cloud.');
       return;
     }
   }catch(e){console.warn('Cloud load failed, using local:',e);}
@@ -992,23 +991,13 @@ async function loadData(){
 
 function resetAll(){
   localStorage.removeItem(SK);
-  localStorage.removeItem('rsb_datacollect_v1');
   UNITS.forEach(u=>u.tables.forEach(t=>{
     const tbl=document.getElementById(t.id);
     if(!tbl)return;
     tbl.querySelectorAll('.cell-input:not(.cell-label):not(.cell-readonly)').forEach(inp=>inp.value='');
   }));
   updateProgress();
-  showToast('Data lokal di-reset!');
-}
-
-function resetAllFull(){
-  if(!confirm('Reset data lokal dan muat ulang halaman? KV server bersih otomatis via prefix baru.')) return;
-  localStorage.removeItem(SK);
-  localStorage.removeItem('rsb_datacollect_v1');
-  localStorage.removeItem('rsb_dc_export');
-  showToast('✅ Cache bersih, muat ulang...');
-  setTimeout(()=>location.reload(true),800);
+  showToast('Data di-reset!');
 }
 
 /* ============================================================
