@@ -867,25 +867,38 @@ async function aiGenerate(compId){
         if(s.id==='ringkasan')return;
         s.components.forEach(c=>{
           const txt=extractRTEText('rte-'+c.id)||extractRTEText('ed-'+c.id);
-          if(txt.length>50)relatedData+=`\n--- ${s.num} ${c.title} ---\n${txt.substring(0,500)}\n`;
+          if(txt.length>50)relatedData+=`\n--- ${s.num} ${c.title} ---\n${txt.substring(0,800)}\n`;
           if(c.table){
             const td=extractTableText(c.table.id);
-            if(td.length>20)relatedData+=`[Tabel ${c.table.id}]\n${td.substring(0,400)}\n`;
+            if(td.length>20)relatedData+=`[Tabel ${c.table.id}]\n${td.substring(0,600)}\n`;
           }
         });
       });
     } else {
-      // For other sections, include Lampiran data if relevant
-      ['tbl-layanan','tbl-keuangan','tbl-sdm'].forEach(tid=>{
-        const d=extractTableText(tid);
-        if(d.length>20)relatedData+=`\n[${tid}]\n${d.substring(0,300)}\n`;
+      // Untuk semua section: sertakan SEMUA 6 tabel Lampiran I dengan label konteks yang jelas
+      const tabelLamp1 = [
+        {id:'tbl-layanan',  label:'Kinerja Layanan Pendidikan (5 Tahun)'},
+        {id:'tbl-keuangan', label:'Kinerja Keuangan — Target & Realisasi (5 Tahun)'},
+        {id:'tbl-sdm',      label:'Kinerja SDM — Dosen & Tendik (5 Tahun)'},
+        {id:'tbl-riset',    label:'Kinerja Penelitian & Publikasi Ilmiah (5 Tahun)'},
+        {id:'tbl-sarpras',  label:'Kinerja Sarana & Prasarana (5 Tahun)'},
+        {id:'tbl-pkm',      label:'Kinerja Pengabdian kepada Masyarakat (5 Tahun)'},
+      ];
+      tabelLamp1.forEach(({id,label})=>{
+        const d=extractTableText(id);
+        if(d.length>20)relatedData+=`\n=== ${label} (${id}) ===\n${d.substring(0,800)}\n`;
+      });
+      // Tambah narasi BAB II yang sudah ada jika relevan
+      ['b2a','b2a1','b2a2','b2a3'].forEach(cid=>{
+        const t=extractRTEText('ed-'+cid)||extractRTEText('rte-'+cid);
+        if(t&&t.length>80)relatedData+=`\n[Narasi ${cid}]\n${t.substring(0,400)}\n`;
       });
     }
 
     if(section.id==='ringkasan'){
       userPrompt=sectionCtx+`\nData dari seluruh dokumen RSB:\n${relatedData}\n\nTugas: Tulis Ringkasan Eksekutif RSB BLU UIN Ponorogo 2025-2029. Mencakup: latar belakang, visi misi, evaluasi kinerja, arah strategis, target utama, dan program prioritas. Max 2 halaman (800 kata). Format HTML.`;
     } else {
-      userPrompt=sectionCtx+`\nPlaceholder: ${comp.placeholder||''}\n${relatedData?'\nData pendukung:\n'+relatedData:''}\n${existingContent?'\nKonten saat ini (bisa di-improve):\n'+existingContent.substring(0,500):''}\n\nTugas: Tulis konten lengkap untuk section "${comp.title}" dalam dokumen RSB BLU. ${comp.placeholder||''}. Format HTML.`;
+      userPrompt=sectionCtx+`\nPlaceholder: ${comp.placeholder||''}\n${relatedData?'\nDATA KINERJA AKTUAL (dari Lampiran I):\n'+relatedData:''}\n${existingContent?'\nKonten saat ini (bisa di-improve):\n'+existingContent.substring(0,500):''}\n\nTugas: Tulis konten lengkap untuk section "${comp.title}" dalam dokumen RSB BLU. Gunakan angka-angka spesifik dari data kinerja di atas. ${comp.placeholder||''}. Format HTML.`;
     }
   } else if(comp.type==='swot+rte'){
     // Analisis SWOT+RTE — gunakan data SWOT dari komponen + IFAS/EFAS
