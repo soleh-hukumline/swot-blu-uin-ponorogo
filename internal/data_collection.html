@@ -663,6 +663,7 @@ function renderSidebar(){
     <button class="sb-btn export" onclick="exportAllExcel()"><i class="fa-solid fa-file-excel"></i> Export Semua → 1 Excel</button>
     <button class="sb-btn secondary" onclick="exportCSVAll()"><i class="fa-solid fa-file-csv"></i> Export Semua → CSV</button>
     <button class="sb-btn secondary" onclick="backupKV()" style="background:#fef3c7;border-color:#f59e0b;color:#92400e"><i class="fa-solid fa-download"></i> Backup KV</button>
+    <button class="sb-btn secondary" onclick="listBackups()" style="background:#f0fdf4;border-color:#86efac;color:#166534"><i class="fa-solid fa-clock-rotate-left"></i> Restore Backup</button>
     <button class="sb-btn secondary" onclick="if(confirm('Reset semua data?'))resetAll()"><i class="fa-solid fa-rotate"></i> Reset</button>
   </div>`;
   document.getElementById('sidebar').innerHTML=h;
@@ -945,7 +946,53 @@ async function saveAll(silent=false){
   if(!silent) showToast(cloudSaved
     ?'<i class="fa-solid fa-cloud-arrow-up"></i> Data tersimpan ke server!'
     :'<i class="fa-solid fa-circle-check"></i> Data tersimpan lokal (offline mode).');
+
+  // ✅ AUTO-BACKUP ke localStorage setiap save berhasil
+  autoBackup(data, cloudSaved);
 }
+
+/* ============================================================
+   AUTO-BACKUP — simpan 5 snapshot terakhir di localStorage
+============================================================ */
+const BACKUP_SK = 'rsb_dc_backups_v1';
+const BACKUP_MAX = 5;
+
+function autoBackup(data, cloudSaved=false){
+  try{
+    const backups = JSON.parse(localStorage.getItem(BACKUP_SK)||'[]');
+    const snap = {
+      timestamp: new Date().toISOString(),
+      label: new Date().toLocaleString('id-ID',{dateStyle:'short',timeStyle:'medium'}),
+      cloudSaved,
+      data: JSON.parse(JSON.stringify(data)) // deep copy
+    };
+    backups.unshift(snap); // tambah di depan
+    if(backups.length > BACKUP_MAX) backups.splice(BACKUP_MAX); // buang yang lama
+    localStorage.setItem(BACKUP_SK, JSON.stringify(backups));
+    console.log(`🔒 Auto-backup #${backups.length} tersimpan: ${snap.label}`);
+  }catch(e){ console.warn('Auto-backup gagal:', e); }
+}
+
+function listBackups(){
+  const backups = JSON.parse(localStorage.getItem(BACKUP_SK)||'[]');
+  if(!backups.length){ alert('Belum ada backup tersimpan.'); return; }
+  const list = backups.map((b,i)=>
+    `${i+1}. ${b.label} ${b.cloudSaved?'☁️':'💻'} — ${Object.keys(b.data?.units||{}).length} unit`
+  ).join('\n');
+  const choice = prompt(`📦 Backup tersedia (${backups.length}):\n\n${list}\n\nMasukkan nomor untuk restore (atau Cancel):`);
+  if(!choice) return;
+  const idx = parseInt(choice)-1;
+  if(isNaN(idx)||idx<0||idx>=backups.length){ alert('Nomor tidak valid.'); return; }
+  restoreBackup(backups[idx]);
+}
+
+function restoreBackup(snap){
+  if(!confirm(`Restore backup: ${snap.label}?\n\nData saat ini akan diganti.`)) return;
+  localStorage.setItem(SK, JSON.stringify(snap.data));
+  showToast('✅ Backup di-restore! Memuat ulang...');
+  setTimeout(()=>location.reload(), 800);
+}
+
 
 async function loadData(){
   // Migration map: old unitId → new unitId for moved tables
