@@ -530,8 +530,8 @@ function getAIConfig(){
   const d=JSON.parse(localStorage.getItem(AI_SK)||'{}');
   return{
     apiKey:d.apiKey||'',
-    modelNarasi:d.modelNarasi||'claude-opus-4-5',
-    modelRingkasan:d.modelRingkasan||'claude-opus-4-5',
+    modelNarasi:d.modelNarasi||'claude-sonnet-4-5',
+    modelRingkasan:d.modelRingkasan||'claude-sonnet-4-5',
     modelSync:d.modelSync||'claude-sonnet-4-5'
   };
 }
@@ -811,7 +811,7 @@ Output hanya JSON array:`;
     const r=await fetch(AI_BASE+'/chat/completions',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+cfg.apiKey},
-      body:JSON.stringify({model:cfg.modelNarasi||'claude-opus-4-5',
+      body:JSON.stringify({model:cfg.modelNarasi||'claude-sonnet-4-5',
         messages:[{role:'system',content:SYS},{role:'user',content:USR}],
         max_tokens:6000,temperature:0.55,stream:false})
     });
