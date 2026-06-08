@@ -222,7 +222,7 @@ table.data-tbl td.col-act{padding:0;text-align:center;border:1px solid #d0d7de;}
    UNIT DEFINITIONS & DATA TABLES
 ============================================================ */
 const SK='rsb_datacollect_v1';
-const SCHEMA_VERSION='2026-06-08-v3'; // Bump when template structure changes → old KV data skipped
+const SCHEMA_VERSION='2026-06-08-v4'; // Bump when template structure changes → old KV data skipped
 const UNITS=[
   {
     id:'keuangan', name:'Biro AUAK — Keuangan & Anggaran', icon:'<i class="fa-solid fa-coins" style="color:#dc2626"></i>', color:'u-keuangan',
@@ -403,33 +403,44 @@ const UNITS=[
       { id:'dc-riset', title:'Pusat Penelitian dan Penerbitan (2020–2025)', ref:'Lampiran I → tbl-riset',
         headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
         rows:[
-          ['1','Publikasi Scopus (kumulatif)','Dokumen'],['2','Sitasi Scopus (kumulatif)','Sitasi'],
-          ['3','Publikasi Q1','Dokumen'],['4','Publikasi Q2','Dokumen'],
-          ['5','HKI/Paten granted','Jumlah'],['6','Buku ber-ISBN','Judul'],
-          ['7','Hibah penelitian eksternal','Jumlah'],['8','Dana penelitian internal','Rp Juta'],
-          ['9','Dana penelitian dari BOPTN','Rp Juta']
+          ['1','Publikasi Scopus (kumulatif)','Dokumen','','','','','',''],
+          ['2','Sitasi Scopus (kumulatif)','Sitasi','','','','','',''],
+          ['3','Publikasi Q1','Dokumen','','','','','',''],
+          ['4','Publikasi Q2','Dokumen','','','','','',''],
+          ['5','Jurnal SINTA terakreditasi','Jurnal','','','','','',''],
+          ['6','Jurnal internasional terindeks','Jurnal','','','','','',''],
+          ['7','HKI/Paten granted','Jumlah','','','','','',''],
+          ['8','Buku ber-ISBN','Judul','','','','','',''],
+          ['9','Hibah penelitian eksternal','Jumlah','','','','','','']
         ]},
       { id:'dc-pkm', title:'Pusat Pengabdian kepada Masyarakat (2020–2025)', ref:'Lampiran I → tbl-pkm',
         headers:['No','Indikator PkM','Satuan','2020','2021','2022','2023','2024','2025'],
         rows:[
-          ['1','Jumlah kegiatan PkM','Kegiatan'],['2','Desa/kelurahan binaan','Desa'],
-          ['3','Kerjasama aktif (MoU PkM)','MoU'],['4','Dana PkM internal','Rp Juta'],
-          ['5','Hibah PkM eksternal','Jumlah'],['6','Dosen terlibat PkM','%'],
-          ['7','Produk PkM yang dimanfaatkan','Produk']
+          ['1','Jumlah kegiatan PkM','Kegiatan','0','2','1','1','2','1'],
+          ['2','Desa/kelurahan binaan','Desa','0','0','0','0','0','0'],
+          ['3','Kerjasama aktif (MoU PkM)','MoU','0','0','10','43','57','65'],
+          ['4','Dana PkM internal','Rp','0','161.030.980','0','0','117.000.000','0'],
+          ['5','Hibah PkM eksternal','Jumlah','0','0','1','0','0','0'],
+          ['6','Dosen terlibat PkM','Orang','0','36','2','0','17','0'],
+          ['7','Produk PkM yang dimanfaatkan','Produk','0','0','0','0','0','0']
         ]},
       { id:'dc-gender', title:'Pusat Studi Gender dan Anak (2020–2025)', ref:'Lampiran I → Program unggulan',
         headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
         rows:[
-          ['1','Penelitian gender & anak','Jumlah'],['2','Publikasi bertema gender','Dokumen'],
-          ['3','Kegiatan advokasi/sosialisasi','Kegiatan'],['4','Kerjasama dengan instansi','MoU'],
-          ['5','Peserta pelatihan/seminar','Orang']
+          ['1','Penelitian gender & anak','Jumlah','','','','','',''],
+          ['2','Publikasi bertema gender','Dokumen','','','','','',''],
+          ['3','Kegiatan advokasi/sosialisasi','Kegiatan','','','','','',''],
+          ['4','Kerjasama dengan instansi','MoU','','','','','',''],
+          ['5','Peserta pelatihan/seminar','Orang','','','','',' ','']
         ]},
       { id:'dc-jurnal', title:'Pusat Jurnal dan Publikasi Ilmiah (2020–2025)', ref:'Lampiran I → tbl-riset (Jurnal)',
         headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
         rows:[
-          ['1','Jurnal SINTA terakreditasi','Jurnal'],['2','Jurnal internasional terindeks','Jurnal'],
-          ['3','Artikel diterbitkan/tahun','Artikel'],['4','Proses akreditasi ulang','Jurnal'],
-          ['5','OJS terkelola','Platform']
+          ['1','Jurnal SINTA terakreditasi','Jurnal','','','','','33','35'],
+          ['2','Jurnal internasional terindeks','Jurnal','','','','','','1'],
+          ['3','Artikel diterbitkan/tahun','Artikel','','','','','','818'],
+          ['4','Proses akreditasi ulang','Jurnal','','','','','','4'],
+          ['5','OJS terkelola','Platform','','','','','48','51']
         ]},
       { id:'dc-moderasi', title:'Pusat Rumah Moderasi Beragama (2020–2025)', ref:'Lampiran I → Program unggulan',
         headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
@@ -522,9 +533,12 @@ const UNITS=[
       { id:'dc-bahasa', title:'Data Pengembangan Bahasa (2020–2025)', ref:'Lampiran I → tbl-layanan (Bahasa)',
         headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
         rows:[
-          ['1','Peserta TOEFL/tahun','Orang'],['2','Rata-rata skor TOEFL','Skor'],
-          ['3','Peserta TOAFL/tahun','Orang'],['4','Rata-rata skor TOAFL','Skor'],
-          ['5','Program pelatihan bahasa','Program'],['6','Sertifikat bahasa diterbitkan','Sertifikat']
+          ['1','Peserta TOEFL/tahun','Orang','1.500','1.600','1.600','1.700','1.750','2.000'],
+          ['2','Rata-rata skor TOEFL','Skor','350','360','370','380','385','390'],
+          ['3','Peserta TOAFL/tahun','Orang','300','400','500','600','700','825'],
+          ['4','Rata-rata skor TOAFL','Skor','320','335','345','355','365','370'],
+          ['5','Program pelatihan bahasa','Program','1','1','1','1','1','2'],
+          ['6','Sertifikat bahasa diterbitkan','Sertifikat','2.150','2.360','2.470','2.680','2.835','3.215']
         ]}
     ]
   },
@@ -537,9 +551,12 @@ const UNITS=[
       { id:'dc-mahad', title:'Data Ma\'had Al Jami\'ah (2020–2025)', ref:'Lampiran I → tbl-layanan (Ma\'had)',
         headers:['No','Indikator','Satuan','2020','2021','2022','2023','2024','2025'],
         rows:[
-          ['1','Kapasitas asrama','Orang'],['2','Santri aktif','Orang'],
-          ['3','Tingkat hunian','%'],['4','Pembina/musyrif','Orang'],
-          ['5','Program tahfidz/bahasa','Program'],['6','Kegiatan keagamaan','Kegiatan']
+          ['1','Kapasitas asrama','Orang','400','400','400','400','400','400'],
+          ['2','Santri aktif','Orang','0','180','200','300','400','400'],
+          ['3','Tingkat hunian','%','0','48','50','75','100','100'],
+          ['4','Pembina/musyrif','Orang','0','0','25','25','25','26'],
+          ['5','Program tahfidz','Program','0','0','0','0','2','2'],
+          ['6','Kegiatan keagamaan','Kegiatan','0','1','5','5','6','6']
         ]}
     ]
   },
