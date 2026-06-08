@@ -834,10 +834,10 @@ Output HARUS berupa JSON array yang valid — array of arrays, 7 elemen per bari
 ["visi","misi","tujuan","sasaran","kebijakan","program","kegiatan"]
 Jangan tambahkan teks apapun di luar JSON array. Mulai langsung dengan [.`;
 
-  const USR=`Buat rekomendasi LENGKAP 16-20 baris Matriks Keterkaitan RSB BLU UIN Kiai Ageng Muhammad Besari Ponorogo 2025-2029.
+  const USR=`Buat rekomendasi LENGKAP 16-20 baris Matriks Keterkaitan RSB BLU UIN Kiai Ageng Muhammad Besari Ponorogo 2025-2029 berdasarkan VISI-MISI RESMI berikut.
 
-VISI: "UIN yang Unggul, Moderat, dan Berdaya Saing Nasional-Internasional 2030"
-MISI: M1=Pendidikan berkualitas | M2=Penelitian kompetitif | M3=Pengabdian masyarakat | M4=Tata kelola profesional | M5=Kerjasama strategis
+VISI: "Mewujudkan universitas yang unggul dalam pengembangan jejaring keislaman, keilmuan, dan kebudayaan"
+MISI: M1=Pendidikan dan pengajaran inovatif (jejaring keislaman, keilmuan, kebudayaan) | M2=Penelitian berbasis jejaring keislaman, keilmuan, kebudayaan | M3=Pengabdian masyarakat untuk mewujudkan masyarakat moderat | M4=Kerja sama meningkatkan kepercayaan masyarakat dalam penyelenggaraan Tridharma PT
 
 ${swotCtx}
 IFE=${ife.toFixed(2)}, EFE=${efe.toFixed(2)}, Posisi: ${quad}
@@ -1485,12 +1485,11 @@ const SECTIONS = [
       { id:'l4a', letter:'', title:'Matriks Keterkaitan Visi \u2192 Misi \u2192 Tujuan \u2192 Sasaran \u2192 Kebijakan \u2192 Program \u2192 Kegiatan 5 Tahun',
         type:'rte+table',
         dropdownCols:{
-          0:['UIN yang Unggul, Moderat, dan Berdaya Saing di Tingkat Nasional dan Internasional 2030'],
-          1:['Misi 1: Pendidikan berkualitas, inovatif, integrasi keilmuan',
-             'Misi 2: Penelitian kompetitif',
-             'Misi 3: Pengabdian masyarakat',
-             'Misi 4: Tata kelola profesional',
-             'Misi 5: Kerjasama strategis'],
+          0:['Mewujudkan universitas yang unggul dalam pengembangan jejaring keislaman, keilmuan, dan kebudayaan'],
+          1:['Misi 1: Menyelenggarakan pendidikan dan pengajaran inovatif (jejaring keislaman, keilmuan, kebudayaan)',
+             'Misi 2: Menyelenggarakan pendidikan tinggi berbasis penelitian (jejaring keislaman, keilmuan, kebudayaan)',
+             'Misi 3: Menyelenggarakan pengabdian masyarakat untuk mewujudkan masyarakat moderat',
+             'Misi 4: Menjalin kerja sama guna meningkatkan kepercayaan masyarakat (Tridharma PT)'],
           2:['Meningkatkan kualitas dan akses pendidikan',
              'Meningkatkan kualitas riset & PkM',
              'Meningkatkan kontribusi sosial',
@@ -1517,20 +1516,20 @@ const SECTIONS = [
         table:{ id:'tbl-cascading',
           headers:['Visi','Misi','Tujuan Strategis','Sasaran Strategis','Kebijakan','Program Utama','Kegiatan Strategis 5 Tahun'],
           rows:[
-            ['UIN yang Unggul, Moderat, dan Berdaya Saing di Tingkat Nasional dan Internasional 2030','Misi 1: Pendidikan berkualitas, inovatif, integrasi keilmuan','Meningkatkan kualitas dan akses pendidikan','Peningkatan mutu akademik','Peningkatan mutu berkelanjutan','Peningkatan Mutu Akademik (BAB III)','Akreditasi prodi Unggul, kurikulum OBE, pembukaan prodi baru'],
+            ['Mewujudkan universitas yang unggul dalam pengembangan jejaring keislaman, keilmuan, dan kebudayaan','Misi 1: Pendidikan dan pengajaran inovatif (keislaman-keilmuan-kebudayaan)','Meningkatkan kualitas dan akses pendidikan','Peningkatan mutu akademik','Peningkatan mutu berkelanjutan','Peningkatan Mutu Akademik (BAB III)','Akreditasi prodi Unggul, kurikulum OBE, pembukaan prodi baru'],
             ['','','','Peningkatan daya saing lulusan','Link & match dunia kerja','','Program MBKM, sertifikasi profesi, magang industri'],
             ['','','Perluasan akses pendidikan','Peningkatan jumlah mahasiswa','Promosi dan perluasan jangkauan','','Penerimaan maba, program online/hybrid'],
             ['','','','Pengembangan layanan digital','Digitalisasi pendidikan','Digital Learning Hub (Lamp II)','Platform online, program hybrid berbayar (target: 500 peserta 2029)'],
-            ['','Misi 2: Penelitian kompetitif','Meningkatkan kualitas riset & PkM','Peningkatan output penelitian','Akselerasi riset dan publikasi','Pengembangan Riset & Inovasi (BAB III)','Research grant, akselerasi Scopus, pendaftaran HKI/Paten'],
+            ['','Misi 2: Penelitian berbasis jejaring keislaman, keilmuan, kebudayaan','Meningkatkan kualitas riset & PkM','Peningkatan output penelitian','Akselerasi riset dan publikasi','Pengembangan Riset & Inovasi (BAB III)','Research grant, akselerasi Scopus, pendaftaran HKI/Paten'],
             ['','','','Penguatan PkM berbasis riset','PkM terintegrasi riset','','Desa binaan, kemitraan industri, jasa konsultasi'],
             ['','','','Komersialisasi riset','Monetisasi inovasi','Inkubator Bisnis (Lamp II)','Pendampingan startup, lisensi HKI (target: 20 tenant 2029)'],
-            ['','Misi 3: Pengabdian masyarakat','Meningkatkan kontribusi sosial','Pelayanan kesehatan masyarakat','Layanan kesehatan terjangkau','Klinik Kesehatan Kampus (Lamp II)','Pembangunan klinik, layanan mahasiswa & umum (target: 3.000 pasien/th)'],
-            ['','Misi 4: Tata kelola profesional','Mewujudkan tata kelola BLU profesional','Peningkatan akuntabilitas','Reformasi birokrasi dan tata kelola BLU','Penguatan Tata Kelola (BAB III)','Implementasi SPIP, SIM terintegrasi, SPI'],
+            ['','Misi 3: Pengabdian masyarakat untuk mewujudkan masyarakat moderat','Meningkatkan kontribusi sosial','Pelayanan kesehatan masyarakat','Layanan kesehatan terjangkau','Klinik Kesehatan Kampus (Lamp II)','Pembangunan klinik, layanan mahasiswa & umum (target: 3.000 pasien/th)'],
+            ['','Misi 4: Kerja sama meningkatkan kepercayaan masyarakat (Tridharma PT)','Mewujudkan tata kelola BLU profesional','Peningkatan akuntabilitas','Reformasi birokrasi dan tata kelola BLU','Penguatan Tata Kelola (BAB III)','Implementasi SPIP, SIM terintegrasi, SPI'],
             ['','','','Kemandirian keuangan','Diversifikasi dan optimalisasi PNBP','Optimalisasi PNBP Eksisting (Lamp II)','Penyesuaian tarif UKT BLU, asrama, sewa gedung'],
             ['','','','','','Pengembangan Unit Bisnis Baru (Lamp II)','LSP-P1, Teaching Factory, Co-Working Space'],
             ['','','','Penetapan tarif BLU','Tarif layanan berbasis regulasi','Penetapan Tarif BLU (Lamp II)','Kajian tarif, usulan Menkeu, SK Tarif (target: 10 jenis tarif 2029)'],
             ['','','','Organ BLU lengkap','Pemenuhan organ pengelola BLU','Pembentukan Organ BLU (Lamp II)','Dewan Pengawas, SPI, SOP Keuangan BLU'],
-            ['','Misi 5: Kerjasama strategis','Mengembangkan SDM unggul','Peningkatan kualifikasi dosen','Investasi SDM berkelanjutan','Pengembangan SDM (BAB III)','Beasiswa S3, visiting scholar, percepatan jabfung'],
+            ['','Misi 4: Kerja sama meningkatkan kepercayaan masyarakat (Tridharma PT)','Mengembangkan SDM unggul','Peningkatan kualifikasi dosen','Investasi SDM berkelanjutan','Pengembangan SDM (BAB III)','Beasiswa S3, visiting scholar, percepatan jabfung'],
             ['','','','Sertifikasi kompetensi','Peningkatan kompetensi terukur','LSP-P1 Sertifikasi (Lamp II)','Uji kompetensi, sertifikasi IT/AI (target: 500 peserta/th)'],
             ['','','','Pelatihan profesional','Capacity building berbayar','Pusat Pelatihan & Sertifikasi (Lamp II)','Diklat profesional, program sertifikasi (target: 15 program 2029)'],
             ['','','Memperluas kerjasama strategis','Kemitraan bisnis revenue-sharing','Kerjasama strategis menghasilkan','Kerjasama Revenue-Sharing (Lamp II)','MoU bisnis, joint program PEMDA, pemanfaatan aset (target: 30 MoU 2029)'],
