@@ -3313,7 +3313,8 @@ async function exportDOCX(){
       function proc(n){
         if(n.nodeType===3){const t=n.textContent.trim();if(t)ps.push(new Paragraph({children:[new TextRun({text:t,size:24,font:'Times New Roman'})]}));return;}
         if(n.nodeType!==1)return;const tag=n.tagName.toLowerCase();
-        if(tag==='h3'){ps.push(new Paragraph({children:[new TextRun({text:n.textContent,bold:true,size:24,font:'Times New Roman'})],spacing:{before:240,after:120}}));
+        if(tag==='h2'||tag==='h3'||tag==='h4'){
+          ps.push(new Paragraph({children:[new TextRun({text:n.textContent,bold:true,size:tag==='h2'?26:24,font:'Times New Roman'})],spacing:{before:240,after:120}}));
         }else if(tag==='p'){
           const rs=[];
           n.childNodes.forEach(c=>{
@@ -3333,26 +3334,47 @@ async function exportDOCX(){
             });
             ps.push(new Paragraph({children:rs,indent:{left:720},spacing:{after:60}}));
           });
+        }else if(tag==='table'){
+          // Tabel di dalam RTE (mis: sync table dari Lampiran I)
+          const dt=tblToDocx(n);
+          if(dt){ps.push(new Paragraph({spacing:{before:100}}));ps.push(dt);ps.push(new Paragraph({spacing:{after:200}}));}
         }else{n.childNodes.forEach(c=>proc(c));}
       }
       d.childNodes.forEach(c=>proc(c));return ps;
     }
 
+    function cellText(c){
+      // Baca nilai: cek input/textarea dulu, lalu textContent
+      const inp=c.querySelector('input,textarea,select');
+      if(inp) return (inp.value||'').trim();
+      return c.textContent.trim();
+    }
+
     function tblToDocx(el){
-      if(!el)return null;const rows=el.querySelectorAll('tr');if(!rows.length)return null;
+      if(!el)return null;
+      const rows=el.querySelectorAll('tr');if(!rows.length)return null;
       const drs=[];
       rows.forEach((tr,ri)=>{
-        const cells=tr.querySelectorAll('th,td');const dcs=[];
+        const cells=tr.querySelectorAll('th,td');
+        if(!cells.length)return;
+        const dcs=[];
         cells.forEach(c=>{
           const isH=c.tagName==='TH'||ri===0;
+          const txt=cellText(c);
+          const cs=parseInt(c.getAttribute('colspan')||1);
+          const rs=parseInt(c.getAttribute('rowspan')||1);
           dcs.push(new TableCell({
-            children:[new Paragraph({children:[new TextRun({text:c.textContent.trim(),bold:isH,size:20,font:'Times New Roman'})],spacing:{after:0}})],
-            shading:isH?{type:ShadingType.CLEAR,fill:'D9E2F3'}:undefined
+            children:[new Paragraph({children:[new TextRun({text:txt,bold:isH,size:20,font:'Times New Roman'})],spacing:{after:0},alignment:isH?AlignmentType.CENTER:AlignmentType.LEFT})],
+            shading:isH?{type:ShadingType.CLEAR,fill:'1F3864',color:'FFFFFF'}:{type:ShadingType.CLEAR,fill:'FFFFFF'},
+            columnSpan:cs>1?cs:undefined,
+            rowSpan:rs>1?rs:undefined,
+            margins:{top:80,bottom:80,left:100,right:100}
           }));
         });
-        drs.push(new TableRow({children:dcs}));
+        if(dcs.length)drs.push(new TableRow({children:dcs,tableHeader:ri===0}));
       });
-      return new Table({rows:drs,width:{size:100,type:WidthType.PERCENTAGE}});
+      if(!drs.length)return null;
+      return new Table({rows:drs,width:{size:100,type:WidthType.PERCENTAGE},layout:TableLayoutType.FIXED});
     }
 
     const ch=[];
@@ -3384,7 +3406,13 @@ async function exportDOCX(){
       sec.components.forEach(comp=>{
         const ct=comp.letter?`${comp.letter}. ${comp.title}`:comp.title;
         ch.push(new Paragraph({children:[new TextRun({text:ct,bold:true,size:24,font:'Times New Roman'})],heading:HeadingLevel.HEADING_2,spacing:{before:300,after:150}}));
-        if(comp.type.includes('rte')||comp.type==='swot+rte'){const rte=document.getElementById(`rte-${comp.id}`);if(rte)ch.push(...htmlToParas(rte.innerHTML));}
+        // --- Narasi RTE ---
+        const rteEl=document.getElementById(`rte-${comp.id}`);
+        const edEl=document.getElementById(`ed-${comp.id}`);
+        const rteContent=rteEl?.innerHTML||edEl?.innerHTML||'';
+        if(rteContent)ch.push(...htmlToParas(rteContent));
+
+        // --- SWOT quadrants ---
         if(comp.type==='swot+rte'){
           const labels={str:'STRENGTHS (Kekuatan)',wk:'WEAKNESSES (Kelemahan)',opp:'OPPORTUNITIES (Peluang)',thr:'THREATS (Ancaman)'};
           ['str','wk','opp','thr'].forEach(qk=>{
@@ -3395,9 +3423,26 @@ async function exportDOCX(){
             });
           });
         }
-        if(comp.type.includes('table')||comp.table){
-          const te=document.querySelector(`#comp-${comp.id} table.editable`);
-          if(te){const dt=tblToDocx(te);if(dt){ch.push(new Paragraph({spacing:{before:100}}));ch.push(dt);ch.push(new Paragraph({spacing:{after:200}}));}}
+
+        // --- Tabel editable (rte+table, table-only) ---
+        const tblSel=[
+          `#comp-${comp.id} table.editable`,  // tabel editable standar
+          `#comp-${comp.id} .tbl-wrap table`,  // wrapped table
+        ];
+        if(comp.table){tblSel.push(`#${comp.table.id}`);} // tabel by ID
+        let tblFound=false;
+        for(const sel of tblSel){
+          const te=document.querySelector(sel);
+          if(te&&!tblFound){
+            const dt=tblToDocx(te);
+            if(dt){ch.push(new Paragraph({spacing:{before:120}}));ch.push(dt);ch.push(new Paragraph({spacing:{after:240}}));tblFound=true;}
+          }
+        }
+
+        // --- Lampiran IV: Cascading table (input-based) ---
+        if(comp.id==='l4a'){
+          const ct=document.getElementById('tbl-cascading');
+          if(ct){const dt=tblToDocx(ct);if(dt){ch.push(new Paragraph({spacing:{before:120}}));ch.push(dt);ch.push(new Paragraph({spacing:{after:240}}));}}
         }
       });
       if(si<SECTIONS.length-1)ch.push(new Paragraph({children:[new PageBreak()]}));
