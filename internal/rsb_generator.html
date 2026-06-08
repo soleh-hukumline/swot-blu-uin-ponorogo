@@ -1261,8 +1261,9 @@ const SECTIONS = [
             ['5','Venue Aula & Gedung Pertemuan','Unit','5','7','8','10','12','13'],
             ['6','Asrama Ma\'had (kapasitas)','Orang','400','400','400','400','400','400'],
             ['7','Kantin kampus aktif','Unit','3','3','4','4','5','6'],
-            ['8','ATM di lingkungan kampus','Unit','1','1','2','2','3','3'],
-            ['9','Total nilai aset BMN','Rp Miliar','285','295','310','340','365','383'],
+            ['8','Kendaraan dinas','Unit','8','9','10','11','12','12'],
+            ['9','ATM di lingkungan kampus','Unit','1','1','2','2','3','3'],
+            ['10','Total nilai aset BMN','Rp Miliar','285','295','310','340','365','383'],
           ]}},
       { id:'l1f', letter:'', title:'Data Kinerja Pengabdian Masyarakat (5 Tahun)', type:'rte+table',
         template:'<p><b>⚠️ MASTER DATA PkM.</b> Isi data per tahun.</p>',
@@ -2868,7 +2869,7 @@ function _doImportDC(exp){
         // Lindungi baris kalkulasi: Total, SAKIP, Proporsi, Opini, Predikat
         // Jangan overwrite kecuali label DC juga mengandung kata kunci yg sama
         const genLabel=getCellValue(mCells[1]||mCells[0]).toLowerCase();
-        const PROTECTED=['sakip','opini bpk','predikat sakip','proporsi pnbp','total belanja','total realisasi','rasio realisasi'];
+        const PROTECTED=['sakip','opini bpk','predikat sakip','proporsi pnbp','total belanja','total realisasi','rasio realisasi','nilai aset','atm di lingkungan','kendaraan dinas','total pnbp'];
         const isProtected=PROTECTED.some(k=>genLabel.includes(k)&&!dcLabel.includes(k.split(' ')[0]));
         if(isProtected)return;
         dcVals.forEach((val,di)=>{
