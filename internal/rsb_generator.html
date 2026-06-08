@@ -680,8 +680,19 @@ async function callAI(systemPrompt,userPrompt,model,targetEditorId,append){
     indicator.remove();
     // Final cleanup: apply sekali lagi pada konten lengkap
     editor.innerHTML=cleanAIContent(editor.innerHTML);
+    // PENTING: Pastikan editor tetap editable setelah innerHTML replacement
+    // (Safari/Chrome kadang "freeze" contenteditable setelah rapid innerHTML updates)
+    editor.setAttribute('contenteditable','true');
+    // Wrap orphaned text nodes in <p> so cursor works properly
+    if(editor.childNodes.length>0){
+      let hasBlock=false;
+      editor.childNodes.forEach(n=>{if(n.nodeType===1&&['P','H1','H2','H3','H4','UL','OL','DIV'].includes(n.tagName))hasBlock=true;});
+      if(!hasBlock){editor.innerHTML='<p>'+editor.innerHTML+'</p>';}
+    }
     markDirty();
-    showToast('AI selesai generate!');
+    showToast('✅ AI selesai! Klik teks untuk mengedit.');
+    // Focus editor agar kursor langsung muncul
+    setTimeout(()=>{editor.focus();const s=window.getSelection();if(s&&editor.lastChild){const r=document.createRange();r.selectNodeContents(editor.lastChild);r.collapse(false);s.removeAllRanges();s.addRange(r);}},50);
     return true;
   }catch(e){
     indicator.remove();
