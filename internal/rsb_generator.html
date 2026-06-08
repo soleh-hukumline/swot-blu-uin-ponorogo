@@ -584,6 +584,17 @@ async function listAvailableModels(){
   }catch(e){st.className='ai-status err';st.textContent='Network error: '+e.message;}
 }
 
+// Bersihkan response AI dari markdown wrapper (```html...```, ```...```)
+function cleanAIContent(raw){
+  if(!raw)return raw;
+  // Strip opening ```html, ```markdown, ``` etc.
+  let s=raw.trim();
+  s=s.replace(/^```[a-zA-Z]*\n?/,'');
+  // Strip closing ```
+  s=s.replace(/\n?```\s*$/,'');
+  return s.trim();
+}
+
 // Core streaming API call
 async function callAI(systemPrompt,userPrompt,model,targetEditorId,append){
   const cfg=getAIConfig();
@@ -634,8 +645,9 @@ async function callAI(systemPrompt,userPrompt,model,targetEditorId,append){
           const delta=j.choices?.[0]?.delta?.content;
           if(delta){
             content+=delta;
-            if(append)editor.innerHTML=editor.innerHTML.replace(/<div class="ai-stream-indicator">.*?<\/div>/g,'')+content;
-            else editor.innerHTML=content;
+            const cleaned=cleanAIContent(content);
+            if(append)editor.innerHTML=editor.innerHTML.replace(/<div class="ai-stream-indicator">.*?<\/div>/g,'')+cleaned;
+            else editor.innerHTML=cleaned;
           }
         }catch(e){}
       }
