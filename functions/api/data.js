@@ -21,7 +21,7 @@ function getAuthEmail(request) {
   } catch (e) { return null; }
 }
 
-const KV_PREFIX = 'unit_v4:'; // Versioned prefix — old 'unit:' data ignored safely
+const KV_PREFIX = 'unit:'; // Prefix standar — simpel, sesuai backup lama
 
 export async function onRequestGet(context) {
   const { request, env } = context;
