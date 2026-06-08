@@ -2619,54 +2619,48 @@ async function backupLokal(){
 }
 
 async function loadBackup(){
-  // Coba File System Access API dulu (Chrome/Edge) — bisa buka langsung dari folder
+  // Chrome/Edge: File System Access API
   if(window.showOpenFilePicker){
     try{
       const [fh]=await window.showOpenFilePicker({
         types:[{description:'RSB Backup JSON',accept:{'application/json':['.json']}}],
-        startIn:'documents',
-        multiple:false
+        startIn:'documents',multiple:false
       });
       const file=await fh.getFile();
       const txt=await file.text();
-      // Validasi JSON
-      JSON.parse(txt); // akan throw jika invalid
-      if(!confirm('Load backup dari "'+file.name+'"?\nSemua data saat ini akan ditimpa. Lanjutkan?'))return;
+      JSON.parse(txt);
+      if(!confirm('Load "'+file.name+'"? Data saat ini akan ditimpa.'))return;
       localStorage.setItem(SK,txt);
-      showToast('✅ Backup berhasil di-load: '+file.name);
-      setTimeout(()=>location.reload(),800);
+      showToast('\u2705 Di-load: '+file.name);
+      setTimeout(()=>location.reload(),600);
       return;
-    }catch(e){
-      if(e.name==='AbortError')return; // User cancel
-      // Fall through ke file input biasa
-    }
+    }catch(e){if(e.name==='AbortError')return;}
   }
-  // Fallback: file input biasa (Safari/Firefox)
-  const inp=document.createElement('input');
-  inp.type='file';
-  inp.accept='.json,application/json';
-  inp.style.display='none';
-  document.body.appendChild(inp);
-  inp.onchange=function(){
-    const file=inp.files[0];
-    if(!file){document.body.removeChild(inp);return;}
-    const reader=new FileReader();
-    reader.onload=function(ev){
-      try{
-        const txt=ev.target.result;
-        JSON.parse(txt); // validasi
-        if(!confirm('Load backup dari "'+file.name+'"?\nSemua data saat ini akan ditimpa. Lanjutkan?'))return;
-        localStorage.setItem(SK,txt);
-        showToast('✅ Backup berhasil di-load: '+file.name);
-        setTimeout(()=>location.reload(),800);
-      }catch(e2){
-        showToast('❌ File JSON tidak valid: '+e2.message);
-      }
-      document.body.removeChild(inp);
-    };
-    reader.readAsText(file);
+  // Safari/Firefox: modal dengan file input + textarea paste
+  const ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:99999;display:flex;align-items:center;justify-content:center;';
+  ov.innerHTML='<div style="background:#1e293b;border-radius:16px;padding:1.5rem;width:min(580px,92vw);box-shadow:0 20px 60px rgba(0,0,0,.6);">'+
+    '<h3 style="color:#fff;margin:0 0 .8rem;">\uD83D\uDCC2 Load Backup JSON</h3>'+
+    '<input type="file" id="lbFI" accept=".json" style="display:block;width:100%;color:#e2e8f0;margin-bottom:.6rem;">'+
+    '<textarea id="lbTA" placeholder="Atau paste isi JSON di sini..." style="width:100%;height:150px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:8px;padding:.6rem;font-size:.75rem;font-family:monospace;resize:vertical;box-sizing:border-box;"></textarea>'+
+    '<div style="display:flex;gap:.6rem;margin-top:.8rem;justify-content:flex-end;">'+
+    '<button id="lbCancel" style="background:#334155;color:#fff;border:none;padding:.45rem 1rem;border-radius:8px;cursor:pointer;">Batal</button>'+
+    '<button id="lbOK" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;padding:.45rem 1.2rem;border-radius:8px;cursor:pointer;font-weight:600;">\u2705 Load & Reload</button>'+
+    '</div></div>';
+  document.body.appendChild(ov);
+  document.getElementById('lbFI').onchange=function(e){
+    const f=e.target.files[0];if(!f)return;
+    const r=new FileReader();r.onload=ev=>{document.getElementById('lbTA').value=ev.target.result;};r.readAsText(f);
   };
-  inp.click();
+  document.getElementById('lbCancel').onclick=()=>document.body.removeChild(ov);
+  document.getElementById('lbOK').onclick=function(){
+    const txt=document.getElementById('lbTA').value.trim();
+    if(!txt){alert('Kosong! Pilih file atau paste JSON.');return;}
+    try{JSON.parse(txt);}catch(e2){alert('JSON tidak valid: '+e2.message);return;}
+    localStorage.setItem(SK,txt);
+    showToast('\u2705 Backup di-load! Reloading...');
+    setTimeout(()=>location.reload(),600);
+  };
 }
 
 function loadData(){
