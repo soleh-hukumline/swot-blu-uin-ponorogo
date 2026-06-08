@@ -960,24 +960,17 @@ async function loadData(){
   try{
     const res=await fetch(API_URL);
     const json=await res.json();
-    if(json.ok && json.data && Object.keys(json.data).length>0){
-      const allUnits=Object.values(json.data);
-      // Skip jika ada unit tanpa schemaVersion = data lama (sebelum versioning)
-      const hasOldData=allUnits.some(u=>u && !u.schemaVersion);
-      if(!hasOldData){
-        cloudData=json.data;
-        applyData(cloudData);
-        const mergedExport={timestamp:new Date().toISOString(), tables:{}};
-        Object.values(cloudData).forEach(record=>{
-          if(record&&record.tables) Object.assign(mergedExport.tables,record.tables);
-        });
-        localStorage.setItem('rsb_dc_export',JSON.stringify(mergedExport));
-        updateProgress();
-        console.log('Data loaded from cloud OK (schema v4).');
-        return;
-      } else {
-        console.warn('KV old-schema detected — using template. Jalankan restore_kv untuk migrasi.');
-      }
+    if(json.ok && json.data){
+      cloudData=json.data;
+      applyData(cloudData);
+      const mergedExport={timestamp:new Date().toISOString(), tables:{}};
+      Object.values(cloudData).forEach(record=>{
+        if(record&&record.tables) Object.assign(mergedExport.tables,record.tables);
+      });
+      localStorage.setItem('rsb_dc_export',JSON.stringify(mergedExport));
+      updateProgress();
+      console.log('Data loaded from cloud.');
+      return;
     }
   }catch(e){console.warn('Cloud load failed, using local:',e);}
 
