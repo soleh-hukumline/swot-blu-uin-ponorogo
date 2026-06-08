@@ -7,6 +7,7 @@
 <meta name="description" content="Pengelolaan tarif layanan BLU UIN Ponorogo sesuai PMK 126/PMK.05/2024"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <style>
 :root{--bg:#f8fafc;--card:#fff;--text:#1e293b;--muted:#94a3b8;--border:#e2e8f0;--accent:#2563eb;
   --green:#16a34a;--red:#dc2626;--amber:#d97706;--purple:#7c3aed;--cyan:#0891b2;
@@ -176,6 +177,18 @@ table.data-tbl td.col-act{padding:0;text-align:center;border:1px solid var(--bor
 .tbl-delete-btn{margin-left:0.4rem;background:none;border:none;color:#cbd5e1;cursor:pointer;
   font-size:0.65rem;padding:0.2rem 0.4rem;border-radius:4px;transition:all 0.15s;}
 .tbl-delete-btn:hover{background:#fef2f2;color:var(--red);}
+/* Export buttons per tabel */
+.tbl-export-wrap{display:flex;gap:0.25rem;margin-left:auto;align-items:center;}
+.tbl-export-btn{display:inline-flex;align-items:center;gap:0.25rem;padding:0.2rem 0.5rem;
+  border-radius:5px;font-size:0.6rem;font-weight:600;font-family:'Inter',sans-serif;
+  cursor:pointer;border:none;transition:all 0.15s;white-space:nowrap;}
+.tbl-export-btn.csv{background:#e0f2fe;color:#0369a1;border:1px solid #bae6fd;}
+.tbl-export-btn.csv:hover{background:#0369a1;color:#fff;}
+.tbl-export-btn.xlsx{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0;}
+.tbl-export-btn.xlsx:hover{background:#15803d;color:#fff;}
+/* Sidebar split buttons */
+.sb-btn-group{display:flex;gap:0.25rem;margin-bottom:0.3rem;}
+.sb-btn-group .sb-btn{margin-bottom:0;flex:1;font-size:0.62rem;}
 </style>
 </head>
 <body>
@@ -630,7 +643,12 @@ function renderSidebar(){
     <div class="sb-actions">
       <div class="user-label" id="userLabel"><i class="fa-solid fa-user"></i> Mode Pengisian Data</div>
       <button class="sb-btn primary" onclick="saveAll()"><i class="fa-solid fa-cloud-arrow-up"></i> Simpan ke Server</button>
-      <button class="sb-btn export" onclick="exportCSV()"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+      <div class="sb-btn-group">
+        <button class="sb-btn secondary" style="background:#e0f2fe;color:#0369a1;border:1px solid #bae6fd" onclick="exportSectionCSV(activeSectionId)"><i class="fa-solid fa-file-csv"></i> CSV Seksi</button>
+        <button class="sb-btn secondary" style="background:#dcfce7;color:#15803d;border:1px solid #bbf7d0" onclick="exportSectionExcel(activeSectionId)"><i class="fa-solid fa-file-excel"></i> Excel Seksi</button>
+      </div>
+      <button class="sb-btn export" onclick="exportAllExcel()"><i class="fa-solid fa-file-excel"></i> Export Semua → 1 Excel</button>
+      <button class="sb-btn secondary" onclick="exportCSV()"><i class="fa-solid fa-file-csv"></i> Export Semua → CSV</button>
       <button class="sb-btn secondary" onclick="if(confirm('Reset semua data tarif?'))resetAll()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
     </div>
   `;
@@ -678,9 +696,18 @@ function renderTable(t,section,customIdx,customKey){
       <span class="tbl-card-title">${t.title}</span>`;
   html+=`<span class="tbl-card-ref">${t.ref}</span>`;
   if(isCustom){
-    html+=`<button class="tbl-delete-btn" onclick="deleteCustomTable('${customKey}',${customIdx})" title="Hapus kategori ini">
-      <i class="fa-solid fa-trash-can"></i> Hapus
-    </button>`;
+    html+=`<div class="tbl-export-wrap">
+      <button class="tbl-export-btn csv" onclick="exportTableCSV('${t.id}','${t.title.replace(/'/g,"\\'").replace(/"/g,"&quot;")}')" title="Export ke CSV"><i class="fa-solid fa-file-csv"></i> CSV</button>
+      <button class="tbl-export-btn xlsx" onclick="exportTableExcel('${t.id}','${t.title.replace(/'/g,"\\'").replace(/"/g,"&quot;")}','${section.color}')" title="Export ke Excel"><i class="fa-solid fa-file-excel"></i> Excel</button>
+      <button class="tbl-delete-btn" onclick="deleteCustomTable('${customKey}',${customIdx})" title="Hapus kategori ini">
+        <i class="fa-solid fa-trash-can"></i> Hapus
+      </button>
+    </div>`;
+  } else {
+    html+=`<div class="tbl-export-wrap">
+      <button class="tbl-export-btn csv" onclick="exportTableCSV('${t.id}','${t.title.replace(/'/g,"\\'").replace(/"/g,"&quot;")}')" title="Export ke CSV"><i class="fa-solid fa-file-csv"></i> CSV</button>
+      <button class="tbl-export-btn xlsx" onclick="exportTableExcel('${t.id}','${t.title.replace(/'/g,"\\'").replace(/"/g,"&quot;")}','${section.color}')" title="Export ke Excel"><i class="fa-solid fa-file-excel"></i> Excel</button>
+    </div>`;
   }
   html+=`</div>`;
   if(t.unitPengisi){
@@ -881,6 +908,7 @@ function switchSection(id){
   if(block)block.classList.add('active');
   if(sbItem)sbItem.classList.add('active');
   if(id==='compliance')updateCompliance();
+  if(id!=='compliance')activeSectionId=id;
 }
 
 /* ============================================================
@@ -1177,27 +1205,160 @@ function resetAll(){
   showToast('<i class="fa-solid fa-rotate-left"></i> Data tarif di-reset');
 }
 
-function exportCSV(){
-  saveAll();
-  let csv='Kategori,Tabel,'+['No','Nama','Satuan',...ALL_YEARS,'Ceiling PMK'].join(',')+'\n';
+/* ============================================================
+   EXPORT UTILITIES — CSV & Excel per Tabel / per Seksi / Semua
+   ============================================================ */
+
+let activeSectionId = SECTIONS[0]?SECTIONS[0].id:'';
+
+function _readTblDOM(tblId){
+  const tbl=document.getElementById(tblId);
+  if(!tbl)return null;
+  const allTh=tbl.querySelectorAll('thead th');
+  const headers=[...allTh].map(th=>th.textContent.trim()).filter((_,i)=>i<allTh.length-1);
+  const rows=[];
+  tbl.querySelectorAll('tbody tr').forEach(tr=>{
+    if(tr.classList.contains('section-row'))return;
+    const cells=[];
+    tr.querySelectorAll('.cell-input').forEach(inp=>cells.push(inp.value||''));
+    rows.push(cells);
+  });
+  return {headers,rows};
+}
+
+function _csvCell(v){
+  const s=String(v??'');
+  return (s.includes(',')||s.includes('"')||s.includes('\n'))? '"'+s.replace(/"/g,'""')+'"':s;
+}
+
+function _dlCSV(content,filename){
+  const blob=new Blob(['\uFEFF'+content],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=filename;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+function _makeWs(headers,rows,colorHex){
+  const ws=XLSX.utils.aoa_to_sheet([headers,...rows]);
+  const hc=(colorHex||'#2563eb').replace('#','');
+  const range=XLSX.utils.decode_range(ws['!ref']);
+  for(let C=range.s.c;C<=range.e.c;C++){
+    const addr=XLSX.utils.encode_cell({r:0,c:C});
+    if(ws[addr])ws[addr].s={font:{bold:true,color:{rgb:'FFFFFF'}},fill:{fgColor:{rgb:hc.toUpperCase()}},alignment:{horizontal:'center',wrapText:true}};
+  }
+  ws['!cols']=headers.map((h,i)=>({wch:Math.max(h.length+2,...rows.map(r=>String(r[i]??'').length),8)}));
+  return ws;
+}
+
+// === 1 Tabel → CSV ===
+function exportTableCSV(tblId, tblTitle){
+  const d=_readTblDOM(tblId);
+  if(!d){showToast('❌ Tabel tidak ditemukan');return;}
+  let csv=[d.headers.map(_csvCell).join(',')];
+  d.rows.forEach(row=>csv.push(row.map(_csvCell).join(',')));
+  const safe=tblTitle.replace(/[^a-zA-Z0-9]/g,'_').substring(0,40);
+  _dlCSV(csv.join('\n'),safe+'_'+new Date().toISOString().slice(0,10)+'.csv');
+  showToast('<i class="fa-solid fa-check"></i> CSV tabel berhasil diunduh!');
+}
+
+// === 1 Tabel → Excel ===
+function exportTableExcel(tblId, tblTitle, colorHex){
+  const d=_readTblDOM(tblId);
+  if(!d){showToast('❌ Tabel tidak ditemukan');return;}
+  if(typeof XLSX==='undefined'){showToast('❌ Library Excel belum siap');return;}
+  const wb=XLSX.utils.book_new();
+  const ws=_makeWs(d.headers,d.rows,colorHex||'#2563eb');
+  const sn=(tblTitle.substring(0,28)||'Data').replace(/[\[\]\*\?:\/\\]/g,'_');
+  XLSX.utils.book_append_sheet(wb,ws,sn);
+  const safe=tblTitle.replace(/[^a-zA-Z0-9]/g,'_').substring(0,40);
+  XLSX.writeFile(wb,safe+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  showToast('<i class="fa-solid fa-check"></i> Excel tabel berhasil diunduh!');
+}
+
+// === 1 Seksi → CSV ===
+function exportSectionCSV(sectionId){
+  const s=SECTIONS.find(x=>x.id===sectionId);
+  if(!s){showToast('❌ Seksi tidak ditemukan');return;}
+  let csv='';
+  s.tables.forEach(t=>{
+    const d=_readTblDOM(t.id);
+    if(!d)return;
+    csv+='# '+t.title+'\n';
+    csv+=d.headers.map(_csvCell).join(',')+'\n';
+    d.rows.forEach(row=>csv+=row.map(_csvCell).join(',')+'\n');
+    csv+='\n';
+  });
+  const safe=s.name.replace(/[^a-zA-Z0-9]/g,'_').substring(0,30);
+  _dlCSV(csv,'tarif_'+safe+'_'+new Date().toISOString().slice(0,10)+'.csv');
+  showToast('<i class="fa-solid fa-check"></i> CSV seksi berhasil diunduh!');
+}
+
+// === 1 Seksi → Excel (tiap tabel = 1 sheet) ===
+function exportSectionExcel(sectionId){
+  const s=SECTIONS.find(x=>x.id===sectionId);
+  if(!s){showToast('❌ Seksi tidak ditemukan');return;}
+  if(typeof XLSX==='undefined'){showToast('❌ Library Excel belum siap');return;}
+  const wb=XLSX.utils.book_new();
+  s.tables.forEach(t=>{
+    const d=_readTblDOM(t.id);
+    if(!d)return;
+    const ws=_makeWs(d.headers,d.rows,s.color);
+    const sn=t.title.substring(0,28).replace(/[\[\]\*\?:\/\\]/g,'_');
+    XLSX.utils.book_append_sheet(wb,ws,sn);
+  });
+  if(wb.SheetNames.length===0){showToast('Tidak ada data untuk diekspor');return;}
+  const safe=s.name.replace(/[^a-zA-Z0-9]/g,'_').substring(0,30);
+  XLSX.writeFile(wb,'tarif_'+safe+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  showToast('<i class="fa-solid fa-check"></i> Excel seksi berhasil diunduh! ('+wb.SheetNames.length+' sheet)');
+}
+
+// === Semua → 1 Excel multi-sheet ===
+function exportAllExcel(){
+  if(typeof XLSX==='undefined'){showToast('❌ Library Excel belum siap');return;}
+  showToast('<i class="fa-solid fa-spinner fa-spin"></i> Menyiapkan Excel...');
+  const wb=XLSX.utils.book_new();
+  let count=0;
   SECTIONS.forEach(s=>{
     s.tables.forEach(t=>{
-      if(t.id==='tf-ukt')return; // UKT separate
-      const tbl=document.getElementById(t.id);
-      if(!tbl)return;
-      tbl.querySelectorAll('tbody tr:not(.section-row)').forEach(tr=>{
-        const cells=['"'+s.name+'"','"'+t.title+'"'];
-        tr.querySelectorAll('.cell-input').forEach(inp=>cells.push('"'+(inp.value||'')+'"'));
-        csv+=cells.join(',')+'\n';
+      const d=_readTblDOM(t.id);
+      if(!d)return;
+      const ws=_makeWs(d.headers,d.rows,s.color);
+      const prefix=s.id.substring(0,6).toUpperCase();
+      const sn=(prefix+'_'+t.title.substring(0,22)).substring(0,31).replace(/[\[\]\*\?:\/\\]/g,'_');
+      XLSX.utils.book_append_sheet(wb,ws,sn);
+      count++;
+    });
+  });
+  if(count===0){showToast('Tidak ada data untuk diekspor');return;}
+  XLSX.writeFile(wb,'tarif_blu_uin_ponorogo_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  showToast('<i class="fa-solid fa-check"></i> Excel semua tarif berhasil diunduh! ('+count+' sheet)');
+}
+
+// === Semua → 1 CSV besar ===
+function exportCSV(){
+  saveAll();
+  let csv='Kategori,Tabel,Referensi';
+  let maxCols=0;
+  SECTIONS.forEach(s=>s.tables.forEach(t=>{
+    const d=_readTblDOM(t.id);
+    if(d&&d.headers.length>maxCols)maxCols=d.headers.length;
+  }));
+  for(let i=0;i<maxCols;i++)csv+=',Kolom'+(i+1);
+  csv+='\n';
+  SECTIONS.forEach(s=>{
+    s.tables.forEach(t=>{
+      const d=_readTblDOM(t.id);
+      if(!d)return;
+      d.rows.forEach(row=>{
+        const line=[_csvCell(s.name),_csvCell(t.title),_csvCell(t.ref),...row.map(_csvCell)];
+        csv+=line.join(',')+'\n';
       });
     });
   });
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='tarif_blu_uin_ponorogo_'+new Date().toISOString().slice(0,10)+'.csv';
-  a.click();
-  showToast('<i class="fa-solid fa-file-csv"></i> CSV exported!');
+  _dlCSV(csv,'tarif_blu_uin_ponorogo_'+new Date().toISOString().slice(0,10)+'.csv');
+  showToast('<i class="fa-solid fa-check"></i> CSV semua tarif berhasil diunduh!');
 }
 
 /* ============================================================
