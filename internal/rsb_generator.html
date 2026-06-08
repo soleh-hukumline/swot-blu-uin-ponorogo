@@ -534,7 +534,14 @@ REGULASI KUNCI:
 - Perpres 55/2025: Alih status IAIN → UIN Kiai Ageng Muhammad Besari Ponorogo
 - Inpres 1/2025: Efisiensi anggaran K/L
 
-DATA KINERJA INSTITUSIONAL — Matriks RSB 2025–2029 (SELALU RUJUK ANGKA INI):
+PENTING — BEDA DUA JENIS DATA (JANGAN DICAMPUR):
+1. DATA LAMPIRAN I (realisasi aktual 2020–2025) → dikirim terpisah per request sebagai konteks tabel
+2. TARGET RENSTRA RSB 2025–2029 (rencana ke depan, BUKAN realisasi) → lihat di bawah ini
+
+CATATAN: Ketika menulis BAB II (evaluasi kinerja lampau) → gunakan DATA LAMPIRAN I (realisasi)
+         Ketika menulis BAB III/IV (strategi, program, target) → gunakan TARGET RENSTRA di bawah
+
+TARGET RENSTRA RSB 2025–2029 — Matriks Kinerja Institusional (IKSP/IKSK/IKT):
 [SS.6 — Penyelenggaraan Pendidikan Tinggi Keagamaan]
 SP.6 | Partisipasi Mahasiswa
   IKSP.6.2  | Persentase peningkatan jumlah mahasiswa        | Baseline: 10.182 | 2025:7% | 2026:7,3% | 2027:7,5% | 2028:7,7% | 2029:7,9% | Org: Fakultas
@@ -898,7 +905,7 @@ async function aiGenerate(compId){
     if(section.id==='ringkasan'){
       userPrompt=sectionCtx+`\nData dari seluruh dokumen RSB:\n${relatedData}\n\nTugas: Tulis Ringkasan Eksekutif RSB BLU UIN Ponorogo 2025-2029. Mencakup: latar belakang, visi misi, evaluasi kinerja, arah strategis, target utama, dan program prioritas. Max 2 halaman (800 kata). Format HTML.`;
     } else {
-      userPrompt=sectionCtx+`\nPlaceholder: ${comp.placeholder||''}\n${relatedData?'\nDATA KINERJA AKTUAL (dari Lampiran I):\n'+relatedData:''}\n${existingContent?'\nKonten saat ini (bisa di-improve):\n'+existingContent.substring(0,500):''}\n\nTugas: Tulis konten lengkap untuk section "${comp.title}" dalam dokumen RSB BLU. Gunakan angka-angka spesifik dari data kinerja di atas. ${comp.placeholder||''}. Format HTML.`;
+      userPrompt=sectionCtx+`\nPlaceholder: ${comp.placeholder||''}\n${relatedData?'\nDATA LAMPIRAN I — Realisasi Aktual 2020–2025 (BUKAN target renstra, ini data historis nyata):\n'+relatedData:''}\n${existingContent?'\nKonten saat ini (bisa di-improve):\n'+existingContent.substring(0,500):''}\n\nTugas: Tulis konten lengkap untuk section "${comp.title}" dalam dokumen RSB BLU. Gunakan angka-angka spesifik dari data kinerja di atas. ${comp.placeholder||''}. Format HTML.`;
     }
   } else if(comp.type==='swot+rte'){
     // Analisis SWOT+RTE — gunakan data SWOT dari komponen + IFAS/EFAS
