@@ -429,30 +429,35 @@ table.editable tr:hover .row-del{opacity:1;}
       <div style="font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;margin-bottom:0.5rem;">Model per Tugas</div>
       <label>📝 Narasi & Penulisan <span style="color:#94a3b8;font-weight:400">(BAB I-IV, per-section AI)</span></label>
       <select id="aiModelNarasi">
-        <option value="deepseek-v4-flash" selected>deepseek-v4-flash — $0.14/M ⭐ Best value</option>
-        <option value="qwen3.6-flash">qwen3.6-flash — $0.13/M (50% off, bagus utk ID)</option>
-        <option value="gpt-5-nano">gpt-5-nano — $0.05/M (murah)</option>
+        <option value="claude-opus-4-5" selected>🏆 claude-opus-4-5 — $15/M ⭐ Terbaik untuk RSB</option>
+        <option value="claude-sonnet-4-5">claude-sonnet-4-5 — $3/M (balance akurasi+biaya)</option>
+        <option value="claude-haiku-4-5">claude-haiku-4-5 — $0.70/M (cepat)</option>
+        <option value="gemini/gemini-2.5-pro">gemini-2.5-pro — $1.25/M (premium, 1M ctx)</option>
         <option value="gemini/gemini-2.5-flash">gemini-2.5-flash — $0.30/M (powerful)</option>
-        <option value="gpt-4.1-mini">gpt-4.1-mini — $0.40/M</option>
-        <option value="claude-haiku-4-5">claude-haiku-4-5 — $0.70/M</option>
         <option value="gpt-5">gpt-5 — $1.25/M (premium)</option>
-        <option value="gemini/gemini-2.5-pro">gemini-2.5-pro — $1.25/M (premium)</option>
+        <option value="gpt-4.1-mini">gpt-4.1-mini — $0.40/M</option>
+        <option value="deepseek-v4-flash">deepseek-v4-flash — $0.14/M (hemat)</option>
+        <option value="qwen3.6-flash">qwen3.6-flash — $0.13/M (Bahasa ID bagus)</option>
       </select>
       <label>📊 Ringkasan & Sintesis <span style="color:#94a3b8;font-weight:400">(Executive Summary, perlu context panjang)</span></label>
       <select id="aiModelRingkasan">
-        <option value="gemini/gemini-2.5-flash" selected>gemini-2.5-flash — $0.30/M ⭐ Context 1M token</option>
-        <option value="deepseek-v4-flash">deepseek-v4-flash — $0.14/M (context 1M)</option>
-        <option value="gpt-5">gpt-5 — $1.25/M (context 272K)</option>
-        <option value="gemini/gemini-2.5-pro">gemini-2.5-pro — $1.25/M (premium, 1M)</option>
-        <option value="claude-haiku-4-5">claude-haiku-4-5 — $0.70/M (context 200K)</option>
+        <option value="claude-opus-4-5" selected>🏆 claude-opus-4-5 — $15/M ⭐ Terbaik untuk Ringkasan</option>
+        <option value="claude-sonnet-4-5">claude-sonnet-4-5 — $3/M (balance, ctx 200K)</option>
+        <option value="claude-haiku-4-5">claude-haiku-4-5 — $0.70/M (ctx 200K)</option>
+        <option value="gemini/gemini-2.5-pro">gemini-2.5-pro — $1.25/M (premium, 1M ctx)</option>
+        <option value="gemini/gemini-2.5-flash">gemini-2.5-flash — $0.30/M (ctx 1M token)</option>
+        <option value="gpt-5">gpt-5 — $1.25/M (ctx 272K)</option>
+        <option value="deepseek-v4-flash">deepseek-v4-flash — $0.14/M (ctx 1M)</option>
       </select>
       <label>🔄 Sync Data <span style="color:#94a3b8;font-weight:400">(Lamp I→III, mapping angka antar tabel)</span></label>
       <select id="aiModelSync">
-        <option value="gpt-5-nano" selected>gpt-5-nano — $0.05/M ⭐ Termurah, presisi</option>
-        <option value="MiniMax-M2.7-highspeed">MiniMax-M2.7-highspeed — $0.02/M (80% off)</option>
-        <option value="gemini/gemini-2.0-flash-lite">gemini-2.0-flash-lite — $0.07/M</option>
+        <option value="claude-sonnet-4-5" selected>claude-sonnet-4-5 — $3/M ⭐ Presisi tinggi utk data</option>
+        <option value="claude-haiku-4-5">claude-haiku-4-5 — $0.70/M (cepat)</option>
+        <option value="gpt-5-nano">gpt-5-nano — $0.05/M (termurah)</option>
         <option value="gpt-4.1-nano">gpt-4.1-nano — $0.10/M</option>
+        <option value="gemini/gemini-2.0-flash-lite">gemini-2.0-flash-lite — $0.07/M</option>
         <option value="deepseek-v4-flash">deepseek-v4-flash — $0.14/M</option>
+        <option value="MiniMax-M2.7-highspeed">MiniMax-M2.7-highspeed — $0.02/M (80% off)</option>
       </select>
     </div>
     <div class="ai-status" id="aiStatus"></div>
@@ -470,20 +475,30 @@ table.editable tr:hover .row-del{opacity:1;}
 ============================================================ */
 const AI_BASE='https://ai.sumopod.com/v1';
 const AI_SK='rsb_ai_config';
-const AI_SYSTEM=`Anda adalah asisten penyusunan dokumen Rencana Strategi Bisnis (RSB) Badan Layanan Umum (BLU) berdasarkan PER-11/PB/2025 dan PMK 76/2025.
+const AI_SYSTEM=`Anda adalah pakar penyusunan dokumen Rencana Strategis Bisnis (RSB) Badan Layanan Umum (BLU) Perguruan Tinggi Keagamaan Islam Negeri (PTKIN).
+Anda memiliki keahlian mendalam dalam PER-11/PB/2025, PMK 76/2025, PMK 126/PMK.05/2024, dan regulasi BLU PTKIN.
 
-Tulis dalam Bahasa Indonesia formal, akademik, sesuai standar dokumen perencanaan keuangan negara.
-Output dalam format HTML (gunakan tag h3, p, ul, ol, li, b, i, table, tr, td, th).
-JANGAN gunakan markdown. JANGAN bungkus dengan \`\`\`html\`\`\`. Langsung tulis HTML content.
-Jangan tulis judul section (sudah ada di header card).`;
+STANDAR PENULISAN:
+- Gunakan Bahasa Indonesia formal, akademik, dan baku sesuai EYD/PUEBI
+- Narasi harus substantif, berbobot, dan mencerminkan pemahaman mendalam tentang tata kelola BLU PTKIN
+- Sertakan referensi regulasi yang relevan bila perlu (misalnya: "sesuai Pasal X PMK 76/2025...")
+- Gunakan data kuantitatif yang tersedia untuk mendukung argumentasi
+- Hindari kalimat generik atau template — setiap paragraf harus spesifik untuk UIN Kiai Ageng Muhammad Besari Ponorogo
+- Analisis harus tajam dan strategis, bukan sekadar deskriptif
+
+FORMAT OUTPUT:
+- Output dalam format HTML murni (gunakan tag: h3, p, ul, ol, li, b, i, table, tr, td, th)
+- JANGAN gunakan markdown. JANGAN bungkus dengan \`\`\`html\`\`\`
+- Jangan tulis judul section (sudah ada di header card)
+- Paragraf min 3 kalimat, analitis dan berisi`;
 
 function getAIConfig(){
   const d=JSON.parse(localStorage.getItem(AI_SK)||'{}');
   return{
     apiKey:d.apiKey||'',
-    modelNarasi:d.modelNarasi||'deepseek-v4-flash',
-    modelRingkasan:d.modelRingkasan||'gemini/gemini-2.5-flash',
-    modelSync:d.modelSync||'gpt-5-nano'
+    modelNarasi:d.modelNarasi||'claude-opus-4-5',
+    modelRingkasan:d.modelRingkasan||'claude-opus-4-5',
+    modelSync:d.modelSync||'claude-sonnet-4-5'
   };
 }
 function showAISettings(){
