@@ -1717,16 +1717,47 @@ function renderTable(t,dd){
     'tbl-proy-belanja':'tbl-projection','tbl-proporsi':'tbl-projection',
     'tbl-cascading':'tbl-matriks'};
   const tblClass='editable '+(styleMap[t.id]||'');
-  return `<div class="tbl-wrap" id="tw-${t.id}">
+  return `<div class="tbl-wrap" id="tw-${t.id}" data-defaults='${JSON.stringify(t.rows).replace(/'/g,"&#39;")}'>
     <div class="tbl-actions">
       <button class="tbl-act" onclick="addRow('${t.id}')">+ Tambah Baris</button>
       <button class="tbl-act" onclick="addCol('${t.id}')">+ Tambah Kolom</button>
+      <button class="tbl-act" onclick="resetTable('${t.id}')" style="margin-left:auto;color:#d97706;border-color:#fcd34d" title="Isi ulang dari data default HTML">↺ Reset Default</button>
     </div>
     <table class="${tblClass}" id="${t.id}">
       <thead><tr>${thRow1}<th></th></tr>${hasSub?'<tr>'+thRow2+'<th></th></tr>':''}</thead>
       <tbody>${rows}</tbody>
     </table>
   </div>`;
+}
+
+function resetTable(tblId){
+  if(!confirm('Reset tabel "'+tblId+'" ke data default?\nData yang sudah diedit akan hilang.')) return;
+  const wrap=document.getElementById('tw-'+tblId);
+  const tbl=document.getElementById(tblId);
+  if(!wrap||!tbl) return;
+  let defaults=null;
+  try{ defaults=JSON.parse(wrap.dataset.defaults||'null'); }catch(e){}
+  if(!defaults||!defaults.length){ alert('Data default tidak tersedia untuk tabel ini.'); return; }
+  const colCount=tbl.querySelectorAll('thead th').length-1;
+  const labelI=new Set();
+  tbl.querySelectorAll('thead th').forEach((th,i)=>{
+    const hl=(th.textContent||'').toLowerCase();
+    if(['no','indikator','uraian','satuan','jenis','tujuan','sasaran','kebijakan','program','kegiatan','visi','misi','output','pelaksana','keterangan','sumber'].some(k=>hl.includes(k))||i===0) labelI.add(i);
+  });
+  const tbody=tbl.querySelector('tbody');
+  tbody.innerHTML=defaults.map(r=>{
+    while(r.length<colCount) r.push('...');
+    const isHdr=r[0]===''&&r[1]&&r[1]===r[1].toUpperCase()&&r[1].length>3&&!r[1].includes('.');
+    if(isHdr) return '<tr class="tbl-group-row">'+r.map(c=>'<td class="tbl-section-header"><input type="text" class="cell-input" value="'+c.replace(/"/g,'&quot;')+'" oninput="markDirty()"/></td>').join('')+'<td><button class="row-del" onclick="delRow(this)" title="Hapus">\u2715</button></td></tr>';
+    return '<tr>'+r.map((c,ci)=>{
+      const isEmpty=!c||c==='...'||c==='\u2014';
+      const isLbl=labelI.has(ci);
+      if(isLbl) return '<td><input type="text" class="cell-input cell-label" value="'+c.replace(/"/g,'&quot;')+'" oninput="markDirty()" placeholder="'+(ci===0?'#':'Isi...')+'"/></td>';
+      return '<td><input type="text" class="cell-input cell-data'+(isEmpty?' cell-empty':'')+(c==='...'?' cell-empty':'')+'" value="'+(c==='...'?'':c)+'" oninput="cellInput(this)" placeholder="..." data-orig="'+c+'"/></td>';
+    }).join('')+'<td><button class="row-del" onclick="delRow(this)" title="Hapus">\u2715</button></td></tr>';
+  }).join('');
+  markDirty();
+  showToast('✅ Tabel direset ke data default!');
 }
 
 /* ============================================================
