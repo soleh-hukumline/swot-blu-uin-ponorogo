@@ -319,6 +319,17 @@ table.editable tr:hover .row-del{opacity:1;}
 .swot-quadrant-badge.q2{background:rgba(8,145,178,0.12);color:var(--cyan);border:1px solid rgba(8,145,178,0.3);}
 .swot-quadrant-badge.q3{background:rgba(217,119,6,0.12);color:var(--amber);border:1px solid rgba(217,119,6,0.3);}
 .swot-quadrant-badge.q4{background:rgba(220,38,38,0.12);color:var(--red);border:1px solid rgba(220,38,38,0.3);}
+/* PESTLE Visual Panel */
+.pestle-score-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:0.45rem;margin-bottom:0.8rem;}
+.pestle-dim-card{border-radius:9px;padding:0.55rem 0.4rem;text-align:center;border:1px solid var(--border);background:var(--card);}
+.pestle-dim-card .pd-icon{font-size:1.1rem;line-height:1;margin-bottom:0.2rem;}
+.pestle-dim-card .pd-label{font-size:0.55rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.3rem;}
+.pestle-dim-card .pd-score{font-size:1.1rem;font-weight:800;line-height:1;}
+.pestle-dim-card .pd-quad{font-size:0.52rem;font-weight:600;margin-top:0.2rem;}
+.pestle-chart-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0.8rem;margin-bottom:0.8rem;display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;}
+.pestle-chart-inner{position:relative;height:220px;}
+.pestle-alert-row{display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.8rem;}
+.pestle-badge-dim{display:inline-flex;align-items:center;gap:0.3rem;padding:0.25rem 0.65rem;border-radius:20px;font-size:0.65rem;font-weight:700;}
 
 /* ===== PREVIEW MODE ===== */
 .preview-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.7);display:none;
@@ -721,16 +732,133 @@ async function aiGenerate(compId){
     userPrompt=sectionCtx+`\nTugas: Generate analisis SWOT untuk BLU UIN Ponorogo. Format sebagai 4 list terpisah (Strengths, Weaknesses, Opportunities, Threats), masing-masing 5-8 item. Format HTML.`;
   }
 
-  if(!userPrompt){showToast('Tipe komponen belum didukung AI');return;}
+  if(!userPrompt){
+    if(compId==='l4a'){await aiGenerateMatriks();return;}
+    showToast('Tipe komponen belum didukung AI');return;
+  }
 
   // Determine editor target
   const editorId='rte-'+compId;
   const altEditorId='ed-'+compId;
   const target=document.getElementById(editorId)?editorId:document.getElementById(altEditorId)?altEditorId:null;
-  
   if(!target){showToast('Editor tidak ditemukan untuk '+compId);return;}
-
   await callAI(AI_SYSTEM,userPrompt,model,target,false);
+}
+
+/* ============================================================
+   AI GENERATE MATRIKS KETERKAITAN — Lampiran IV
+   Konteks BAB II → Claude Opus → JSON → isi tabel otomatis
+============================================================ */
+async function aiGenerateMatriks(){
+  const cfg=getAIConfig();
+  if(!cfg.apiKey){showAISettings();return;}
+  const btn=document.getElementById('ai-matriks-btn');
+  const statusEl=document.getElementById('ai-matriks-status');
+  if(btn){btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> AI menganalisis BAB II...';}
+  if(statusEl){statusEl.style.cssText='display:block;background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.25);color:var(--text);border-radius:8px;padding:0.6rem 0.9rem;font-size:0.75rem;margin-bottom:0.8rem;';statusEl.textContent='⏳ Mengumpulkan konteks analisis SWOT, PESTLE, dan Arah Strategis dari BAB II...';}
+
+  // 1. SWOT items dari state
+  const swotComp=(findComponent('b2b')||{}).comp;
+  const sw=swotComp?.swot||{};
+  const swotCtx='SWOT:\nStrengths: '+(sw.strengths||[]).slice(0,6).join(' | ')+
+    '\nWeaknesses: '+(sw.weaknesses||[]).slice(0,6).join(' | ')+
+    '\nOpportunities: '+(sw.opportunities||[]).slice(0,5).join(' | ')+
+    '\nThreats: '+(sw.threats||[]).slice(0,5).join(' | ');
+
+  // 2. IFAS/EFAS
+  const ife=_swotTotal(RSB_IFAS),efe=_swotTotal(RSB_EFAS);
+  const quad=ife>=2.5&&efe>=2.5?'Kuadran I — SO (Agresif/Tumbuh)':ife<2.5&&efe>=2.5?'Kuadran II — WO (Turn-around)':ife>=2.5&&efe<2.5?'Kuadran III — ST (Difensif)':'Kuadran IV — WT (Bertahan)';
+
+  // 3. PESTLE
+  const pestleCtx=RSB_PESTLE_DIMS.map(d=>d.label+': IFE='+d.ife+', EFE='+d.efe).join(' | ');
+  const pestleKritis=RSB_PESTLE_DIMS.filter(d=>d.ife<2.5||d.efe<2.5).map(d=>d.label).join(', ')||'Tidak ada';
+
+  // 4. Arah Strategis BAB II.C
+  const arahCtx=(extractRTEText('ed-b2c')||extractRTEText('rte-b2c')||'Strategi SO: akselerasi BLU, diversifikasi PNBP 17 jalur, prodi baru non-agama, smart campus').substring(0,700);
+
+  if(statusEl) statusEl.textContent='🧠 Mengirim ke '+cfg.modelNarasi+' untuk analisis kategorisasi dan rekomendasi matriks...';
+
+  const SYS=`Kamu adalah konsultan penyusun RSB BLU PTKIN Indonesia, pakar regulasi PMK 76/2025 dan PER-11/PB/2025.
+Tugasmu: buat isian Matriks Keterkaitan Lampiran IV RSB BLU yang komprehensif dan terukur.
+Output HARUS berupa JSON array yang valid — array of arrays, 7 elemen per baris:
+["visi","misi","tujuan","sasaran","kebijakan","program","kegiatan"]
+Jangan tambahkan teks apapun di luar JSON array. Mulai langsung dengan [.`;
+
+  const USR=`Buat rekomendasi LENGKAP 16-20 baris Matriks Keterkaitan RSB BLU UIN Kiai Ageng Muhammad Besari Ponorogo 2025-2029.
+
+VISI: "UIN yang Unggul, Moderat, dan Berdaya Saing Nasional-Internasional 2030"
+MISI: M1=Pendidikan berkualitas | M2=Penelitian kompetitif | M3=Pengabdian masyarakat | M4=Tata kelola profesional | M5=Kerjasama strategis
+
+${swotCtx}
+IFE=${ife.toFixed(2)}, EFE=${efe.toFixed(2)}, Posisi: ${quad}
+
+PESTLE: ${pestleCtx}
+Dimensi perlu perhatian: ${pestleKritis}
+
+ARAH STRATEGIS: ${arahCtx}
+
+INSTRUKSI KATEGORISASI:
+- Kuadran ${quad} → bobot strategi ekspansi/SO lebih besar (BLU, PNBP, prodi baru)
+- Dimensi PESTLE kritis (${pestleKritis}) → tambah sasaran mitigasi spesifik
+- Kebijakan: kalimat kebijakan formal (awali dengan "Peningkatan/Penguatan/Pengembangan/Percepatan")
+- Program: cantumkan "(BAB III)" atau "(Lamp II)" di akhir nama program
+- Kegiatan: sertakan target kuantitatif spesifik mis. "target: X pada 2029"
+- Cakup SEMUA 5 misi minimal 2-3 baris per misi
+
+Output hanya JSON array:`;
+
+  try{
+    const r=await fetch(AI_BASE+'/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+cfg.apiKey},
+      body:JSON.stringify({model:cfg.modelNarasi||'claude-opus-4-5',
+        messages:[{role:'system',content:SYS},{role:'user',content:USR}],
+        max_tokens:6000,temperature:0.55,stream:false})
+    });
+    if(!r.ok) throw new Error('API Error '+r.status+': '+await r.text());
+    const js=await r.json();
+    const raw=js.choices?.[0]?.message?.content||'';
+
+    if(statusEl) statusEl.textContent='📋 Memproses '+raw.length+' karakter respons AI ke tabel...';
+
+    // Parse JSON — coba berbagai pola
+    let rows=null;
+    const m=raw.match(/\[\s*\[[\s\S]*\]\s*\]/);
+    if(m){try{rows=JSON.parse(m[0]);}catch(e){}}
+    if(!rows||!rows.length) throw new Error('Respons AI tidak mengandung JSON array valid. Coba lagi atau ganti model.');
+
+    // Isi tabel tbl-cascading
+    const tbl=document.getElementById('tbl-cascading');
+    if(!tbl) throw new Error('Tabel tbl-cascading tidak ditemukan di DOM');
+    const tbody=tbl.querySelector('tbody');
+    tbody.innerHTML='';
+    rows.forEach(row=>{
+      const tr=document.createElement('tr');
+      for(let i=0;i<7;i++){
+        const td=document.createElement('td');
+        const inp=document.createElement('input');
+        inp.type='text';
+        inp.className='cell-input'+(i<3?' cell-label':' cell-data cell-empty');
+        inp.value=(row[i]||'').toString().trim();
+        inp.oninput=function(){markDirty();};
+        td.appendChild(inp);
+        tr.appendChild(td);
+      }
+      const tdDel=document.createElement('td');
+      tdDel.innerHTML='<button class="row-del" onclick="delRow(this)" title="Hapus">✕</button>';
+      tr.appendChild(tdDel);
+      tbody.appendChild(tr);
+    });
+    markDirty();
+    if(statusEl){statusEl.style.cssText='display:block;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.3);color:#16a34a;border-radius:8px;padding:0.6rem 0.9rem;font-size:0.75rem;margin-bottom:0.8rem;';
+      statusEl.innerHTML='✅ AI berhasil merekomendasikan <strong>'+rows.length+' baris</strong> matriks keterkaitan berdasarkan analisis SWOT+PESTLE BAB II. Silakan review dan sesuaikan.';}
+    showToast('✅ '+rows.length+' baris matriks berhasil di-generate!');
+  }catch(e){
+    if(statusEl){statusEl.style.cssText='display:block;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);color:#dc2626;border-radius:8px;padding:0.6rem 0.9rem;font-size:0.75rem;margin-bottom:0.8rem;';statusEl.textContent='❌ Error: '+e.message;}
+    showToast('Error AI Matriks: '+e.message);
+  }finally{
+    if(btn){btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-wand-magic-sparkles"></i> 🤖 AI Rekomendasikan Matriks';}
+  }
 }
 
 // AI Generate Ringkasan (sidebar button)
@@ -877,7 +1005,7 @@ const SECTIONS = [
         }
       },
       { id:'b2b2', letter:'', title:'Analisis PESTLE (Political, Economic, Social, Technological, Legal, Environmental)',
-        type:'rte',
+        type:'pestle+rte',
         template:'<h3>Analisis PESTLE</h3><p>Selain analisis SWOT, dilakukan juga analisis <b>PESTLE</b> untuk mengidentifikasi faktor-faktor lingkungan makro yang mempengaruhi strategi BLU UIN Ponorogo.</p><h3>1. Political (Politik)</h3><ul><li>Dukungan pemerintah terhadap transformasi PTKIN menjadi BLU (28 PTKIN sudah BLU).</li><li>Kebijakan efisiensi anggaran (Inpres 1/2025) berpotensi mengurangi alokasi belanja.</li><li>Perpres transformasi IAIN Ponorogo menjadi UIN (Mei 2025).</li><li>Regulasi BLU yang semakin akomodatif (PMK 76/2025).</li></ul><h3>2. Economic (Ekonomi)</h3><ul><li>Alokasi APBN pendidikan Rp757,8 triliun (2025).</li><li>Pertumbuhan PDB nasional 5,05% (2024) mendukung daya beli masyarakat.</li><li>UKT sebagai sumber PNBP utama sensitif terhadap kondisi ekonomi masyarakat.</li><li>Peluang pendapatan baru dari sektor jasa, sertifikasi, dan kerjasama industri.</li></ul><h3>3. Social (Sosial)</h3><ul><li>APK Pendidikan Tinggi baru 34,11% (2024), masih besar ruang pertumbuhan.</li><li>Tren urbanisasi generasi muda ke kota besar mengurangi potensi mahasiswa lokal.</li><li>Demand tinggi untuk pendidikan terintegrasi agama-sains-teknologi.</li><li>Monopoli geografis di kawasan Madiun Raya (catchment area 4 kabupaten).</li></ul><h3>4. Technological (Teknologi)</h3><ul><li>Revolusi AI dan digitalisasi pendidikan membuka peluang program online/hybrid.</li><li>Kebutuhan infrastruktur digital (smart campus, LMS, e-library) yang besar.</li><li>Peluang pengembangan prodi baru berbasis teknologi (data science, AI, bioteknologi).</li><li>Gap kompetensi digital dosen dan tenaga kependidikan.</li></ul><h3>5. Legal (Hukum)</h3><ul><li>PMK 76/2025 memberikan framework pengelolaan BLU yang lebih fleksibel.</li><li>Permendiktisaintek No. 39/2025 membuka peluang prodi baru lintas bidang.</li><li>Dualisme regulasi Kemenag dan Kemendiktisaintek menciptakan kompleksitas.</li><li>Kebutuhan compliance yang tinggi terhadap standar akuntansi pemerintah (SAI/SAIBA).</li></ul><h3>6. Environmental (Lingkungan)</h3><ul><li>Tren global green campus dan sustainable university.</li><li>Potensi pengembangan energi terbarukan di area kampus.</li><li>Kebutuhan pengelolaan limbah dan lingkungan yang berkelanjutan.</li><li>Peluang riset dan pendidikan berbasis lingkungan hidup.</li></ul>',
         placeholder:'Tuliskan analisis PESTLE: faktor politik, ekonomi, sosial, teknologi, hukum, dan lingkungan...'
       },
@@ -1452,6 +1580,17 @@ function updateProgress(){
 function renderComponent(c){
   let h='';
   if(c.type.includes('swot')) h+=renderSwot(c);
+  if(c.type.includes('pestle')) h+=renderPestle(c);
+  // Khusus l4a — tambah tombol AI Matriks + status area sebelum tabel
+  if(c.id==='l4a'){
+    h+=`<div style="display:flex;align-items:center;gap:0.7rem;margin-bottom:0.7rem;flex-wrap:wrap;">
+      <button id="ai-matriks-btn" class="ai-btn" onclick="aiGenerateMatriks()" style="padding:0.5rem 1.1rem;font-size:0.8rem;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:8px;display:inline-flex;align-items:center;gap:0.4rem;">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> 🤖 AI Rekomendasikan Matriks
+      </button>
+      <span style="font-size:0.7rem;color:var(--muted);">Analisis SWOT + PESTLE + Arah Strategis BAB II → Claude → Isi tabel otomatis</span>
+    </div>
+    <div id="ai-matriks-status" style="display:none;"></div>`;
+  }
   if(c.type.includes('rte')) h+=renderRTE(c);
   if(c.type.includes('table')&&c.table) h+=renderTable(c.table,c.dropdownCols);
   return h;
@@ -1772,8 +1911,175 @@ function _rsbRenderCharts(ife,efe,sS,sW,sO,sT){
 }
 
 /* ============================================================
-   INTERACTIONS
+   PESTLE VISUAL PANEL — Radar + Scorecard 6 Dimensi
 ============================================================ */
+const RSB_PESTLE_DIMS = [
+  { id:'P', label:'Political',    icon:'🏛️', color:'#3b82f6',
+    ife:2.82, efe:2.65,
+    ifeLabel:'Dukungan regulasi BLU kuat', efeLabel:'Efisiensi anggaran (Inpres 1/2025)' },
+  { id:'E', label:'Economic',     icon:'💰', color:'#f59e0b',
+    ife:2.55, efe:2.60,
+    ifeLabel:'7 sumber PNBP aktif', efeLabel:'APBN pendidikan Rp757,8T (2026)' },
+  { id:'S', label:'Social',       icon:'👥', color:'#22c55e',
+    ife:2.90, efe:2.85,
+    ifeLabel:'Monopoli geografis Madiun Raya', efeLabel:'APK Dikti 34% — pasar besar' },
+  { id:'T', label:'Technological', icon:'💻', color:'#8b5cf6',
+    ife:2.25, efe:2.70,
+    ifeLabel:'SIAKAD GAPURA berjalan', efeLabel:'AI & digitalisasi pendidikan' },
+  { id:'L', label:'Legal',        icon:'⚖️', color:'#06b6d4',
+    ife:2.68, efe:2.72,
+    ifeLabel:'Perpres UIN 2025 + Akreditasi Unggul', efeLabel:'PMK 76/2025 & Permendiktisaintek 39/2025' },
+  { id:'En', label:'Environmental', icon:'🌱', color:'#10b981',
+    ife:2.30, efe:2.55,
+    ifeLabel:'Green Campus berjalan 2 tahun', efeLabel:'UI GreenMetric & hibah lingkungan' },
+];
+
+let _rsbRadarChart=null, _rsbPestleBarChart=null;
+
+function renderPestle(c){
+  const dims = RSB_PESTLE_DIMS;
+  const avgScore = d => (d.ife + d.efe) / 2;
+  const quadrant = d => {
+    if(d.ife>=2.5&&d.efe>=2.5) return {label:'SO — Tumbuh',cls:'q1',short:'Tumbuh'};
+    if(d.ife<2.5&&d.efe>=2.5)  return {label:'WO — Perbaiki',cls:'q2',short:'Perbaiki'};
+    if(d.ife>=2.5&&d.efe<2.5)  return {label:'ST — Difensif',cls:'q3',short:'Difensif'};
+    return {label:'WT — Bertahan',cls:'q4',short:'Bertahan'};
+  };
+
+  // --- 6 Scorecard cards ---
+  let h = '<div class="pestle-score-grid">';
+  dims.forEach(d => {
+    const q = quadrant(d);
+    const avg = avgScore(d).toFixed(2);
+    const col = d.ife>=2.5&&d.efe>=2.5 ? d.color : d.ife<2.5&&d.efe<2.5 ? '#ef4444' : '#f59e0b';
+    h += `<div class="pestle-dim-card" style="border-color:${col}33">
+      <div class="pd-icon">${d.icon}</div>
+      <div class="pd-label">${d.label}</div>
+      <div class="pd-score" style="color:${col}">${avg}</div>
+      <div class="pd-quad" style="color:${col}">${q.short}</div>
+    </div>`;
+  });
+  h += '</div>';
+
+  // --- Badge dimensi kritis & siap ---
+  h += '<div class="pestle-alert-row">';
+  const kritis = dims.filter(d=>d.ife<2.5||d.efe<2.5);
+  const siap   = dims.filter(d=>d.ife>=2.5&&d.efe>=2.5);
+  if(kritis.length){
+    h += `<span class="pestle-badge-dim" style="background:rgba(239,68,68,0.1);color:#dc2626;border:1px solid rgba(239,68,68,0.3)">⚠️ Perlu Perhatian: ${kritis.map(d=>d.label).join(', ')}</span>`;
+  }
+  if(siap.length){
+    h += `<span class="pestle-badge-dim" style="background:rgba(34,197,94,0.1);color:#16a34a;border:1px solid rgba(34,197,94,0.3)">✅ Posisi Kuat: ${siap.map(d=>d.label).join(', ')}</span>`;
+  }
+  h += '</div>';
+
+  // --- Charts ---
+  h += `<div class="pestle-chart-wrap">
+    <div>
+      <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:0.6rem">🕸️ Radar Kapasitas 6 Dimensi PESTLE</div>
+      <div class="pestle-chart-inner"><canvas id="rsbPestleRadar"></canvas></div>
+    </div>
+    <div>
+      <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:0.6rem">📊 Skor IFE vs EFE per Dimensi</div>
+      <div class="pestle-chart-inner"><canvas id="rsbPestleBar"></canvas></div>
+    </div>
+  </div>`;
+
+  setTimeout(()=>_rsbRenderPestleChart(), 130);
+  return h;
+}
+
+function _rsbRenderPestleChart(){
+  const dims = RSB_PESTLE_DIMS;
+  const dark = document.documentElement.getAttribute('data-theme')==='dark';
+  const tc = dark?'#f8fafc':'#0f172a';
+  const mc = dark?'#94a3b8':'#64748b';
+  const gc = dark?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.07)';
+
+  // Radar Chart
+  const radarEl = document.getElementById('rsbPestleRadar');
+  if(radarEl){
+    if(_rsbRadarChart)_rsbRadarChart.destroy();
+    _rsbRadarChart = new Chart(radarEl, {
+      type: 'radar',
+      data: {
+        labels: dims.map(d=>d.label),
+        datasets: [
+          {
+            label: 'IFE (Internal)',
+            data: dims.map(d=>d.ife),
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59,130,246,0.12)',
+            pointBackgroundColor: '#3b82f6',
+            pointRadius: 4, borderWidth: 2
+          },
+          {
+            label: 'EFE (Eksternal)',
+            data: dims.map(d=>d.efe),
+            borderColor: '#22c55e',
+            backgroundColor: 'rgba(34,197,94,0.10)',
+            pointBackgroundColor: '#22c55e',
+            pointRadius: 4, borderWidth: 2
+          }
+        ]
+      },
+      options: {
+        scales: {
+          r: {
+            min:1, max:4, ticks:{stepSize:1,color:mc,font:{size:9},backdropColor:'transparent'},
+            grid:{color:gc}, angleLines:{color:gc},
+            pointLabels:{color:tc,font:{size:9,weight:'bold'}}
+          }
+        },
+        plugins:{
+          legend:{position:'bottom',labels:{color:tc,font:{size:9},boxWidth:10,padding:8}},
+          tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.raw.toFixed(2)}`}}
+        },
+        animation:{duration:400}
+      }
+    });
+  }
+
+  // Bar Chart IFE vs EFE per dimensi
+  const barEl = document.getElementById('rsbPestleBar');
+  if(barEl){
+    if(_rsbPestleBarChart)_rsbPestleBarChart.destroy();
+    _rsbPestleBarChart = new Chart(barEl, {
+      type: 'bar',
+      data: {
+        labels: dims.map(d=>d.label),
+        datasets: [
+          {label:'IFE (Internal)', data: dims.map(d=>d.ife),
+           backgroundColor:'rgba(59,130,246,0.65)', borderRadius:4, borderSkipped:false},
+          {label:'EFE (Eksternal)', data: dims.map(d=>d.efe),
+           backgroundColor:'rgba(34,197,94,0.65)', borderRadius:4, borderSkipped:false}
+        ]
+      },
+      options: {
+        plugins:{
+          legend:{position:'bottom',labels:{color:tc,font:{size:9},boxWidth:10,padding:8}},
+          tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.raw.toFixed(2)}`}}
+        },
+        scales:{
+          x:{ticks:{color:tc,font:{size:9}},grid:{display:false}},
+          y:{min:0,max:4,ticks:{color:mc,stepSize:1},grid:{color:gc},
+             title:{display:true,text:'Skor (maks 4.0)',color:tc,font:{size:9}}}
+        },
+        annotation:{
+          annotations:{
+            line1:{type:'line',yMin:2.5,yMax:2.5,borderColor:'rgba(239,68,68,0.5)',
+                   borderWidth:1.5,borderDash:[4,3],
+                   label:{display:true,content:'Batas 2.5',position:'end',
+                          color:'#dc2626',font:{size:8}}}
+          }
+        },
+        animation:{duration:400}
+      }
+    });
+  }
+}
+
+
 function goTo(id){
   activeSection=id;
   document.querySelectorAll('.sec-block').forEach(el=>el.classList.remove('active'));
