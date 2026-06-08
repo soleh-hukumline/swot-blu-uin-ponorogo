@@ -463,40 +463,36 @@ table.editable tr:hover .row-del{opacity:1;}
       <div style="font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;margin-bottom:0.5rem;">Model per Tugas</div>
       <label>📝 Narasi & Penulisan <span style="color:#94a3b8;font-weight:400">(BAB I-IV, per-section AI)</span></label>
       <select id="aiModelNarasi">
-        <option value="claude-opus-4-5" selected>🏆 claude-opus-4-5 — $15/M ⭐ Terbaik untuk RSB</option>
-        <option value="claude-sonnet-4-5">claude-sonnet-4-5 — $3/M (balance akurasi+biaya)</option>
-        <option value="claude-haiku-4-5">claude-haiku-4-5 — $0.70/M (cepat)</option>
-        <option value="gemini/gemini-2.5-pro">gemini-2.5-pro — $1.25/M (premium, 1M ctx)</option>
-        <option value="gemini/gemini-2.5-flash">gemini-2.5-flash — $0.30/M (powerful)</option>
-        <option value="gpt-5">gpt-5 — $1.25/M (premium)</option>
-        <option value="gpt-4.1-mini">gpt-4.1-mini — $0.40/M</option>
-        <option value="deepseek-v4-flash">deepseek-v4-flash — $0.14/M (hemat)</option>
+        <option value="deepseek-v4-flash" selected>🏆 deepseek-v4-flash — $0.14/M ⭐ Rekomendasi Narasi RSB</option>
         <option value="qwen3.6-flash">qwen3.6-flash — $0.13/M (Bahasa ID bagus)</option>
+        <option value="MiniMax-M2.7-highspeed">MiniMax-M2.7-highspeed — $0.02/M (paling hemat)</option>
+        <option value="gemini/gemini-2.5-flash">gemini-2.5-flash — $0.30/M (powerful)</option>
+        <option value="gemini/gemini-2.5-pro">gemini-2.5-pro — $1.25/M (premium)</option>
+        <option value="gpt-4.1-mini">gpt-4.1-mini — $0.40/M</option>
+        <option value="gpt-5">gpt-5 — $1.25/M (premium)</option>
       </select>
       <label>📊 Ringkasan & Sintesis <span style="color:#94a3b8;font-weight:400">(Executive Summary, perlu context panjang)</span></label>
       <select id="aiModelRingkasan">
-        <option value="claude-opus-4-5" selected>🏆 claude-opus-4-5 — $15/M ⭐ Terbaik untuk Ringkasan</option>
-        <option value="claude-sonnet-4-5">claude-sonnet-4-5 — $3/M (balance, ctx 200K)</option>
-        <option value="claude-haiku-4-5">claude-haiku-4-5 — $0.70/M (ctx 200K)</option>
-        <option value="gemini/gemini-2.5-pro">gemini-2.5-pro — $1.25/M (premium, 1M ctx)</option>
+        <option value="deepseek-v4-flash" selected>🏆 deepseek-v4-flash — $0.14/M ⭐ Rekomendasi Ringkasan</option>
+        <option value="qwen3.6-flash">qwen3.6-flash — $0.13/M (Bahasa ID bagus)</option>
         <option value="gemini/gemini-2.5-flash">gemini-2.5-flash — $0.30/M (ctx 1M token)</option>
+        <option value="gemini/gemini-2.5-pro">gemini-2.5-pro — $1.25/M (premium, 1M ctx)</option>
         <option value="gpt-5">gpt-5 — $1.25/M (ctx 272K)</option>
-        <option value="deepseek-v4-flash">deepseek-v4-flash — $0.14/M (ctx 1M)</option>
+        <option value="MiniMax-M2.7-highspeed">MiniMax-M2.7-highspeed — $0.02/M</option>
       </select>
       <label>🔄 Sync Data <span style="color:#94a3b8;font-weight:400">(Lamp I→III, mapping angka antar tabel)</span></label>
       <select id="aiModelSync">
-        <option value="claude-sonnet-4-5" selected>claude-sonnet-4-5 — $3/M ⭐ Presisi tinggi utk data</option>
-        <option value="claude-haiku-4-5">claude-haiku-4-5 — $0.70/M (cepat)</option>
-        <option value="gpt-5-nano">gpt-5-nano — $0.05/M (termurah)</option>
+        <option value="deepseek-v4-flash" selected>🏆 deepseek-v4-flash — $0.14/M ⭐ Presisi tinggi utk data</option>
+        <option value="qwen3.6-flash">qwen3.6-flash — $0.13/M (cepat)</option>
+        <option value="MiniMax-M2.7-highspeed">MiniMax-M2.7-highspeed — $0.02/M (termurah)</option>
         <option value="gpt-4.1-nano">gpt-4.1-nano — $0.10/M</option>
         <option value="gemini/gemini-2.0-flash-lite">gemini-2.0-flash-lite — $0.07/M</option>
-        <option value="deepseek-v4-flash">deepseek-v4-flash — $0.14/M</option>
-        <option value="MiniMax-M2.7-highspeed">MiniMax-M2.7-highspeed — $0.02/M (80% off)</option>
       </select>
     </div>
     <div class="ai-status" id="aiStatus"></div>
     <div class="ai-modal-actions">
       <button class="ai-cancel" onclick="closeAISettings()">Batal</button>
+      <button class="ai-test" onclick="listAvailableModels()" style="background:#e0f2fe;color:#0369a1;border:1px solid #bae6fd"><i class="fa-solid fa-list"></i> Cek Model</button>
       <button class="ai-test" onclick="testAIConnection()"><i class="fa-solid fa-plug"></i> Test</button>
       <button class="ai-save" onclick="saveAISettings()"><i class="fa-solid fa-check"></i> Simpan</button>
     </div>
@@ -530,9 +526,9 @@ function getAIConfig(){
   const d=JSON.parse(localStorage.getItem(AI_SK)||'{}');
   return{
     apiKey:d.apiKey||'',
-    modelNarasi:d.modelNarasi||'claude-sonnet-4-5',
-    modelRingkasan:d.modelRingkasan||'claude-sonnet-4-5',
-    modelSync:d.modelSync||'claude-sonnet-4-5'
+    modelNarasi:d.modelNarasi||'deepseek-v4-flash',
+    modelRingkasan:d.modelRingkasan||'deepseek-v4-flash',
+    modelSync:d.modelSync||'deepseek-v4-flash'
   };
 }
 function showAISettings(){
@@ -564,10 +560,27 @@ async function testAIConnection(){
   try{
     const r=await fetch(AI_BASE+'/chat/completions',{
       method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-      body:JSON.stringify({model:'gpt-5-nano',messages:[{role:'user',content:'Say "OK"'}],max_tokens:5})
+      body:JSON.stringify({model:'deepseek-v4-flash',messages:[{role:'user',content:'Say "OK"'}],max_tokens:5})
     });
-    if(r.ok){const j=await r.json();st.className='ai-status ok';st.textContent='Koneksi berhasil! Response: '+j.choices[0].message.content;}
+    if(r.ok){const j=await r.json();st.className='ai-status ok';st.textContent='✅ Koneksi berhasil! Model deepseek-v4-flash aktif. Response: '+j.choices[0].message.content;}
     else{const e=await r.text();st.className='ai-status err';st.textContent='Error '+r.status+': '+e;}
+  }catch(e){st.className='ai-status err';st.textContent='Network error: '+e.message;}
+}
+async function listAvailableModels(){
+  const key=document.getElementById('aiKey').value.trim();
+  const st=document.getElementById('aiStatus');
+  if(!key){st.className='ai-status err';st.textContent='Masukkan API key dulu!';return;}
+  st.className='ai-status';st.style.display='block';st.style.background='#f0f4ff';st.style.color='#6366f1';
+  st.textContent='Mengambil daftar model...';
+  try{
+    const r=await fetch(AI_BASE+'/models',{headers:{'Authorization':'Bearer '+key}});
+    if(r.ok){
+      const j=await r.json();
+      const list=j.data||j.models||[];
+      const ids=list.map(m=>m.id||m.name).slice(0,40).join(', ');
+      st.className='ai-status ok';
+      st.innerHTML='<b>✅ '+list.length+' model tersedia:</b><br><small style="line-height:2">'+ids+'</small>';
+    }else{const e=await r.text();st.className='ai-status err';st.textContent='Error '+r.status+': '+e;}
   }catch(e){st.className='ai-status err';st.textContent='Network error: '+e.message;}
 }
 
@@ -811,7 +824,7 @@ Output hanya JSON array:`;
     const r=await fetch(AI_BASE+'/chat/completions',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+cfg.apiKey},
-      body:JSON.stringify({model:cfg.modelNarasi||'claude-sonnet-4-5',
+      body:JSON.stringify({model:cfg.modelNarasi||'deepseek-v4-flash',
         messages:[{role:'system',content:SYS},{role:'user',content:USR}],
         max_tokens:6000,temperature:0.55,stream:false})
     });
