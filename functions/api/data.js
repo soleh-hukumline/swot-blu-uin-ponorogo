@@ -21,6 +21,8 @@ function getAuthEmail(request) {
   } catch (e) { return null; }
 }
 
+const KV_PREFIX = 'unit_v4:'; // Versioned prefix — old 'unit:' data ignored safely
+
 export async function onRequestGet(context) {
   const { request, env } = context;
   const url = new URL(request.url);
@@ -28,13 +30,13 @@ export async function onRequestGet(context) {
 
   try {
     if (unitId) {
-      const data = await env.RSB_DATA.get(`unit:${unitId}`, 'json');
+      const data = await env.RSB_DATA.get(`${KV_PREFIX}${unitId}`, 'json');
       return new Response(JSON.stringify({ ok: true, data: data || null }), { headers: CORS });
     } else {
-      const list = await env.RSB_DATA.list({ prefix: 'unit:' });
+      const list = await env.RSB_DATA.list({ prefix: KV_PREFIX });
       const allData = {};
       for (const key of list.keys) {
-        const uid = key.name.replace('unit:', '');
+        const uid = key.name.replace(KV_PREFIX, '');
         allData[uid] = await env.RSB_DATA.get(key.name, 'json');
       }
       return new Response(JSON.stringify({ ok: true, data: allData }), { headers: CORS });
@@ -46,13 +48,11 @@ export async function onRequestGet(context) {
 
 export async function onRequestPost(context) {
   const { request, env } = context;
-
-  // Auth check — savedBy tracks who saved
   const email = getAuthEmail(request) || 'anonymous';
 
   try {
     const body = await request.json();
-    const { unitId, tables, rawData } = body;
+    const { unitId, tables, rawData, schemaVersion } = body;
 
     if (!unitId || !tables) {
       return new Response(JSON.stringify({ ok: false, error: 'unitId and tables required' }), { status: 400, headers: CORS });
@@ -63,10 +63,11 @@ export async function onRequestPost(context) {
       tables,
       rawData,
       savedBy: email,
+      schemaVersion: schemaVersion || 'unknown',
       updatedAt: new Date().toISOString(),
     };
 
-    await env.RSB_DATA.put(`unit:${unitId}`, JSON.stringify(record));
+    await env.RSB_DATA.put(`${KV_PREFIX}${unitId}`, JSON.stringify(record));
 
     return new Response(JSON.stringify({ ok: true, saved: unitId, by: email }), { headers: CORS });
   } catch (e) {

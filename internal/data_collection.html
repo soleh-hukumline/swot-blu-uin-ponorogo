@@ -624,7 +624,7 @@ function renderSidebar(){
     <button class="sb-btn secondary" onclick="exportCSVAll()"><i class="fa-solid fa-file-csv"></i> Export Semua → CSV</button>
     <button class="sb-btn secondary" onclick="backupKV()" style="background:#fef3c7;border-color:#f59e0b;color:#92400e"><i class="fa-solid fa-download"></i> Backup KV</button>
     <button class="sb-btn secondary" onclick="if(confirm('Reset semua data lokal?'))resetAll()"><i class="fa-solid fa-rotate"></i> Reset Lokal</button>
-    <button id="btn-reset-server" class="sb-btn secondary" onclick="resetAllFull()" style="background:#fef2f2;border-color:#fca5a5;color:#b91c1c"><i class="fa-solid fa-trash-can"></i> Reset Server KV</button>
+    <button id="btn-reset-server" class="sb-btn secondary" onclick="resetAllFull()" style="background:#fef2f2;border-color:#fca5a5;color:#b91c1c"><i class="fa-solid fa-rotate-right"></i> Bersihkan Cache</button>
   </div>`;
   document.getElementById('sidebar').innerHTML=h;
 }
@@ -1004,30 +1004,8 @@ async function loadData(){
   }catch(e){console.error('Load error:',e);}
 }
 
-async function clearCloudData(){
-  // Delete all KV data for all units (send empty data with current schema)
-  try{
-    const promises=UNITS.map(u=>fetch(API_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        unitId:u.id, tables:{}, rawData:{},
-        savedBy:'system-reset', schemaVersion:SCHEMA_VERSION,
-        action:'clear'
-      })
-    }));
-    await Promise.all(promises);
-    console.log('🗑️ Cloud KV data cleared for schema '+SCHEMA_VERSION);
-    return true;
-  }catch(e){
-    console.warn('Cloud clear failed:',e);
-    return false;
-  }
-}
-
 function resetAll(){
   localStorage.removeItem(SK);
-  // Also clear old v1 key if exists
   localStorage.removeItem('rsb_datacollect_v1');
   UNITS.forEach(u=>u.tables.forEach(t=>{
     const tbl=document.getElementById(t.id);
@@ -1038,15 +1016,13 @@ function resetAll(){
   showToast('Data lokal di-reset!');
 }
 
-async function resetAllFull(){
-  if(!confirm('Reset SEMUA data (lokal + server KV)? Data yang belum tersimpan akan hilang.')) return;
-  resetAll();
-  const btn=document.getElementById('btn-reset-server');
-  if(btn){btn.disabled=true;btn.textContent='⏳ Menghapus server...'}
-  const ok=await clearCloudData();
-  if(btn){btn.disabled=false;btn.textContent='🗑️ Reset Server KV';}
-  showToast(ok?'✅ Data server + lokal berhasil di-reset. Muat ulang halaman.':'⚠️ Reset lokal OK, server gagal (coba lagi).');
-  if(ok) setTimeout(()=>location.reload(),1500);
+function resetAllFull(){
+  if(!confirm('Reset data lokal dan muat ulang halaman? KV server bersih otomatis via prefix baru.')) return;
+  localStorage.removeItem(SK);
+  localStorage.removeItem('rsb_datacollect_v1');
+  localStorage.removeItem('rsb_dc_export');
+  showToast('✅ Cache bersih, muat ulang...');
+  setTimeout(()=>location.reload(true),800);
 }
 
 /* ============================================================
