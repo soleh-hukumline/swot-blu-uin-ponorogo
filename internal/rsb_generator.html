@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 /* ===== THEME ===== */
 :root{
@@ -298,6 +299,26 @@ table.editable tr:hover .row-del{opacity:1;}
 .swot-add{width:100%;padding:0.3rem;border:1px dashed var(--border);border-radius:6px;background:transparent;
   color:var(--muted);cursor:pointer;font-size:0.65rem;font-family:'Inter',sans-serif;transition:all 0.15s;margin-top:0.3rem;}
 .swot-add:hover{border-color:var(--accent);color:var(--accent);}
+/* SWOT Quantitative Panel */
+.swot-score-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0.6rem;margin-bottom:0.8rem;}
+.swot-score-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0.7rem 0.8rem;text-align:center;}
+.swot-score-card .sc-lbl{font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:0.25rem;}
+.swot-score-card .sc-val{font-size:1.4rem;font-weight:800;line-height:1;}
+.swot-score-card .sc-sub{font-size:0.6rem;color:var(--muted);margin-top:2px;}
+.swot-score-card.ife{border-color:var(--green);}
+.swot-score-card.efe{border-color:var(--accent);}
+.swot-score-card.pos{border-color:var(--purple);}
+.swot-score-card.strat{border-color:var(--amber);}
+.swot-chart-row{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-bottom:0.8rem;}
+.swot-chart-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0.8rem;}
+.swot-chart-card h5{font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:0.6rem;}
+.swot-chart-inner{position:relative;height:200px;}
+.swot-quadrant-badge{display:inline-flex;align-items:center;gap:0.4rem;padding:0.3rem 0.8rem;
+  border-radius:20px;font-size:0.7rem;font-weight:700;margin-bottom:0.6rem;}
+.swot-quadrant-badge.q1{background:rgba(34,197,94,0.12);color:var(--green);border:1px solid rgba(34,197,94,0.3);}
+.swot-quadrant-badge.q2{background:rgba(8,145,178,0.12);color:var(--cyan);border:1px solid rgba(8,145,178,0.3);}
+.swot-quadrant-badge.q3{background:rgba(217,119,6,0.12);color:var(--amber);border:1px solid rgba(217,119,6,0.3);}
+.swot-quadrant-badge.q4{background:rgba(220,38,38,0.12);color:var(--red);border:1px solid rgba(220,38,38,0.3);}
 
 /* ===== PREVIEW MODE ===== */
 .preview-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.7);display:none;
@@ -382,6 +403,8 @@ table.editable tr:hover .row-del{opacity:1;}
   .sidebar{display:none;}
   .main{padding:1rem;}
   .swot-grid{grid-template-columns:1fr;}
+  .swot-score-row{grid-template-columns:1fr 1fr;}
+  .swot-chart-row{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -1555,6 +1578,47 @@ function renderTable(t,dd){
   </div>`;
 }
 
+/* ============================================================
+   IFAS / EFAS DATA — dipakai oleh renderSwot() untuk kalkulasi
+   Sumber: sama persis dengan matriks.html
+============================================================ */
+const RSB_IFAS=[
+  {cat:'S',w:0.10,r:4,factor:'Satu-satunya PTKIN di Karesidenan Madiun'},
+  {cat:'S',w:0.09,r:4,factor:'Akreditasi Institusi Unggul BAN-PT 2024–2029'},
+  {cat:'S',w:0.08,r:4,factor:'Alih status UIN Kiai Ageng Muhammad Besari (Mei 2025)'},
+  {cat:'S',w:0.07,r:3,factor:'Ma\'had Al-Jami\'ah terintegrasi sistem akademik'},
+  {cat:'S',w:0.07,r:3,factor:'SDM: 329 dosen (81 S3, 15 Guru Besar) & 162 tendik'},
+  {cat:'S',w:0.06,r:3,factor:'Infrastruktur modern dua kampus (SBSN 2022 & PSB 2024)'},
+  {cat:'S',w:0.06,r:3,factor:'7 unit PNBP sudah beroperasi'},
+  {cat:'S',w:0.04,r:3,factor:'SIAKAD GAPURA — layanan akademik digital penuh'},
+  {cat:'S',w:0.03,r:3,factor:'Program moderasi beragama dan ToT aktif'},
+  {cat:'W',w:0.10,r:1,factor:'Masih berstatus Satker (bukan BLU)'},
+  {cat:'W',w:0.08,r:2,factor:'Scopus 183 dok — sitasi/dosen hanya 2,04'},
+  {cat:'W',w:0.08,r:2,factor:'Rasio dosen:mahasiswa 1:44 — paling berat di PTKIN Jatim'},
+  {cat:'W',w:0.07,r:2,factor:'143 Asisten Ahli (43,5%) — jabatan fungsional rendah dominan'},
+  {cat:'W',w:0.06,r:1,factor:'Belum ada RSB, SPM, & kebijakan AI formal'},
+  {cat:'W',w:0.05,r:2,factor:'Brand awareness rendah di luar Karesidenan Madiun'},
+];
+const RSB_EFAS=[
+  {cat:'O',w:0.12,r:4,factor:'Momentum BLU — 28 PTKIN sudah BLU'},
+  {cat:'O',w:0.10,r:3,factor:'Anggaran pendidikan APBN 2026: Rp757,8 T'},
+  {cat:'O',w:0.09,r:4,factor:'APK Dikti 34% (target 60% di 2045)'},
+  {cat:'O',w:0.08,r:3,factor:'Permendiktisaintek 39/2025: micro-credential, RPL'},
+  {cat:'O',w:0.07,r:4,factor:'Status UIN 2025 izinkan prodi non-agama (STEM, kesehatan)'},
+  {cat:'O',w:0.05,r:3,factor:'10 potensi PNBP baru pasca-BLU'},
+  {cat:'T',w:0.12,r:2,factor:'Inpres 1/2025 — efisiensi BOPTN dipangkas'},
+  {cat:'T',w:0.10,r:1,factor:'28 PTKIN BLU unggul dalam rekrutmen SDM & ekspansi'},
+  {cat:'T',w:0.08,r:2,factor:'Geopolitik Trump tariff war — hambatan akademik internasional'},
+  {cat:'T',w:0.07,r:2,factor:'AI generatif tanpa kebijakan = ancaman integritas akademik'},
+  {cat:'T',w:0.06,r:2,factor:'Urbanisasi & migrasi pemuda Ponorogo'},
+  {cat:'T',w:0.07,r:2,factor:'Dualitas regulasi Kemenag + Kemendiktisaintek'},
+];
+
+function _swotScore(data,cat){return data.filter(d=>d.cat===cat).reduce((s,d)=>s+(d.w*d.r),0);}
+function _swotTotal(data){return data.reduce((s,d)=>s+(d.w*d.r),0);}
+
+let _rsbIEChart=null,_rsbBarChart=null;
+
 function renderSwot(c){
   const s=c.swot;
   const quads=[
@@ -1563,13 +1627,148 @@ function renderSwot(c){
     {key:'opportunities',label:'Opportunities (Peluang)',cls:'opp',prefix:'O',items:s.opportunities},
     {key:'threats',label:'Threats (Ancaman)',cls:'thr',prefix:'T',items:s.threats},
   ];
-  let h='<div class="swot-grid">';
+
+  // --- Kalkulasi Skor ---
+  const ife=_swotTotal(RSB_IFAS), efe=_swotTotal(RSB_EFAS);
+  const sS=_swotScore(RSB_IFAS,'S'),sW=_swotScore(RSB_IFAS,'W');
+  const sO=_swotScore(RSB_EFAS,'O'),sT=_swotScore(RSB_EFAS,'T');
+  let qKey='I',qLabel='Kuadran I — SO (Agresif)',qCls='q1',qIcon='🟢',strat='SO';
+  if(ife<2.5&&efe>=2.5){qKey='II';qLabel='Kuadran II — WO (Turn-around)';qCls='q2';qIcon='🔵';strat='WO';}
+  else if(ife>=2.5&&efe<2.5){qKey='III';qLabel='Kuadran III — ST (Difensif)';qCls='q3';qIcon='🟡';strat='ST';}
+  else if(ife<2.5&&efe<2.5){qKey='IV';qLabel='Kuadran IV — WT (Bertahan)';qCls='q4';qIcon='🔴';strat='WT';}
+
+  // --- Scorecard ---
+  let h=`<div class="swot-score-row">
+    <div class="swot-score-card ife">
+      <div class="sc-lbl">Skor IFE (Internal)</div>
+      <div class="sc-val" style="color:var(--green)">${ife.toFixed(3)}</div>
+      <div class="sc-sub">S:${sS.toFixed(2)} · W:${sW.toFixed(2)} · Max 4.0</div>
+    </div>
+    <div class="swot-score-card efe">
+      <div class="sc-lbl">Skor EFE (Eksternal)</div>
+      <div class="sc-val" style="color:var(--accent)">${efe.toFixed(3)}</div>
+      <div class="sc-sub">O:${sO.toFixed(2)} · T:${sT.toFixed(2)} · Max 4.0</div>
+    </div>
+    <div class="swot-score-card pos">
+      <div class="sc-lbl">Posisi Strategis</div>
+      <div class="sc-val" style="color:var(--purple);font-size:1rem">${qLabel.split('—')[0].trim()}</div>
+      <div class="sc-sub">Berdasarkan IE Matrix</div>
+    </div>
+    <div class="swot-score-card strat">
+      <div class="sc-lbl">Strategi Utama</div>
+      <div class="sc-val" style="color:var(--amber)">${strat}</div>
+      <div class="sc-sub">${qIcon} ${qLabel.split('—')[1]?.trim()||''}</div>
+    </div>
+  </div>`;
+
+  // --- Charts ---
+  h+=`<div class="swot-chart-row">
+    <div class="swot-chart-card">
+      <h5>🔵 IE Matrix — Posisi Strategis UIN Ponorogo</h5>
+      <div class="swot-chart-inner"><canvas id="rsbIEChart"></canvas></div>
+    </div>
+    <div class="swot-chart-card">
+      <h5>📊 Skor Sub-Faktor SWOT (Tertimbang)</h5>
+      <div class="swot-chart-inner"><canvas id="rsbBarChart"></canvas></div>
+    </div>
+  </div>`;
+
+  // --- Kuadran badge + 4 kotak SWOT ---
+  h+=`<div class="swot-quadrant-badge ${qCls}">${qIcon} Posisi Aktif: ${qLabel}</div>`;
+  h+='<div class="swot-grid">';
   quads.forEach(q=>{
     let items=q.items.map((t,i)=>`<div class="swot-item"><span class="swot-item-num">${q.prefix}${i+1}</span><span class="swot-item-text" contenteditable="true" oninput="markDirty()">${t}</span></div>`).join('');
     h+=`<div class="swot-quad" id="swot-${q.key}"><div class="swot-quad-head ${q.cls}">${q.label}</div><div class="swot-quad-body">${items}<button class="swot-add" onclick="addSwotItem('${q.key}','${q.prefix}')">+ Tambah</button></div></div>`;
   });
   h+='</div>';
+
+  // Render charts setelah DOM siap
+  setTimeout(()=>_rsbRenderCharts(ife,efe,sS,sW,sO,sT),120);
   return h;
+}
+
+function _rsbRenderCharts(ife,efe,sS,sW,sO,sT){
+  const dark=document.documentElement.getAttribute('data-theme')==='dark';
+  const tc=dark?'#f8fafc':'#0f172a';
+  const mc=dark?'#94a3b8':'#64748b';
+  const gc=dark?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.07)';
+
+  // IE Matrix
+  const ieEl=document.getElementById('rsbIEChart');
+  if(ieEl){
+    if(_rsbIEChart)_rsbIEChart.destroy();
+    _rsbIEChart=new Chart(ieEl,{
+      type:'scatter',
+      data:{datasets:[{
+        label:'UIN Ponorogo',
+        data:[{x:ife,y:efe}],
+        pointRadius:14,pointHoverRadius:17,
+        pointBackgroundColor:'#22c55e',
+        pointBorderColor:'#fff',pointBorderWidth:3
+      }]},
+      options:{
+        plugins:{legend:{display:false},
+          tooltip:{callbacks:{label:ctx=>`IFE:${ctx.parsed.x.toFixed(3)} EFE:${ctx.parsed.y.toFixed(3)}`}}},
+        scales:{
+          x:{min:1,max:4,title:{display:true,text:'IFE (Internal)',color:tc,font:{size:10}},ticks:{color:mc},grid:{color:gc}},
+          y:{min:1,max:4,title:{display:true,text:'EFE (Eksternal)',color:tc,font:{size:10}},ticks:{color:mc},grid:{color:gc}}
+        },
+        animation:{duration:400}
+      },
+      plugins:[{id:'rsbLines',afterDraw(chart){
+        const{ctx,chartArea:{left,right,top,bottom},scales}=chart;
+        const cx=scales.x.getPixelForValue(2.5),cy=scales.y.getPixelForValue(2.5);
+        ctx.save();
+        ctx.strokeStyle=dark?'rgba(255,255,255,0.18)':'rgba(0,0,0,0.14)';
+        ctx.setLineDash([4,3]);ctx.lineWidth=1.5;
+        ctx.beginPath();ctx.moveTo(cx,top);ctx.lineTo(cx,bottom);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(left,cy);ctx.lineTo(right,cy);ctx.stroke();
+        ctx.setLineDash([]);
+        [{t:'GROW(SO)',x:(cx+right)/2,y:(top+cy)/2,c:'#22c55e'},
+         {t:'TURN(WO)',x:(left+cx)/2,y:(top+cy)/2,c:'#06b6d4'},
+         {t:'DIFENSIF(ST)',x:(cx+right)/2,y:(cy+bottom)/2,c:'#f59e0b'},
+         {t:'BERTAHAN(WT)',x:(left+cx)/2,y:(cy+bottom)/2,c:'#ef4444'}
+        ].forEach(l=>{
+          ctx.font='bold 8px Inter,sans-serif';
+          ctx.fillStyle=l.c;ctx.textAlign='center';ctx.globalAlpha=0.55;
+          ctx.fillText(l.t,l.x,l.y);
+        });
+        const px=scales.x.getPixelForValue(ife),py=scales.y.getPixelForValue(efe);
+        ctx.globalAlpha=1;ctx.font='bold 9px Inter,sans-serif';
+        ctx.fillStyle='#22c55e';ctx.textAlign='left';
+        ctx.fillText(`(${ife.toFixed(2)},${efe.toFixed(2)})`,px+16,py-6);
+        ctx.restore();
+      }}]
+    });
+  }
+
+  // Bar chart sub-faktor
+  const barEl=document.getElementById('rsbBarChart');
+  if(barEl){
+    if(_rsbBarChart)_rsbBarChart.destroy();
+    _rsbBarChart=new Chart(barEl,{
+      type:'bar',
+      data:{
+        labels:['S (Kekuatan)','W (Kelemahan)','O (Peluang)','T (Ancaman)','TOTAL IFE','TOTAL EFE'],
+        datasets:[{
+          data:[sS,sW,sO,sT,ife,efe].map(v=>+v.toFixed(3)),
+          backgroundColor:['rgba(34,197,94,0.7)','rgba(239,68,68,0.7)','rgba(59,130,246,0.7)','rgba(245,158,11,0.7)','rgba(34,197,94,0.3)','rgba(59,130,246,0.3)'],
+          borderRadius:5,borderSkipped:false
+        }]
+      },
+      options:{
+        indexAxis:'y',
+        plugins:{legend:{display:false},
+          tooltip:{callbacks:{label:ctx=>` Skor: ${ctx.parsed.x.toFixed(3)}`}}},
+        scales:{
+          x:{min:0,max:4,ticks:{color:mc,stepSize:0.5},grid:{color:gc},
+            title:{display:true,text:'Skor Tertimbang',color:tc,font:{size:9}}},
+          y:{ticks:{color:tc,font:{size:10}},grid:{display:false}}
+        },
+        animation:{duration:400}
+      }
+    });
+  }
 }
 
 /* ============================================================
