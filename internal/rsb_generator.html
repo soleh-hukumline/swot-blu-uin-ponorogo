@@ -2631,8 +2631,9 @@ async function loadBackup(){
       JSON.parse(txt);
       if(!confirm('Load "'+file.name+'"? Data saat ini akan ditimpa.'))return;
       localStorage.setItem(SK,txt);
+      dirty=false;
       showToast('\u2705 Di-load: '+file.name);
-      setTimeout(()=>location.reload(),600);
+      setTimeout(()=>location.reload(true),400);
       return;
     }catch(e){if(e.name==='AbortError')return;}
   }
@@ -2658,8 +2659,10 @@ async function loadBackup(){
     if(!txt){alert('Kosong! Pilih file atau paste JSON.');return;}
     try{JSON.parse(txt);}catch(e2){alert('JSON tidak valid: '+e2.message);return;}
     localStorage.setItem(SK,txt);
+    dirty=false; // bypass beforeunload
+    document.body.removeChild(ov); // remove overlay before reload
     showToast('\u2705 Backup di-load! Reloading...');
-    setTimeout(()=>location.reload(),600);
+    setTimeout(()=>location.reload(true),400);
   };
 }
 
